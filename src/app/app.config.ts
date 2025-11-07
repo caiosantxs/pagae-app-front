@@ -4,6 +4,9 @@ import { provideAnimationsAsync } from '@angular/platform-browser/animations/asy
 import Aura from '@primeuix/themes/aura';
 import { providePrimeNG } from 'primeng/config';
 import { routes } from './app.routes';
+import { provideHttpClient, withFetch } from '@angular/common/http';
+import { provideToastr } from 'ngx-toastr';
+import { provideAnimations } from '@angular/platform-browser/animations';
 
 export const appConfig: ApplicationConfig = {
   providers: [
@@ -18,6 +21,9 @@ export const appConfig: ApplicationConfig = {
                     darkModeSelector: false,
                 },
             }
-        })
+        }),
+    provideHttpClient(withFetch()),
+    provideToastr(),
+    provideAnimations()
   ]
 };

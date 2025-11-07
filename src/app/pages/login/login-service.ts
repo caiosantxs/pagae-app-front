@@ -1,6 +1,7 @@
 import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { LoginResponse } from '../../types/login-response.type';
+import { tap } from 'rxjs/operators';
 
 @Injectable({
   providedIn: 'root',
@@ -10,7 +11,10 @@ export class LoginService {
 
   login(name: string, password: string) {
     return this.httpClient.post<LoginResponse>('/api/auth/login', { name, password }).pipe(
-
+      tap((value) => {
+        sessionStorage.setItem('authToken', value.token);
+        sessionStorage.setItem('username', value.name);
+      })
     );
   }
 

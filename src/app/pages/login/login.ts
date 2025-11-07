@@ -5,6 +5,8 @@ import { ButtonModule } from 'primeng/button';
 import { InputTextModule } from 'primeng/inputtext';
 import { PasswordModule } from 'primeng/password';
 import { DividerModule } from 'primeng/divider';
+import { LoginService } from './login-service';
+import { ToastrService } from 'ngx-toastr';
 
 @Component({
   selector: 'app-login',
@@ -17,6 +19,7 @@ import { DividerModule } from 'primeng/divider';
     DividerModule,
     ReactiveFormsModule
   ],
+  providers: [LoginService, ToastrService],
   templateUrl: './login.html',
   styleUrl: './login.scss',
 })
@@ -25,7 +28,10 @@ export class Login {
   loginForm!: FormGroup;
   password?: string;
 
-  constructor() {
+  constructor(
+    private loginService: LoginService,
+    private toastService: ToastrService
+  ) {
     this.loginForm = new FormGroup({
       email: new FormControl('', [Validators.required, Validators.email]),
       password: new FormControl('', [Validators.required, Validators.minLength(6)]),
@@ -35,6 +41,15 @@ export class Login {
 
 
   submit(){
-    console.log(this.loginForm.value);
+    this.loginService.login(this.loginForm.value.username, this.loginForm.value.password).subscribe({
+      next: (response) => {
+        this.toastService.success('Login successful!');
+        // Handle successful login, e.g., navigate to another page
+      },
+      error: (error) => {
+        this.toastService.error('Login failed. Please check your credentials.');
+        // Handle login error, e.g., show error message
+      }
+    });
   }
 }
