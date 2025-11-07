@@ -1,0 +1,12 @@
+#navbar{
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.actions{
+  display: flex;
+   flex-direction: column;
+   text-align: center;
+   margin-right: 30px;
+}

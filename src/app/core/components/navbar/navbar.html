@@ -1,0 +1,22 @@
+<nav class="bg-white w-full p-4 md:p-6 shadow-lg shadow-green-600/25">
+  <div class="container mx-auto flex justify-between items-center">
+    <a routerLink="/" class="text-3xl font-bold text-gray-900">PagAê</a>
+
+    <div class="flex items-center gap-4">
+
+      <button
+        pButton
+        routerLink="/login"
+        label="Login"
+        class="!bg-white !text-green-600 font-bold px-6 py-3 rounded-full shadow-md  transition-colors duration-200 flex items-center gap-2"
+      ></button>
+
+      <button
+        pButton
+        routerLink="/register"
+        label="Registre-se de graça"
+        class="!bg-green-600 !border-green-600 !text-white !font-bold px-6 py-3 rounded-full shadow-md hover:!bg-green-700 hover:!border-green-700 transition-colors duration-200 flex items-center gap-2"
+      ></button>
+    </div>
+  </div>
+</nav>
