@@ -1,6 +1,6 @@
 import { Component } from '@angular/core';
-import { RouterLink } from '@angular/router';
-import { FormControl, FormGroup, FormsModule, ReactiveFormsModule, Validators } from '@angular/forms'; // Necessário para [(ngModel)]
+import { Router, RouterLink } from '@angular/router';
+import { FormControl, FormGroup, FormsModule, ReactiveFormsModule, Validators } from '@angular/forms';
 import { ButtonModule } from 'primeng/button';
 import { InputTextModule } from 'primeng/inputtext';
 import { PasswordModule } from 'primeng/password';
@@ -19,7 +19,6 @@ import { ToastrService } from 'ngx-toastr';
     DividerModule,
     ReactiveFormsModule
   ],
-  providers: [LoginService, ToastrService],
   templateUrl: './login.html',
   styleUrl: './login.scss',
 })
@@ -30,26 +29,26 @@ export class Login {
 
   constructor(
     private loginService: LoginService,
-    private toastService: ToastrService
+    private toastService: ToastrService,
+    private router: Router
   ) {
     this.loginForm = new FormGroup({
-      email: new FormControl('', [Validators.required, Validators.email]),
       password: new FormControl('', [Validators.required, Validators.minLength(6)]),
       username: new FormControl('', [Validators.required])
     });
   }
 
 
-  submit(){
+  submit() {
     this.loginService.login(this.loginForm.value.username, this.loginForm.value.password).subscribe({
-      next: (response) => {
+      next: () => {
         this.toastService.success('Login successful!');
-        // Handle successful login, e.g., navigate to another page
+        this.router.navigate(['/app/dashboard']);
       },
-      error: (error) => {
+      error: () => {
         this.toastService.error('Login failed. Please check your credentials.');
-        // Handle login error, e.g., show error message
       }
     });
   }
+
 }

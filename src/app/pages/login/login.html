@@ -18,13 +18,13 @@
         Bem-vindo de volta! Faça login na sua conta.
       </p>
 
-      <form class="space-y-5" [formGroup]="loginForm">
+      <form class="space-y-5" [formGroup]="loginForm" (ngSubmit)="submit()">
 
         <input
           pInputText
           placeholder="Username"
           formControlName="username"
-          type="username"
+          type="text"
           name="username"
           class="w-full p-3 rounded-lg border border-gray-300
                  bg-white text-gray-900
@@ -52,8 +52,8 @@
         <p-button
           label="ENTRAR"
           type="submit"
-          (click)="submit()"
-          styleClass="w-full p-button-lg p-button-rounded bg-green-500 border-green-500 text-white hover:bg-green-600 hover:border-green-600">
+          [disabled]="loginForm.invalid"
+          styleClass="w-full p-button-lg p-button-rounded !bg-green-600 !border-green-600 text-white !hover:bg-green-700 !hover:border-green-700">
         </p-button>
 
         <div class="text-center text-sm text-gray-600 pt-2">
@@ -70,7 +70,7 @@
         <p-button
           label="CONTINUAR COM O GOOGLE"
           icon="pi pi-google"
-          styleClass="w-full p-button-outlined p-button-rounded text-gray-700 border-gray-400">
+          styleClass="w-full p-button-outlined p-button-rounded !text-green-600 !border-green-600">
         </p-button>
 
       </form>

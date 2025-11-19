@@ -4,9 +4,11 @@ import { provideAnimationsAsync } from '@angular/platform-browser/animations/asy
 import Aura from '@primeuix/themes/aura';
 import { providePrimeNG } from 'primeng/config';
 import { routes } from './app.routes';
-import { provideHttpClient, withFetch } from '@angular/common/http';
+import { provideHttpClient, withFetch, withInterceptors } from '@angular/common/http';
 import { provideToastr } from 'ngx-toastr';
 import { provideAnimations } from '@angular/platform-browser/animations';
+import { authInterceptor } from './core/interceptors/auth-interceptor';
+import { LOCALE_ID } from '@angular/core';
 
 export const appConfig: ApplicationConfig = {
   providers: [
@@ -22,8 +24,9 @@ export const appConfig: ApplicationConfig = {
                 },
             }
         }),
-    provideHttpClient(withFetch()),
+    provideHttpClient(withInterceptors([authInterceptor])),
     provideToastr(),
-    provideAnimations()
+    provideAnimations(),
+    { provide: LOCALE_ID, useValue: 'pt-BR' }
   ]
 };
