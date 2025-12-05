@@ -1,12 +1,9 @@
-<div class="flex h-screen bg-gray-100">
+<div class="min-h-screen bg-slate-50 font-sans">
 
-  <app-sidebar class="flex-shrink-0"></app-sidebar>
+  <app-navbar></app-navbar>
 
-  <div class="flex-1 flex flex-col overflow-hidden">
+  <main class="container mx-auto px-4 py-8">
+    <router-outlet></router-outlet>
+  </main>
 
-    <main class="flex-1 overflow-y-auto p-8">
-      <router-outlet></router-outlet>
-    </main>
-
-  </div>
 </div>

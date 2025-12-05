@@ -14,6 +14,7 @@ export const routes: Routes = [
     canActivate: [authGuard],
     children: [
       { path: 'dashboard', component: Dashboard },
+      {path: 'hangouts', loadComponent: () => import('./pages/hangouts/hangouts').then(m => m.Hangouts) },
       { path: '', redirectTo: 'dashboard', pathMatch: 'full' }
     ]
   },
