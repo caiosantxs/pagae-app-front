@@ -1,37 +1,122 @@
-@if (stats$ | async; as stats) {
-  <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
-
-    <div class="bg-blue-100 text-blue-800 rounded-lg shadow-md p-6 flex justify-between items-center">
-      <div>
-        <div class="text-4xl font-bold">{{ stats.totalHangouts }}</div>
-        <div class="text-lg">Total de Rolês</div>
-      </div>
-      <i class="pi pi-folder text-5xl text-blue-500"></i>
+<div class="max-w-7xl mx-auto pb-12">
+  
+  <div class="flex flex-col md:flex-row md:items-center justify-between gap-4 mb-10">
+    <div>
+      <h1 class="text-4xl font-extrabold text-gray-900 mb-2 flex items-center gap-2">
+        Olá, {{ userName }}! <span class="text-3xl animate-pulse">👋</span>
+      </h1>
+      <p class="text-gray-500 text-lg">Aqui está o resumo da sua vida financeira nos rolês.</p>
     </div>
-
-    <div class="bg-red-100 text-red-800 rounded-lg shadow-md p-6 flex justify-between items-center">
-      <div>
-        <div class="text-4xl font-bold">
-          @if( stats.totalOwed == null){
-            <div class="text-4xl font-bold">R$ 0,00</div>
-          }@else{
-            <div class="text-4xl font-bold">{{ stats.totalOwed | currency:'BRL':'symbol' }}</div>
-          }
-        </div>
-        <div class="text-lg">Total a Pagar</div>
-      </div>
-      <i class="pi pi-thumbs-down text-5xl text-red-500"></i>
-    </div>
-
-    <div class="bg-green-100 text-green-800 rounded-lg shadow-md p-6 flex justify-between items-center">
-      <div>
-        <div class="text-4xl font-bold">R$ 0,00</div>
-        <div class="text-lg">Total a Receber</div>
-      </div>
-      <i class="pi pi-thumbs-up text-5xl text-green-500"></i>
-    </div>
-
+    
+    <button 
+      pButton 
+      label="Novo Rolê" 
+      icon="pi pi-plus" 
+      class="!bg-green-500 !border-green-500 hover:!bg-green-600 !rounded-lg !px-6 !py-3 !font-bold shadow-lg shadow-green-200">
+    </button>
   </div>
-} @else {
-  <p>Carregando estatísticas...</p>
-}
+
+  @if (stats$ | async; as stats) {
+    
+    <div class="grid grid-cols-1 md:grid-cols-3 gap-8 mb-12">
+      
+      <div class="bg-white rounded-[2rem] p-8 shadow-sm border border-gray-100 hover:shadow-md transition-shadow flex flex-col justify-between h-48">
+        <div class="w-12 h-12 rounded-2xl bg-gray-50 flex items-center justify-center text-gray-600">
+          <i class="pi pi-calendar text-xl"></i>
+        </div>
+        <div>
+          <p class="text-gray-500 font-medium mb-1">Total de Rolês</p>
+          <h3 class="text-4xl font-extrabold text-gray-900">{{ stats.totalHangouts }}</h3>
+        </div>
+      </div>
+
+      <div class="bg-white rounded-[2rem] p-8 shadow-sm border border-gray-100 hover:shadow-md transition-shadow flex flex-col justify-between h-48 relative overflow-hidden">
+        <div class="absolute top-0 right-0 w-32 h-32 bg-red-50 rounded-bl-[4rem] -mr-8 -mt-8 z-0"></div>
+        
+        <div class="relative z-10 w-12 h-12 rounded-2xl bg-red-50 flex items-center justify-center text-red-500 mb-4">
+          <i class="pi pi-arrow-up-right text-xl font-bold"></i>
+        </div>
+        
+        <div class="relative z-10">
+          <p class="text-gray-500 font-medium mb-2">A Pagar</p>
+          <h3 class="text-4xl font-extrabold text-red-500 mb-2">
+            {{ stats.totalOwed | currency:'BRL' }}
+          </h3>
+          <span class="inline-block bg-red-50 text-red-500 text-xs font-bold px-3 py-1 rounded-full">
+            2 pendências </span>
+        </div>
+      </div>
+
+      <div class="bg-white rounded-[2rem] p-8 shadow-sm border border-gray-100 hover:shadow-md transition-shadow flex flex-col justify-between h-48 relative overflow-hidden">
+        <div class="absolute top-0 right-0 w-32 h-32 bg-green-50 rounded-bl-[4rem] -mr-8 -mt-8 z-0"></div>
+        
+        <div class="relative z-10 w-12 h-12 rounded-2xl bg-green-50 flex items-center justify-center text-green-500 mb-4">
+          <i class="pi pi-arrow-down-left text-xl font-bold"></i>
+        </div>
+        
+        <div class="relative z-10">
+          <p class="text-gray-500 font-medium mb-2">A Receber</p>
+          <h3 class="text-4xl font-extrabold text-green-500 mb-2">
+            R$ 450,00 </h3>
+          <span class="inline-block bg-green-50 text-green-600 text-xs font-bold px-3 py-1 rounded-full">
+            Disponível
+          </span>
+        </div>
+      </div>
+
+    </div>
+
+  } @else {
+    <div class="grid grid-cols-1 md:grid-cols-3 gap-8 mb-12 animate-pulse">
+      <div class="h-48 bg-gray-200 rounded-[2rem]"></div>
+      <div class="h-48 bg-gray-200 rounded-[2rem]"></div>
+      <div class="h-48 bg-gray-200 rounded-[2rem]"></div>
+    </div>
+  }
+
+  <div class="mb-6 flex items-center gap-2">
+    <i class="pi pi-chart-line text-gray-400"></i>
+    <h3 class="text-sm font-bold text-gray-500 uppercase tracking-wider">Seus Eventos Recentes</h3>
+  </div>
+
+  <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+    @for (hangout of recentHangouts; track $index) {
+      <div class="bg-white rounded-[1.5rem] p-6 shadow-sm border border-gray-100 hover:shadow-md transition-shadow h-full flex flex-col">
+        
+        <div class="flex justify-between items-start mb-4">
+          <div class="w-12 h-12 rounded-2xl bg-green-50 text-green-600 flex items-center justify-center text-xl font-bold uppercase">
+            {{ hangout.initial }}
+          </div>
+          <span 
+            class="text-[10px] font-bold px-3 py-1 rounded-full uppercase tracking-wider"
+            [ngClass]="hangout.status === 'ATIVO' ? 'bg-green-50 text-green-600' : 'bg-gray-100 text-gray-500'">
+            {{ hangout.status }}
+          </span>
+        </div>
+
+        <div class="mb-6">
+          <h3 class="text-lg font-bold text-gray-900 mb-1 truncate">{{ hangout.title }}</h3>
+          <div class="flex items-center text-gray-400 text-xs font-medium">
+            <i class="pi pi-calendar mr-2"></i>
+            {{ hangout.date }}
+          </div>
+        </div>
+
+        <div class="flex items-end justify-between mt-auto pt-4 border-t border-gray-50">
+          <p-avatarGroup>
+            @for (p of hangout.participants.slice(0,3); track $index) {
+              <p-avatar shape="circle" size="normal" [style]="{'background-color': '#f3f4f6', 'width': '28px', 'height': '28px', 'font-size': '10px'}" [label]="p.label"></p-avatar>
+            }
+          </p-avatarGroup>
+          
+          <div class="text-right">
+            <p class="text-[10px] text-gray-400 uppercase font-bold">Total</p>
+            <p class="text-base font-bold text-gray-900">{{ hangout.total | currency:'BRL' }}</p>
+          </div>
+        </div>
+
+      </div>
+    }
+  </div>
+
+</div>
