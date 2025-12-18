@@ -3,34 +3,40 @@ export interface HangOutResponseDTO {
   title: string;
   description: string;
   creatorId: number;
-  creationDate: string; // Java manda LocalDate como string ISO '2025-12-05'
-  statusHangOut: 'ATIVO' | 'FINALIZADO'; // Nome exato do campo no Java Record
+  creationDate: string;
+  statusHangOut: 'ATIVO' | 'FINALIZADO';
   expenses: ExpenseResponseDTO[];
-  members: string[]; // Lista de nomes (strings)
+  members: string[];
 }
+
+export interface HangOutRequestDTO {
+  title: string;
+  description: string;
+}
+
 export interface ExpenseResponseDTO{
   id: number,
   description: string,
   totalAmount: number,
   hangout: HangOutResponseDTO,
-  payments: Payment[]
+  payments: PaymentResponseDTO[]
 }
 
 export interface ExpenseShare{
   id: number,
   expenseId: number,
-  user: User,
+  user: UserResponseDTO,
   amountOwed: number,
   isPaid: boolean
 }
 
-export interface Payment{
+export interface PaymentResponseDTO{
   id: number,
   amount: number,
-  user: User
+  user: UserResponseDTO
 }
 
-export interface User{
+export interface UserResponseDTO{
   id: number,
   name: string,
   login: string,

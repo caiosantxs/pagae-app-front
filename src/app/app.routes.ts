@@ -3,7 +3,8 @@ import { LandingComponent } from './pages/landing/landing';
 import { MainLayoutComponent } from './core/layout/main-layout/main-layout';
 import { Dashboard } from './pages/dashboard/dashboard';
 import { authGuard } from './core/guards/auth-guard';
-import { HangoutDetails } from './pages/hangouts/hangout-details/hangout-details'; 
+import { HangoutDetails } from './pages/hangouts/hangout-details/hangout-details';
+import { HangoutCreator } from './pages/hangouts/hangout-creator/hangout-creator';
 
 export const routes: Routes = [
   { path: '', component: LandingComponent },
@@ -16,6 +17,7 @@ export const routes: Routes = [
     children: [
       { path: 'dashboard', component: Dashboard },
       { path: 'hangouts', loadComponent: () => import('./pages/hangouts/hangouts-list/hangouts').then(m => m.Hangouts) },
+      { path: 'hangouts/new', component: HangoutCreator },
       { path: 'hangouts/:id', component: HangoutDetails},
       { path: '', redirectTo: 'dashboard', pathMatch: 'full' }
     ]

@@ -5,6 +5,7 @@ import { AvatarModule } from 'primeng/avatar';
 import { AvatarGroupModule } from 'primeng/avatargroup';
 import { ExpenseResponseDTO, HangOutResponseDTO } from '../hangout-models';
 import { HangoutsService } from '../hangouts-service';
+import { RouterLink } from '@angular/router';
 
 @Component({
   selector: 'app-hangouts',
@@ -12,7 +13,8 @@ import { HangoutsService } from '../hangouts-service';
     CommonModule,
     ButtonModule,
     AvatarGroupModule,
-    AvatarModule
+    AvatarModule,
+    RouterLink
   ],
   templateUrl: './hangouts.html',
   styleUrl: './hangouts.scss',
@@ -35,13 +37,12 @@ export class Hangouts {
     if (this.loading) return;
     this.loading = true;
 
-    // Assumindo que seu service retorna um Observable<Page<HangOutResponseDTO>>
     this.hangOutService.getUserHangouts(this.currentPage, this.pageSize)
       .subscribe({
         next: (pageData) => {
           // Concatena os novos itens aos existentes
           this.hangouts = [...this.hangouts, ...pageData.content];
-          
+
           this.hasMore = !pageData.last;
           this.currentPage++;
           this.loading = false;
@@ -52,8 +53,6 @@ export class Hangouts {
         }
       });
   }
-
-  // --- Métodos Auxiliares para tratar os dados do Back-end na View ---
 
   /**
    * Pega a primeira letra de uma string.
@@ -68,7 +67,6 @@ export class Hangouts {
    */
   calculateTotal(expenses: ExpenseResponseDTO[]): number {
     if (!expenses || expenses.length === 0) return 0;
-    // Assumindo que o objeto expense tem a propriedade 'amount' ou 'value'
     return expenses.reduce((acc, curr) => acc + (curr.totalAmount || 0), 0);
   }
 }
