@@ -1,5 +1,4 @@
 <div>
-
   <div class="flex flex-col md:flex-row md:items-center justify-between gap-4 mb-8">
     <div>
       <h1 class="text-3xl font-bold text-gray-900">Meus Rolês</h1>
@@ -14,69 +13,78 @@
     </button>
   </div>
 
-    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+  <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
 
-      @for (hangout of hangouts; track $index) {
-        <div class="bg-white rounded-xl p-6 shadow-sm border border-gray-100 hover:shadow-md transition-shadow duration-200 flex flex-col justify-between h-full min-h-[220px]">
+    @for (hangout of hangouts; track hangout.id) {
+      <div class="bg-white rounded-xl p-6 shadow-sm border border-gray-100 hover:shadow-md transition-shadow duration-200 flex flex-col justify-between h-full min-h-[220px]">
 
-          <div class="flex justify-between items-start mb-4">
-            <div class="w-12 h-12 rounded-xl bg-green-50 text-green-600 flex items-center justify-center text-xl font-bold uppercase">
-              {{ hangout.initial }}
-            </div>
-
-            <span
-              class="text-[10px] font-bold px-2 py-1 rounded-full uppercase tracking-wider"
-              [ngClass]="hangout.status === 'ATIVO' ? 'bg-green-100 text-green-700' : 'bg-gray-100 text-gray-600'">
-              {{ hangout.status }}
-            </span>
+        <div class="flex justify-between items-start mb-4">
+          <div class="w-12 h-12 rounded-xl bg-green-50 text-green-600 flex items-center justify-center text-xl font-bold uppercase">
+            {{ getInitial(hangout.title) }}
           </div>
 
-          <div class="mb-6">
-            <h3 class="text-lg font-bold text-gray-900 mb-1 truncate">{{ hangout.title }}</h3>
-            <div class="flex items-center text-gray-400 text-sm">
-              <i class="pi pi-calendar mr-2"></i>
-              {{ hangout.date }}
-            </div>
-          </div>
-
-          <div class="flex items-end justify-between mt-auto border-t border-gray-50 pt-4">
-
-            <p-avatarGroup styleClass="mb-1">
-              @for (p of hangout.participants.slice(0,3); track $index) {
-                <p-avatar
-                  shape="circle"
-                  size="normal"
-                  [style]="{'background-color': '#E5E7EB', 'color': '#374151'}"
-                  [label]="p.label">
-                </p-avatar>
-              }
-              @if (hangout.participants.length > 3) {
-                <p-avatar
-                  label="+{{ hangout.participants.length - 3 }}"
-                  shape="circle"
-                  size="normal"
-                  [style]="{'background-color': '#F3F4F6', 'font-size': '12px'}">
-                </p-avatar>
-              }
-            </p-avatarGroup>
-
-            <div class="text-right">
-              <p class="text-xs text-gray-400 uppercase font-semibold">Total</p>
-              <p class="text-lg font-bold text-gray-900">
-                {{ hangout.total | currency:'BRL' }}
-              </p>
-            </div>
-          </div>
-
+          <span
+            class="text-[10px] font-bold px-2 py-1 rounded-full uppercase tracking-wider"
+            [ngClass]="hangout.statusHangOut === 'ATIVO' ? 'bg-green-100 text-green-700' : 'bg-gray-100 text-gray-600'">
+            {{ hangout.statusHangOut }}
+          </span>
         </div>
-      }
 
-      <div class="border-2 border-dashed border-gray-300 rounded-xl p-6 flex flex-col items-center justify-center text-gray-400 hover:border-green-400 hover:text-green-500 hover:bg-green-50/30 transition-all duration-200 cursor-pointer min-h-[220px] group">
-        <div class="w-12 h-12 rounded-full bg-gray-100 group-hover:bg-green-100 flex items-center justify-center mb-3 transition-colors">
-          <i class="pi pi-plus text-xl"></i>
+        <div class="mb-6">
+          <h3 class="text-lg font-bold text-gray-900 mb-1 truncate" [title]="hangout.title">
+            {{ hangout.title }}
+          </h3>
+          <div class="flex items-center text-gray-400 text-sm">
+            <i class="pi pi-calendar mr-2"></i>
+            {{ hangout.creationDate | date:'dd/MM/yyyy' }}
+          </div>
         </div>
-        <span class="font-medium">Criar outro rolê</span>
+
+        <div class="flex items-end justify-between mt-auto border-t border-gray-50 pt-4">
+
+          <p-avatarGroup styleClass="mb-1">
+            @for (memberName of hangout.members.slice(0,3); track $index) {
+              <p-avatar
+                shape="circle"
+                size="normal"
+                [style]="{'background-color': '#E5E7EB', 'color': '#374151', 'font-weight': 'bold'}"
+                [label]="getInitial(memberName)"
+                [title]="memberName"> </p-avatar>
+            }
+            
+            @if (hangout.members.length > 3) {
+              <p-avatar
+                [label]="'+' + (hangout.members.length - 3)"
+                shape="circle"
+                size="normal"
+                [style]="{'background-color': '#F3F4F6', 'font-size': '12px', 'color': '#6B7280'}">
+              </p-avatar>
+            }
+          </p-avatarGroup>
+
+          <div class="text-right">
+            <p class="text-xs text-gray-400 uppercase font-semibold">Total</p>
+            <p class="text-lg font-bold text-gray-900">
+              {{ calculateTotal(hangout.expenses) | currency:'BRL' }}
+            </p>
+          </div>
+        </div>
+
       </div>
+    }
+
+    @if (hasMore && !loading) {
+        <div class="col-span-full flex justify-center mt-4">
+            <button pButton label="Carregar mais" (click)="loadHangouts()" class="p-button-text"></button>
+        </div>
+    }
+
+    <div class="border-2 border-dashed border-gray-300 rounded-xl p-6 flex flex-col items-center justify-center text-gray-400 hover:border-green-400 hover:text-green-500 hover:bg-green-50/30 transition-all duration-200 cursor-pointer min-h-[220px] group">
+      <div class="w-12 h-12 rounded-full bg-gray-100 group-hover:bg-green-100 flex items-center justify-center mb-3 transition-colors">
+        <i class="pi pi-plus text-xl"></i>
+      </div>
+      <span class="font-medium">Criar outro rolê</span>
     </div>
 
+  </div>
 </div>
