@@ -49,13 +49,13 @@
           <div class="flex items-end justify-between mt-auto border-t border-gray-50 pt-4">
 
             <p-avatarGroup styleClass="mb-1">
-              @for (memberName of hangout.members.slice(0,3); track $index) {
+              @for (member of hangout.members.slice(0,3); track $index) {
                 <p-avatar
                   shape="circle"
                   size="normal"
                   [style]="{'background-color': '#E5E7EB', 'color': '#374151', 'font-weight': 'bold'}"
-                  [label]="getInitial(memberName)"
-                  [title]="memberName"> </p-avatar>
+                  [label]="getInitial(member.name)"
+                  [title]="member.name"> </p-avatar>
               }
 
               @if (hangout.members.length > 3) {

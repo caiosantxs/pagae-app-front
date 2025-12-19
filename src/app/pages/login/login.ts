@@ -38,12 +38,16 @@ export class Login {
     });
   }
 
+  onDestroy() {
+    this.loginForm.reset();
+  }
 
   submit() {
     this.loginService.login(this.loginForm.value.username, this.loginForm.value.password).subscribe({
       next: () => {
         this.toastService.success('Login successful!');
         this.router.navigate(['/app/dashboard']);
+        this.loginForm.reset();
       },
       error: () => {
         this.toastService.error('Login failed. Please check your credentials.');

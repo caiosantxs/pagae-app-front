@@ -6,7 +6,7 @@ export interface HangOutResponseDTO {
   creationDate: string;
   statusHangOut: 'ATIVO' | 'FINALIZADO';
   expenses: ExpenseResponseDTO[];
-  members: string[];
+  members: MemberDTO[];
 }
 
 export interface HangOutRequestDTO {
@@ -53,6 +53,17 @@ export interface Page<T> {
   first: boolean;
   last: boolean;
   empty: boolean;
+}
+
+export interface ExpenseRequestDTO {
+  description: string;
+  totalAmount: number;
+  participantsIds: number[];
+}
+
+export interface MemberDTO {
+  id: number;
+  name: string;
 }
 
 enum StatusHangout{

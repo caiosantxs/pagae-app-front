@@ -2,7 +2,7 @@ import { Injectable } from '@angular/core';
 import { HttpClient, HttpParams } from '@angular/common/http';
 import { environment } from '../../../enviroments/enviroment';
 import { Observable } from 'rxjs';
-import { ExpenseShare, HangOutRequestDTO, HangOutResponseDTO, Page, UserResponseDTO } from './hangout-models';
+import { ExpenseRequestDTO, ExpenseShare, HangOutRequestDTO, HangOutResponseDTO, Page, UserResponseDTO } from './hangout-models';
 
 @Injectable({
   providedIn: 'root',
@@ -35,5 +35,17 @@ export class HangoutsService {
 
   create(hangoutData: HangOutRequestDTO): Observable<HangOutResponseDTO> {
     return this.http.post<HangOutResponseDTO>(this.apiUrl, hangoutData);
+  }
+
+  createExpense(hangoutId: number, data: ExpenseRequestDTO): Observable<any> {
+    return this.http.post(`${this.apiUrl}/${hangoutId}/expenses`, data);
+  }
+
+  finalize(id: number): Observable<void> {
+    return this.http.patch<void>(`${this.apiUrl}/${id}/finalize`, {});
+  }
+
+  delete(id: number): Observable<void> {
+    return this.http.delete<void>(`${this.apiUrl}/${id}`);
   }
 }
