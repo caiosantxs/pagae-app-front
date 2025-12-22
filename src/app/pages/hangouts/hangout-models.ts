@@ -7,6 +7,8 @@ export interface HangOutResponseDTO {
   statusHangOut: 'ATIVO' | 'FINALIZADO';
   expenses: ExpenseResponseDTO[];
   members: MemberDTO[];
+
+  recentActivities: PaymentActivityDTO[];
 }
 
 export interface HangOutRequestDTO {
@@ -20,14 +22,18 @@ export interface ExpenseResponseDTO{
   totalAmount: number,
   hangout: HangOutResponseDTO,
   payments: PaymentResponseDTO[]
+  creator: UserResponseDTO,
+  date: string
+
+  shares: ExpenseShare[];
 }
 
-export interface ExpenseShare{
-  id: number,
-  expenseId: number,
-  user: UserResponseDTO,
-  amountOwed: number,
-  isPaid: boolean
+export interface ExpenseShare {
+  id: number;
+  expenseId: number;
+  user: UserResponseDTO;
+  amountOwed: number;
+  isPaid: boolean;
 }
 
 export interface PaymentResponseDTO{
@@ -42,6 +48,15 @@ export interface UserResponseDTO{
   login: string,
   email: string,
   role: string
+}
+
+export interface PaymentActivityDTO {
+  id: number;
+  payerName: string;
+  description: string;
+  amount: number;
+  date: string;
+  payerId: number;
 }
 
 export interface Page<T> {

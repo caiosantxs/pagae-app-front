@@ -9,6 +9,7 @@ import { ButtonModule } from 'primeng/button';
 import { MessageModule } from 'primeng/message';
 import { UserService } from '../../users/user-service';
 import { MultiSelectModule } from 'primeng/multiselect';
+import { AutoCompleteModule } from 'primeng/autocomplete';
 
 @Component({
   selector: 'app-hangout-creator',
@@ -19,7 +20,8 @@ import { MultiSelectModule } from 'primeng/multiselect';
     InputTextModule,
     ButtonModule,
     MessageModule,
-    MultiSelectModule
+    MultiSelectModule,
+    AutoCompleteModule
   ],
   templateUrl: './hangout-creator.html',
   styleUrl: './hangout-creator.scss',
@@ -28,7 +30,7 @@ export class HangoutCreator {
   form: FormGroup;
   loading = false;
 
-  users: UserResponseDTO[] = [];
+  filteredUsers: UserResponseDTO[] = [];
 
   constructor(
     private fb: FormBuilder,
@@ -43,22 +45,24 @@ export class HangoutCreator {
     });
   }
 
-  ngOnInit() {
-    this.userService.getAllUsers().subscribe(data => {
-      this.users = data;
-    });
-  }
 
   onSubmit() {
-    if (this.form.invalid) {
-      this.form.markAllAsTouched();
-      return;
-    }
+    if (this.form.invalid) return;
 
-    this.loading = true;
-    const data: HangOutRequestDTO = this.form.value;
+    const formValue = this.form.value;
 
-    this.hangoutService.create(data).subscribe({
+    // O AutoComplete retorna o Objeto inteiro ({id, name, login}).
+    // Se seu Backend no 'create' espera apenas List<Long> ids:
+    const selectedMembers = formValue.memberIds as UserResponseDTO[];
+    const idsOnly = selectedMembers.map(u => u.id);
+
+    const payload = {
+      title: formValue.title,
+      description: formValue.description,
+      memberIds: idsOnly
+    };
+
+    this.hangoutService.create(payload).subscribe({
       next: () => {
 
         this.loading = false;
@@ -69,6 +73,13 @@ export class HangoutCreator {
         this.loading = false;
 
       }
+    });
+  }
+
+  filterUsers(event: any) {
+    const query = event.query;
+    this.userService.searchUsers(query).subscribe(data => {
+      this.filteredUsers = data;
     });
   }
 }

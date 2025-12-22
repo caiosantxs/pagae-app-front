@@ -60,37 +60,59 @@
               rows="4"
               class="w-full !p-3 !resize-none"
               placeholder="Ex: Contas de mercado, gasolina e hospedagem..."
-            >
-            </textarea>
+            ></textarea>
           </div>
         </div>
 
         <div class="mt-4">
           <label class="block text-sm font-medium text-gray-700 mb-1">
             Convidar Membros
-            <span class="text-gray-400 font-normal">(Opcional)</span>
+            <span class="text-gray-400 font-normal"
+              >(Busque por nome ou login)</span
+            >
           </label>
 
-          <p-multiSelect
-            [options]="users"
+          <p-autoComplete
             formControlName="memberIds"
-            optionLabel="name"
-            optionValue="id"
-            defaultLabel="Selecione os participantes"
-            display="chip"
-            [style]="{ width: '100%' }"
-            [panelStyle]="{ width: '100%' }"
+            [suggestions]="filteredUsers"
+            (completeMethod)="filterUsers($event)"
+            field="name"
+            dataKey="id"
+            [multiple]="true"
+            [forceSelection]="true"
+            [dropdown]="false"
+            placeholder="Digite para buscar..."
             class="w-full"
+            [style]="{ width: '100%' }"
+            [inputStyle]="{ width: '100%' }"
           >
-            <ng-template let-user pTemplate="item">
+            <ng-template let-user pTemplate="item"> </ng-template>
+
+            <ng-template let-value pTemplate="selectedItem">
               <div class="flex items-center gap-2">
-                <i
-                  class="pi pi-user bg-gray-100 p-1 rounded-full text-gray-500"
-                ></i>
-                <span>{{ user.name }}</span>
+                <span class="text-sm">{{ value.name }}</span>
               </div>
             </ng-template>
-          </p-multiSelect>
+
+            <ng-template let-user pTemplate="item">
+              <div class="flex items-center gap-2">
+                <div
+                  class="w-8 h-8 rounded-full bg-green-100 flex items-center justify-center text-green-700 font-bold text-xs"
+                >
+                  {{ user.name ? user.name.charAt(0).toUpperCase() : "?" }}
+                </div>
+
+                <div class="flex flex-col">
+                  <span class="font-medium text-gray-900 leading-none">{{
+                    user.name
+                  }}</span>
+                  <span class="text-xs text-gray-500 mt-1"
+                    >@{{ user.login }}</span
+                  >
+                </div>
+              </div>
+            </ng-template>
+          </p-autoComplete>
         </div>
 
         <div class="flex items-center gap-4 pt-2">
@@ -98,7 +120,7 @@
             type="button"
             pButton
             label="Cancelar"
-            routerLink="/hangouts"
+            routerLink="/app/hangouts"
             class="p-button-outlined p-button-secondary w-full justify-center !font-bold"
           ></button>
 

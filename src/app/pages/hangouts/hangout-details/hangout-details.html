@@ -1,53 +1,81 @@
 @if (isLoading) {
-  <div class="flex justify-center p-10"><i class="pi pi-spin pi-spinner text-4xl"></i></div>
+<div class="flex justify-center p-10">
+  <i class="pi pi-spin pi-spinner text-4xl"></i>
+</div>
 } @else if (hangout) {
 
 <div class="max-w-6xl mx-auto">
-
   <div class="mb-8">
-    <a routerLink="/app/hangouts" class="inline-flex items-center text-gray-500 hover:text-green-600 mb-4 transition-colors">
+    <a
+      routerLink="/app/hangouts"
+      class="inline-flex items-center text-gray-500 hover:text-green-600 mb-4 transition-colors"
+    >
       <i class="pi pi-arrow-left mr-2 text-xs"></i>
       <span class="text-sm font-medium">Voltar para Meus Rolês</span>
     </a>
 
-    <div class="flex flex-col md:flex-row md:items-center justify-between gap-4">
+    <div
+      class="flex flex-col md:flex-row md:items-center justify-between gap-4"
+    >
       <div>
-        <h1 class="text-3xl font-extrabold text-gray-900 mb-2">{{ hangout.title }}</h1>
+        <h1 class="text-3xl font-extrabold text-gray-900 mb-2">
+          {{ hangout.title }}
+        </h1>
         <div class="flex items-center text-gray-500 text-sm gap-3">
-          <span class="flex items-center"><i class="pi pi-calendar mr-1"></i> {{ hangout.creationDate | date:'dd/MM/yyyy' }}</span>
+          <span class="flex items-center"
+            ><i class="pi pi-calendar mr-1"></i>
+            {{ hangout.creationDate | date : "dd/MM/yyyy" }}</span
+          >
           <span class="w-1 h-1 bg-gray-400 rounded-full"></span>
-          <span class="flex items-center"><i class="pi pi-users mr-1"></i> {{ hangout.members.length }} participantes</span>
+          <span class="flex items-center"
+            ><i class="pi pi-users mr-1"></i>
+            {{ hangout.members.length }} participantes</span
+          >
         </div>
       </div>
 
       <div class="flex items-center gap-3">
-        <button pButton label="Convidar" icon="pi pi-user-plus" class="p-button-outlined p-button-secondary !text-gray-700 !border-gray-300"></button>
         <button
-            pButton
-            type="button"
-            label="Opções"
-            icon="pi pi-ellipsis-v"
-            class="!bg-slate-800 !border-slate-800 hover:!bg-slate-700"
-            (click)="menu.toggle($event)"> </button>
+          pButton
+          label="Convidar"
+          icon="pi pi-user-plus"
+          class="p-button-outlined p-button-secondary !text-gray-700 !border-gray-300"
+        ></button>
 
+        <button
+          pButton
+          type="button"
+          label="Opções"
+          icon="pi pi-ellipsis-v"
+          class="!bg-slate-800 !border-slate-800 hover:!bg-slate-700"
+          (click)="menu.toggle($event)"
+        ></button>
         <p-menu #menu [model]="menuItems" [popup]="true"></p-menu>
       </div>
     </div>
   </div>
 
   <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-10">
-
-    <div class="bg-green-500 text-white rounded-2xl p-6 shadow-lg relative overflow-hidden">
-      <div class="absolute -top-4 -right-4 w-24 h-24 bg-white opacity-10 rounded-full"></div>
+    <div
+      class="bg-green-500 text-white rounded-2xl p-6 shadow-lg relative overflow-hidden"
+    >
+      <div
+        class="absolute -top-4 -right-4 w-24 h-24 bg-white opacity-10 rounded-full"
+      ></div>
       <div class="relative z-10">
         <div class="flex justify-between items-start mb-4">
           <div class="p-2 bg-white/20 rounded-lg backdrop-blur-sm">
             <i class="pi pi-wallet text-xl"></i>
           </div>
-          <span class="text-xs font-bold bg-white/20 px-2 py-1 rounded text-green-50">Geral</span>
+          <span
+            class="text-xs font-bold bg-white/20 px-2 py-1 rounded text-green-50"
+            >Geral</span
+          >
         </div>
         <p class="text-green-100 text-sm font-medium mb-1">Custo Total</p>
-        <h3 class="text-3xl font-bold">{{ getTotalCost() | currency:'BRL' }}</h3>
+        <h3 class="text-3xl font-bold">
+          {{ getTotalCost() | currency : "BRL" }}
+        </h3>
       </div>
     </div>
 
@@ -56,10 +84,15 @@
         <div class="p-2 bg-orange-50 text-orange-500 rounded-lg">
           <i class="pi pi-user text-xl"></i>
         </div>
-        <span class="text-xs font-medium text-gray-400 bg-gray-50 px-2 py-1 rounded border border-gray-100">Por pessoa</span>
+        <span
+          class="text-xs font-medium text-gray-400 bg-gray-50 px-2 py-1 rounded border border-gray-100"
+          >Por pessoa</span
+        >
       </div>
       <p class="text-gray-500 text-sm font-medium mb-1">Sua parte (estimada)</p>
-       <h3 class="text-3xl font-bold text-gray-800">{{ myShareTotal | currency:'BRL' }}</h3>
+      <h3 class="text-3xl font-bold text-gray-800">
+        {{ myShareTotal | currency : "BRL" }}
+      </h3>
     </div>
 
     <div class="bg-white rounded-2xl p-6 shadow-sm border border-gray-100">
@@ -70,144 +103,307 @@
       </div>
       <p class="text-gray-500 text-sm font-medium mb-1">Balanço atual</p>
       <div class="flex items-baseline gap-2">
-         <h3 class="text-3xl font-bold"
-            [ngClass]="getBalance() >= 0 ? 'text-green-600' : 'text-red-500'">
-            {{ getBalance() > 0 ? '+' : '' }} {{ getBalance() | currency:'BRL' }}
+        <h3
+          class="text-3xl font-bold"
+          [ngClass]="getBalance() >= 0 ? 'text-green-600' : 'text-red-500'"
+        >
+          {{ getBalance() > 0 ? "+" : "" }}
+          {{ getBalance() | currency : "BRL" }}
         </h3>
       </div>
       <p class="text-xs text-gray-400 mt-1">
-        {{ getBalance() === 0 ? 'Você está quite' : (getBalance() > 0 ? 'A receber' : 'A pagar') }}
+        {{
+          getBalance() === 0
+            ? "Você está quite"
+            : getBalance() > 0
+            ? "A receber"
+            : "A pagar"
+        }}
       </p>
     </div>
   </div>
 
   <div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
-
     <div class="lg:col-span-2">
       <div class="flex items-center justify-between mb-4">
         <h2 class="text-xl font-bold text-gray-900">Despesas</h2>
-        <a href="#" class="text-sm font-semibold text-green-600 hover:text-green-700">Ver todas</a>
+        <a
+          href="#"
+          class="text-sm font-semibold text-green-600 hover:text-green-700"
+          >Ver todas</a
+        >
       </div>
 
       <button
         (click)="openNewExpense()"
-        class="w-full py-4 border-2 border-dashed border-gray-300 rounded-xl text-gray-500 font-medium hover:border-green-500 hover:text-green-600 hover:bg-green-50 transition-all mb-6 flex items-center justify-center gap-2 group">
+        class="w-full py-4 border-2 border-dashed border-gray-300 rounded-xl text-gray-500 font-medium hover:border-green-500 hover:text-green-600 hover:bg-green-50 transition-all mb-6 flex items-center justify-center gap-2 group"
+      >
         <i class="pi pi-plus group-hover:scale-110 transition-transform"></i>
         Adicionar nova despesa
       </button>
 
       <div class="space-y-4">
         @for (expense of hangout.expenses; track expense.id) {
-          <div class="flex items-center justify-between bg-white p-4 rounded-xl border border-gray-100 shadow-sm hover:shadow-md transition-shadow">
-            <div class="flex items-center gap-4">
-              <div class="w-12 h-12 rounded-full bg-green-50 text-green-600 flex items-center justify-center">
-                <i [class]="getIcon(expense.description)" class="text-lg"></i>
-              </div>
-              <div>
-                <h4 class="font-bold text-gray-900">{{ expense.description }}</h4>
-                <p class="text-sm text-gray-500">Pago por <span class="font-medium text-gray-800">{{ getPayerName(expense.payments) }}</span></p>
-              </div>
+        <div
+          class="flex items-center justify-between bg-white p-4 rounded-xl border border-gray-100 shadow-sm hover:shadow-md transition-shadow"
+        >
+          <div class="flex items-center gap-4">
+            <div
+              class="w-12 h-12 rounded-full bg-green-50 text-green-600 flex items-center justify-center"
+            >
+              <i [class]="getIcon(expense.description)" class="text-lg"></i>
             </div>
-            <div class="text-right">
-              <p class="font-bold text-gray-900">{{ expense.totalAmount | currency:'BRL' }}</p>
-              <p class="text-xs text-gray-400">Hoje</p>
+            <div>
+              <h4 class="font-bold text-gray-900 leading-tight">
+                {{ expense.description }}
+              </h4>
+
+              <p class="text-xs text-gray-500 mb-1">
+                Pago por
+                <span class="font-medium text-gray-700">{{
+                  getPayerName(expense.creator)
+                }}</span>
+              </p>
+
+              @if (getMyDebt(expense) > 0) {
+              <span
+                class="inline-flex items-center px-2 py-0.5 rounded text-[10px] font-bold bg-orange-100 text-orange-700"
+              >
+                Sua parte: {{ getMyDebt(expense) | currency : "BRL" }}
+              </span>
+              } @else if (expense.creator.id !== currentUserId) {
+              <span
+                class="inline-flex items-center px-2 py-0.5 rounded text-[10px] font-bold bg-green-100 text-green-700"
+              >
+                <i class="pi pi-check mr-1 text-[8px]"></i> Quite
+              </span>
+              }
             </div>
           </div>
-        }
-        @if (hangout.expenses.length === 0) {
-            <p class="text-center text-gray-500 py-4">Nenhuma despesa lançada ainda.</p>
+
+          <div class="flex items-center gap-3">
+            <div class="text-right">
+              <p class="font-bold text-gray-900">
+                {{ expense.totalAmount | currency : "BRL" }}
+              </p>
+              <p class="text-xs text-gray-400">Total</p>
+            </div>
+
+            @if (expense.creator.id !== currentUserId && getMyDebt(expense) > 0)
+            {
+            <button
+              pButton
+              icon="pi pi-dollar"
+              class="p-button-rounded p-button-text p-button-success !w-10 !h-10 hover:bg-green-50"
+              pTooltip="Pagar minha parte"
+              tooltipPosition="left"
+              (click)="openPaymentModal(expense)"
+            ></button>
+            }
+          </div>
+        </div>
+        } @if (hangout.expenses.length === 0) {
+        <p class="text-center text-gray-500 py-4">
+          Nenhuma despesa lançada ainda.
+        </p>
         }
       </div>
     </div>
 
-    <div>
-      <h2 class="text-xl font-bold text-gray-900 mb-4">Quem deve quem?</h2>
-
-      <div class="bg-white p-6 rounded-2xl shadow-sm border border-gray-100 text-center">
-         <p class="text-gray-400 mb-4">Funcionalidade de divisão detalhada em desenvolvimento.</p>
-         <i class="pi pi-chart-pie text-4xl text-gray-300"></i>
+    <div
+      class="bg-white rounded-2xl p-6 shadow-sm border border-gray-100 h-full flex flex-col"
+    >
+      <div class="flex items-center gap-2 mb-6">
+        <i class="pi pi-history text-xl text-slate-700"></i>
+        <h3 class="text-lg font-bold text-slate-800">Pagamentos Recentes</h3>
       </div>
-    </div>
 
+      <div class="flex flex-col gap-4 flex-1">
+        @for (activity of hangout.recentActivities; track activity.id) {
+        <div class="flex items-center justify-between group">
+          <div class="flex items-center gap-3">
+            <div
+              class="w-10 h-10 rounded-full bg-slate-50 flex items-center justify-center border border-slate-100"
+            >
+              <i class="pi pi-dollar text-slate-400"></i>
+            </div>
+            <div class="flex flex-col">
+              <span class="text-sm text-slate-700 font-medium">
+                <span class="font-bold text-slate-900">
+                  {{ getDisplayName(activity.payerId, activity.payerName) }}
+                </span>
+                pagou
+                <span class="font-bold text-slate-900">{{
+                  activity.description
+                }}</span>
+              </span>
+              <span
+                class="text-[10px] uppercase font-bold tracking-wider text-slate-400"
+              >
+                {{ formatDateFriendly(activity.date) }}
+              </span>
+            </div>
+          </div>
+          <span class="font-bold text-green-600">
+            {{ activity.amount | currency : "BRL" }}
+          </span>
+        </div>
+
+        @if (!$last) {
+        <div class="h-px bg-slate-50 w-full ml-12"></div>
+        } } @if (hangout && !hangout.recentActivities.length) {
+        <div
+          class="flex flex-col items-center justify-center h-32 text-gray-400"
+        >
+          <i class="pi pi-clock text-2xl mb-2 opacity-50"></i>
+          <p class="text-sm">Nenhum pagamento recente.</p>
+        </div>
+        }
+      </div>
+
+      @if (hangout && hangout.recentActivities.length) {
+      <div class="mt-6 pt-4 border-t border-dashed border-gray-100">
+        <button
+          class="w-full py-2 text-sm font-medium text-slate-500 hover:text-slate-700 transition-colors flex items-center justify-center gap-2"
+        >
+          Ver histórico completo
+          <i class="pi pi-arrow-right text-xs"></i>
+        </button>
+      </div>
+      }
+    </div>
   </div>
 </div>
-
+}
 
 <p-dialog
-    header="Nova Despesa"
-    [(visible)]="showExpenseDialog"
-    [modal]="true"
-    [style]="{width: '90vw', maxWidth: '450px'}"
-    [draggable]="false"
-    [resizable]="false">
-
-    <form [formGroup]="expenseForm" class="flex flex-col gap-5 pt-2">
-
-        <div class="flex flex-col gap-2">
-            <label for="desc" class="font-semibold text-gray-700">O que foi comprado?</label>
-            <input
-                pInputText
-                id="desc"
-                formControlName="description"
-                placeholder="Ex: Pizza, Uber..."
-                class="w-full"
-                autofocus />
-        </div>
-
-        <div class="flex flex-col gap-2">
-            <label for="amount" class="font-semibold text-gray-700">Valor Total</label>
-            <p-inputNumber
-                id="amount"
-                formControlName="totalAmount"
-                mode="currency"
-                currency="BRL"
-                locale="pt-BR"
-                placeholder="R$ 0,00"
-                class="w-full">
-            </p-inputNumber>
-        </div>
-
-        <div class="flex flex-col gap-2">
-            <label class="font-semibold text-gray-700">Quem vai dividir?</label>
-
-            <p-multiSelect
-                [options]="hangout.members || []"
-                formControlName="participantsIds"
-                defaultLabel="Selecione os amigos"
-
-                optionLabel="name"
-                optionValue="id"
-
-                display="chip"
-                [style]="{'width':'100%'}"
-                appendTo="body">
-            </p-multiSelect>
-
-            <small class="text-gray-500">Selecione apenas quem consumiu.</small>
-        </div>
-
-    </form>
-
-    <ng-template pTemplate="footer">
-        <button
-            pButton
-            label="Cancelar"
-            icon="pi pi-times"
-            (click)="showExpenseDialog = false"
-            class="p-button-text text-gray-600">
-        </button>
-        <button
-            pButton
-            label="Salvar"
-            icon="pi pi-check"
-            (click)="saveExpense()"
-            [disabled]="expenseForm.invalid || loadingExpense"
-            class="!bg-green-600 !border-green-600">
-        </button>
-    </ng-template>
-
+  header="Nova Despesa"
+  [(visible)]="showExpenseDialog"
+  [modal]="true"
+  [style]="{ width: '90vw', maxWidth: '450px' }"
+  [draggable]="false"
+  [resizable]="false"
+>
+  <form [formGroup]="expenseForm" class="flex flex-col gap-5 pt-2">
+    <div class="flex flex-col gap-2">
+      <label for="desc" class="font-semibold text-gray-700"
+        >O que foi comprado?</label
+      >
+      <input
+        pInputText
+        id="desc"
+        formControlName="description"
+        placeholder="Ex: Pizza, Uber..."
+        class="w-full"
+        autofocus
+      />
+    </div>
+    <div class="flex flex-col gap-2">
+      <label for="amount" class="font-semibold text-gray-700"
+        >Valor Total</label
+      >
+      <p-inputNumber
+        id="amount"
+        formControlName="totalAmount"
+        mode="currency"
+        currency="BRL"
+        locale="pt-BR"
+        placeholder="R$ 0,00"
+        class="w-full"
+      ></p-inputNumber>
+    </div>
+    <div class="flex flex-col gap-2">
+      <label class="font-semibold text-gray-700">Quem vai dividir?</label>
+      <p-multiSelect
+        [options]="hangout?.members || []"
+        formControlName="participantsIds"
+        defaultLabel="Selecione os amigos"
+        optionLabel="name"
+        optionValue="id"
+        display="chip"
+        [style]="{ width: '100%' }"
+        appendTo="body"
+      >
+      </p-multiSelect>
+      <small class="text-gray-500">Selecione apenas quem consumiu.</small>
+    </div>
+  </form>
+  <ng-template pTemplate="footer">
+    <button
+      pButton
+      label="Cancelar"
+      icon="pi pi-times"
+      (click)="showExpenseDialog = false"
+      class="p-button-text text-gray-600"
+    ></button>
+    <button
+      pButton
+      label="Salvar"
+      icon="pi pi-check"
+      (click)="saveExpense()"
+      [disabled]="expenseForm.invalid || loadingExpense"
+      class="!bg-green-600 !border-green-600"
+    ></button>
+  </ng-template>
 </p-dialog>
-}
+
+<p-dialog
+  [(visible)]="showPaymentDialog"
+  [modal]="true"
+  [style]="{ width: '90vw', maxWidth: '400px' }"
+  [draggable]="false"
+  [resizable]="false"
+  header="Realizar Pagamento"
+>
+  <div class="flex flex-col gap-4 pt-2" *ngIf="selectedExpense">
+    <div class="bg-green-50 p-4 rounded-lg border border-green-100 text-center">
+      <p class="text-sm text-green-700 mb-1">Você está pagando para</p>
+      <p class="font-bold text-green-900 text-lg">
+        {{ selectedExpense.creator.name }}
+      </p>
+      <p class="text-xs text-green-600 mt-2">
+        Referente a: {{ selectedExpense.description }}
+      </p>
+    </div>
+
+    <div class="flex flex-col gap-2">
+      <label class="font-semibold text-gray-700">Quanto você vai pagar?</label>
+      <p-inputNumber
+        [(ngModel)]="paymentAmount"
+        mode="currency"
+        currency="BRL"
+        locale="pt-BR"
+        placeholder="R$ 0,00"
+        class="w-full"
+        [style]="{ width: '100%' }"
+        [inputStyle]="{ width: '100%' }"
+        [autofocus]="true"
+      >
+      </p-inputNumber>
+      <small class="text-gray-500">
+        Valor total da despesa:
+        {{ selectedExpense.totalAmount | currency : "BRL" }}
+      </small>
+    </div>
+  </div>
+
+  <ng-template pTemplate="footer">
+    <button
+      pButton
+      label="Cancelar"
+      class="p-button-text p-button-secondary"
+      (click)="showPaymentDialog = false"
+    ></button>
+    <button
+      pButton
+      label="Confirmar Pagamento"
+      icon="pi pi-check"
+      class="!bg-green-600 !border-green-600"
+      [disabled]="!paymentAmount || loadingPayment"
+      (click)="confirmPayment()"
+    ></button>
+  </ng-template>
+</p-dialog>
 
 <p-toast></p-toast>
 <p-confirmDialog></p-confirmDialog>

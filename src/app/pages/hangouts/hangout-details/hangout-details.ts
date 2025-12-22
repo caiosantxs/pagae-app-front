@@ -1,7 +1,7 @@
 import { Component, inject } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { RouterLink, ActivatedRoute, Router } from '@angular/router';
-import { FormBuilder, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
+import { FormBuilder, FormGroup, FormsModule, ReactiveFormsModule, Validators } from '@angular/forms';
 import { Observable } from 'rxjs';
 
 // PrimeNG Imports
@@ -10,13 +10,14 @@ import { AvatarModule } from 'primeng/avatar';
 import { MenuModule } from 'primeng/menu';
 import { DialogModule } from 'primeng/dialog';
 import { InputNumberModule } from 'primeng/inputnumber';
+import { TooltipModule } from 'primeng/tooltip';
 import { MultiSelectModule } from 'primeng/multiselect';
 import { InputTextModule } from 'primeng/inputtext';
 import { ConfirmDialogModule } from 'primeng/confirmdialog';
 import { ToastModule } from 'primeng/toast'
 
 import { HangoutsService } from '../hangouts-service';
-import { ExpenseRequestDTO, ExpenseShare, HangOutResponseDTO, PaymentResponseDTO } from '../hangout-models';
+import { ExpenseRequestDTO, ExpenseShare, HangOutResponseDTO, PaymentResponseDTO, UserResponseDTO } from '../hangout-models';
 import { ConfirmationService, MenuItem, MessageService } from 'primeng/api';
 
 @Component({
@@ -34,7 +35,8 @@ import { ConfirmationService, MenuItem, MessageService } from 'primeng/api';
     InputTextModule,
     MenuModule,
     ConfirmDialogModule,
-    ToastModule
+    ToastModule,
+    FormsModule
   ],
   providers:[ConfirmationService, MessageService],
   templateUrl: './hangout-details.html',
@@ -69,6 +71,11 @@ export class HangoutDetails {
   showExpenseDialog = false;
   expenseForm: FormGroup;
   loadingExpense = false;
+
+  showPaymentDialog = false;
+  selectedExpense: any = null; // Guarda a despesa clicada
+  paymentAmount: number | null = null;
+  loadingPayment = false;
 
   memberOptions: any[] = [];
 
@@ -117,10 +124,20 @@ export class HangoutDetails {
     return totalPaid;
   }
 
-  getPayerName(payments: PaymentResponseDTO[]): string {
-    if (!payments || payments.length === 0) return 'Ninguém';
-    if (payments[0].user.id === this.currentUserId) return 'Você';
-    return payments[0].user.name;
+  getMyDebt(expense: any): number {
+  // Proteção contra nulos
+  if (!this.currentUserId || !expense.shares) return 0;
+
+  // AJUSTE AQUI: s.user.id em vez de s.userId
+  const myShare = expense.shares.find((s: any) => s.user.id === this.currentUserId);
+
+  return myShare ? myShare.amountOwed : 0;
+}
+
+  getPayerName(payer: UserResponseDTO): string {
+    if (!payer) return 'Ninguém';
+    if (payer.id === this.currentUserId) return 'Você';
+    return payer.name;
   }
 
   getIcon(title: string): string {
@@ -256,4 +273,58 @@ updateMenuOptions() {
       }
     });
   }
+
+
+  formatDateFriendly(dateString: string): string {
+    const date = new Date(dateString);
+    const today = new Date();
+    const yesterday = new Date();
+    yesterday.setDate(today.getDate() - 1);
+
+    const isToday = date.toDateString() === today.toDateString();
+    const isYesterday = date.toDateString() === yesterday.toDateString();
+
+    if (isToday) return 'Hoje';
+    if (isYesterday) return 'Ontem';
+
+    // Se for mais antigo, retorna dia/mês (ex: 15/12)
+    return date.toLocaleDateString('pt-BR', { day: '2-digit', month: '2-digit' });
+  }
+
+  // Helper para mostrar "Você" se for o usuário logado
+  getDisplayName(payerId: number, payerName: string): string {
+    return payerId === this.currentUserId ? 'Você' : payerName;
+  }
+
+  openPaymentModal(expense: any) {
+    this.selectedExpense = expense;
+    this.paymentAmount = null; // Reseta o valor
+    this.showPaymentDialog = true;
+  }
+
+  confirmPayment() {
+  if (!this.selectedExpense || !this.paymentAmount) return;
+
+  this.loadingPayment = true;
+
+  // Chama o service passando apenas o ID da despesa e o Valor digitado
+  this.hangoutService.settleExpense(this.selectedExpense.id, this.paymentAmount)
+    .subscribe({
+      next: () => {
+        this.loadingPayment = false;
+        this.showPaymentDialog = false;
+        this.messageService.add({severity:'success', summary:'Pago!', detail:'Pagamento registrado.'});
+
+        // Atualiza a tela para mostrar o novo saldo
+        if (this.hangoutId) {
+           this.loadHangout(this.hangoutId);
+        }
+      },
+      error: (err) => {
+        console.error('Erro no pagamento', err);
+        this.loadingPayment = false;
+        // Dica: Trate o erro 400 ou 403 aqui para mostrar mensagem amigável
+      }
+    });
+}
 }
