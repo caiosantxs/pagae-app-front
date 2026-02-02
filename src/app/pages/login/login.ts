@@ -27,6 +27,8 @@ export class Login {
   loginForm!: FormGroup;
   password?: string;
 
+  currentUserId: number | null = null;
+
   constructor(
     private loginService: LoginService,
     private toastService: ToastrService,
@@ -45,6 +47,7 @@ export class Login {
   submit() {
     this.loginService.login(this.loginForm.value.username, this.loginForm.value.password).subscribe({
       next: () => {
+        this.currentUserId = this.loginService.getUserId();
         this.toastService.success('Login successful!');
         this.router.navigate(['/app/dashboard']);
         this.loginForm.reset();

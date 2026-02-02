@@ -19,6 +19,7 @@ import { ToastModule } from 'primeng/toast'
 import { HangoutsService } from '../hangouts-service';
 import { ExpenseRequestDTO, ExpenseShare, HangOutResponseDTO, PaymentResponseDTO, UserResponseDTO } from '../hangout-models';
 import { ConfirmationService, MenuItem, MessageService } from 'primeng/api';
+import { LoginService } from '../../login/login-service';
 
 @Component({
   selector: 'app-hangout-details',
@@ -36,7 +37,8 @@ import { ConfirmationService, MenuItem, MessageService } from 'primeng/api';
     MenuModule,
     ConfirmDialogModule,
     ToastModule,
-    FormsModule
+    FormsModule,
+    TooltipModule
   ],
   providers:[ConfirmationService, MessageService],
   templateUrl: './hangout-details.html',
@@ -49,8 +51,12 @@ export class HangoutDetails {
     private fb: FormBuilder,
     private confirmationService: ConfirmationService,
     private messageService: MessageService,
-    private router: Router
+    private router: Router,
+    private loginService: LoginService
   ) {
+
+    this.currentUserId = this.loginService.getUserId();
+
     this.expenseForm = this.fb.group({
       description: ['', Validators.required],
       totalAmount: [null, [Validators.required, Validators.min(0.01)]],
@@ -64,7 +70,7 @@ export class HangoutDetails {
   isLoading = true;
   myShareTotal: number = 0;
 
-  currentUserId = 1;
+  currentUserId: number | null = null;
 
   menuItems: MenuItem[] = [];
 
@@ -327,4 +333,54 @@ updateMenuOptions() {
       }
     });
 }
+
+// Adicione dentro da classe HangoutDetails
+
+  isCreator(expense: any): boolean {
+    console.log('Comparando currentUserId:', this.currentUserId, 'com expense.creator.id:', expense.creator.id);
+    return this.currentUserId == expense.creator.id; // Use == (dois iguais)
+  }
+
+  // Retorna o valor exato da parte do usuário (consumo), independente se já pagou ou não
+  getMyShareAmount(expense: any): number {
+    if (!this.currentUserId || !expense.shares) return 0;
+    const myShare = expense.shares.find((s: any) => s.user.id === this.currentUserId);
+    return myShare ? myShare.amountOwed : 0;
+    // Nota: Assumindo que amountOwed aqui representa o valor original da divisão
+  }
+
+  // Calcula quanto o criador tem a receber (Total - O consumo dele próprio)
+  getReceivableAmount(expense: any): number {
+    if (!this.isCreator(expense)) return 0;
+    const myConsumption = this.getMyShareAmount(expense);
+    return expense.totalAmount - myConsumption;
+  }
+
+getReceivables(): { debtorName: string, expenseName: string, amount: number }[] {
+    const receivables: any[] = [];
+    if (!this.hangout || !this.currentUserId) return receivables;
+
+    this.hangout.expenses.forEach(expense => {
+      // Verifica se EU sou o dono (agora com a correção do isCreator)
+      if (this.isCreator(expense)) {
+
+        // Verifica se a lista de shares existe antes de rodar
+        if (expense.shares) {
+            expense.shares.forEach((share: any) => {
+              // Se não sou eu E o valor é maior que zero (usando '==' também por segurança)
+              if (share.user.id != this.currentUserId && share.amountOwed > 0) {
+                receivables.push({
+                  debtorName: share.user.name,
+                  expenseName: expense.description,
+                  amount: share.amountOwed
+                });
+              }
+            });
+        }
+      }
+    });
+
+    return receivables;
+  }
+
 }

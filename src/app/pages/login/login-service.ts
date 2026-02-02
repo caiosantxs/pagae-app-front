@@ -20,10 +20,10 @@ export class LoginService {
       tap((value) => {
         sessionStorage.setItem('authToken', value.token);
         sessionStorage.setItem('authUsername', value.name);
+        sessionStorage.setItem('authUserId', String(value.id));
       })
     );
   }
-
 
   register(name: string, login: string, email: string, password: string) {
     return this.httpClient.post<LoginResponse>(this.apiUrl + "/register", { name, email, login, password }).pipe(
@@ -45,9 +45,15 @@ export class LoginService {
     return !!this.getToken(); // Retorna true se o token existir
   }
 
+  getUserId(): number | null {
+    const id = sessionStorage.getItem('authUserId');
+    return id ? Number(id) : null;
+  }
+
   logout(): void {
     sessionStorage.removeItem('authToken');
     sessionStorage.removeItem('authUsername');
+    sessionStorage.removeItem('authUserId');
     this.router.navigate(['/login']);
   }
 
