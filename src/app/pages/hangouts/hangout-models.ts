@@ -23,6 +23,7 @@ export interface ExpenseResponseDTO{
   hangout: HangOutResponseDTO,
   payments: PaymentResponseDTO[]
   creator: UserResponseDTO,
+  payer: UserResponseDTO,
   date: string
 
   shares: ExpenseShare[];
@@ -74,6 +75,7 @@ export interface ExpenseRequestDTO {
   description: string;
   totalAmount: number;
   participantsIds: number[];
+  payerId: number;
 }
 
 export interface MemberDTO {

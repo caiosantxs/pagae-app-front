@@ -186,7 +186,7 @@
                   </h4>
 
                   <div class="text-xs mt-1">
-                    @if (isCreator(expense)) {
+                    @if (isPayer(expense)) {
                       <span
                         class="text-green-700 font-semibold bg-green-50 px-2 py-0.5 rounded"
                       >
@@ -197,25 +197,31 @@
                       <span class="text-gray-500">
                         Pagar para
                         <span class="font-bold text-gray-800">{{
-                          expense.creator.name
+                          expense.payer.name
                         }}</span>
                       </span>
                     }
                   </div>
 
                   <div class="mt-1">
-                    @if (isCreator(expense)) {
-                      <span
-                        class="text-[10px] font-bold text-blue-600 bg-blue-50 px-2 py-0.5 rounded"
-                        pTooltip="Total ({{
-                          expense.totalAmount | currency: 'BRL'
-                        }}) - Seu consumo ({{
-                          getMyShareAmount(expense) | currency: 'BRL'
-                        }})"
-                      >
-                        A receber:
-                        {{ getReceivableAmount(expense) | currency: "BRL" }}
-                      </span>
+                    @if (isPayer(expense)) {
+                      @if (getReceivableAmount(expense) > 0.01) {
+                        <span
+                          class="text-[10px] font-bold text-blue-600 bg-blue-50 px-2 py-0.5 rounded"
+                          pTooltip="Valor pendente de recebimento"
+                        >
+                          A receber:
+                          {{ getReceivableAmount(expense) | currency: "BRL" }}
+                        </span>
+
+                      } @else {
+                        <span
+                          class="text-[10px] font-bold text-green-600 bg-green-50 px-2 py-0.5 rounded"
+                        >
+                          <i class="pi pi-check-circle text-[9px] mr-1"></i>
+                          Recebido
+                        </span>
+                      }
                     } @else if (getMyDebt(expense) > 0) {
                       <span
                         class="text-[10px] font-bold text-orange-600 bg-orange-50 px-2 py-0.5 rounded"
@@ -241,7 +247,7 @@
                   <p class="text-[10px] text-gray-400">valor total</p>
                 </div>
 
-                @if (!isCreator(expense) && getMyDebt(expense) > 0) {
+                @if (!isPayer(expense) && getMyDebt(expense) > 0) {
                   <button
                     pButton
                     icon="pi pi-dollar"
@@ -361,6 +367,22 @@
         class="w-full"
       ></p-inputNumber>
     </div>
+    <div class="flex flex-col gap-2">
+    <label class="font-semibold text-gray-700">Quem pagou?</label>
+
+    <p-select
+        [options]="hangout?.members || []"
+        formControlName="payerId"
+        optionLabel="name"
+        optionValue="id"
+        placeholder="Selecione quem pagou"
+        [style]="{'width':'100%'}"
+        appendTo="body"
+        [filter]="true"
+        filterBy="name">
+    </p-select>
+
+</div>
     <div class="flex flex-col gap-2">
       <label class="font-semibold text-gray-700">Quem vai dividir?</label>
       <p-multiSelect

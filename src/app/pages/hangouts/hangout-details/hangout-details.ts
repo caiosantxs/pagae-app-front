@@ -1,7 +1,13 @@
 import { Component, inject } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { RouterLink, ActivatedRoute, Router } from '@angular/router';
-import { FormBuilder, FormGroup, FormsModule, ReactiveFormsModule, Validators } from '@angular/forms';
+import {
+  FormBuilder,
+  FormGroup,
+  FormsModule,
+  ReactiveFormsModule,
+  Validators,
+} from '@angular/forms';
 import { Observable } from 'rxjs';
 
 // PrimeNG Imports
@@ -14,10 +20,17 @@ import { TooltipModule } from 'primeng/tooltip';
 import { MultiSelectModule } from 'primeng/multiselect';
 import { InputTextModule } from 'primeng/inputtext';
 import { ConfirmDialogModule } from 'primeng/confirmdialog';
-import { ToastModule } from 'primeng/toast'
+import { ToastModule } from 'primeng/toast';
+import { SelectModule } from 'primeng/select';
 
 import { HangoutsService } from '../hangouts-service';
-import { ExpenseRequestDTO, ExpenseShare, HangOutResponseDTO, PaymentResponseDTO, UserResponseDTO } from '../hangout-models';
+import {
+  ExpenseRequestDTO,
+  ExpenseShare,
+  HangOutResponseDTO,
+  PaymentResponseDTO,
+  UserResponseDTO,
+} from '../hangout-models';
 import { ConfirmationService, MenuItem, MessageService } from 'primeng/api';
 import { LoginService } from '../../login/login-service';
 
@@ -38,9 +51,10 @@ import { LoginService } from '../../login/login-service';
     ConfirmDialogModule,
     ToastModule,
     FormsModule,
-    TooltipModule
+    TooltipModule,
+    SelectModule,
   ],
-  providers:[ConfirmationService, MessageService],
+  providers: [ConfirmationService, MessageService],
   templateUrl: './hangout-details.html',
   styleUrl: './hangout-details.scss',
 })
@@ -52,15 +66,15 @@ export class HangoutDetails {
     private confirmationService: ConfirmationService,
     private messageService: MessageService,
     private router: Router,
-    private loginService: LoginService
+    private loginService: LoginService,
   ) {
-
     this.currentUserId = this.loginService.getUserId();
 
     this.expenseForm = this.fb.group({
       description: ['', Validators.required],
       totalAmount: [null, [Validators.required, Validators.min(0.01)]],
-      participantsIds: [[], Validators.required]
+      participantsIds: [[], Validators.required],
+      payerId: [this.currentUserId, Validators.required], // Padrão: Eu paguei
     });
   }
 
@@ -108,21 +122,26 @@ export class HangoutDetails {
       error: (err) => {
         console.error('Erro ao carregar hangout', err);
         this.isLoading = false;
-      }
+      },
     });
   }
 
   getTotalCost(): number {
     if (!this.hangout?.expenses) return 0;
-    return this.hangout.expenses.reduce((acc, curr) => acc + curr.totalAmount, 0);
+    return this.hangout.expenses.reduce(
+      (acc, curr) => acc + curr.totalAmount,
+      0,
+    );
   }
 
   getMyTotalPaid(): number {
     if (!this.hangout?.expenses) return 0;
 
     let totalPaid = 0;
-    this.hangout.expenses.forEach(expense => {
-      const myPayment = expense.payments.find(p => p.user.id === this.currentUserId);
+    this.hangout.expenses.forEach((expense) => {
+      const myPayment = expense.payments.find(
+        (p) => p.user.id === this.currentUserId,
+      );
       if (myPayment) {
         totalPaid += myPayment.amount;
       }
@@ -131,14 +150,16 @@ export class HangoutDetails {
   }
 
   getMyDebt(expense: any): number {
-  // Proteção contra nulos
-  if (!this.currentUserId || !expense.shares) return 0;
+    // Proteção contra nulos
+    if (!this.currentUserId || !expense.shares) return 0;
 
-  // AJUSTE AQUI: s.user.id em vez de s.userId
-  const myShare = expense.shares.find((s: any) => s.user.id === this.currentUserId);
+    // AJUSTE AQUI: s.user.id em vez de s.userId
+    const myShare = expense.shares.find(
+      (s: any) => s.user.id === this.currentUserId,
+    );
 
-  return myShare ? myShare.amountOwed : 0;
-}
+    return myShare ? myShare.amountOwed : 0;
+  }
 
   getPayerName(payer: UserResponseDTO): string {
     if (!payer) return 'Ninguém';
@@ -148,25 +169,30 @@ export class HangoutDetails {
 
   getIcon(title: string): string {
     const t = title.toLowerCase();
-    if (t.includes('mercado') || t.includes('carne')) return 'pi pi-shopping-cart';
+    if (t.includes('mercado') || t.includes('carne'))
+      return 'pi pi-shopping-cart';
     if (t.includes('bebida') || t.includes('cerveja')) return 'pi pi-ticket';
     if (t.includes('uber') || t.includes('gasolina')) return 'pi pi-car';
     return 'pi pi-dollar';
   }
 
   calculateMyShare(hangOutId: number) {
-    this.hangoutService.getExpenseSharesByUserIdAndHangOutId(hangOutId)
+    this.hangoutService
+      .getExpenseSharesByUserIdAndHangOutId(hangOutId)
       .subscribe({
         next: (shares: ExpenseShare[]) => {
-          this.myShareTotal = shares.reduce((acc, share) => acc + share.amountOwed, 0);
+          this.myShareTotal = shares.reduce(
+            (acc, share) => acc + share.amountOwed,
+            0,
+          );
         },
         error: (err) => {
           if (err.status === 404) {
-             this.myShareTotal = 0;
+            this.myShareTotal = 0;
           } else {
-             console.error('Erro ao buscar share', err);
+            console.error('Erro ao buscar share', err);
           }
-        }
+        },
       });
   }
 
@@ -188,7 +214,8 @@ export class HangoutDetails {
     const dto: ExpenseRequestDTO = {
       description: formValue.description,
       totalAmount: formValue.totalAmount,
-      participantsIds: formValue.participantsIds
+      participantsIds: formValue.participantsIds,
+      payerId: formValue.payerId,
     };
 
     this.hangoutService.createExpense(this.hangoutId, dto).subscribe({
@@ -201,11 +228,11 @@ export class HangoutDetails {
       error: (err) => {
         console.error('Erro ao salvar despesa', err);
         this.loadingExpense = false;
-      }
+      },
     });
   }
 
-updateMenuOptions() {
+  updateMenuOptions() {
     this.menuItems = [
       {
         label: 'Ações do Rolê',
@@ -216,7 +243,7 @@ updateMenuOptions() {
             visible: this.hangout?.statusHangOut === 'ATIVO', // Só mostra se estiver ativo
             command: () => {
               this.confirmFinalize();
-            }
+            },
           },
           {
             label: 'Reabrir Rolê', // Opcional: caso queira desfazer
@@ -224,10 +251,10 @@ updateMenuOptions() {
             visible: this.hangout?.statusHangOut === 'FINALIZADO',
             command: () => {
               // Lógica similar ao finalizar, se quiser implementar
-            }
+            },
           },
           {
-            separator: true
+            separator: true,
           },
           {
             label: 'Excluir',
@@ -235,16 +262,17 @@ updateMenuOptions() {
             styleClass: 'text-red-500', // Deixa o texto vermelho (opcional)
             command: () => {
               this.confirmDelete();
-            }
-          }
-        ]
-      }
+            },
+          },
+        ],
+      },
     ];
   }
 
   confirmFinalize() {
     this.confirmationService.confirm({
-      message: 'Tem certeza que deseja finalizar este rolê? Ninguém poderá adicionar novas despesas.',
+      message:
+        'Tem certeza que deseja finalizar este rolê? Ninguém poderá adicionar novas despesas.',
       header: 'Finalizar Rolê',
       icon: 'pi pi-exclamation-triangle',
       acceptLabel: 'Sim, finalizar',
@@ -253,17 +281,22 @@ updateMenuOptions() {
       accept: () => {
         if (this.hangoutId) {
           this.hangoutService.finalize(this.hangoutId).subscribe(() => {
-             this.messageService.add({severity:'success', summary:'Sucesso', detail:'Rolê finalizado!'});
-             this.loadHangout(this.hangoutId); // Recarrega para atualizar a tela
+            this.messageService.add({
+              severity: 'success',
+              summary: 'Sucesso',
+              detail: 'Rolê finalizado!',
+            });
+            this.loadHangout(this.hangoutId); // Recarrega para atualizar a tela
           });
         }
-      }
+      },
     });
   }
 
   confirmDelete() {
     this.confirmationService.confirm({
-      message: 'Tem certeza que deseja apagar este rolê e todas as despesas? Essa ação não pode ser desfeita.',
+      message:
+        'Tem certeza que deseja apagar este rolê e todas as despesas? Essa ação não pode ser desfeita.',
       header: 'Excluir Rolê',
       icon: 'pi pi-info-circle',
       acceptLabel: 'Sim, excluir',
@@ -272,14 +305,13 @@ updateMenuOptions() {
       accept: () => {
         if (this.hangoutId) {
           this.hangoutService.delete(this.hangoutId).subscribe(() => {
-             // Redireciona para a lista de rolês
-             this.router.navigate(['/app/hangouts']);
+            // Redireciona para a lista de rolês
+            this.router.navigate(['/app/hangouts']);
           });
         }
-      }
+      },
     });
   }
-
 
   formatDateFriendly(dateString: string): string {
     const date = new Date(dateString);
@@ -293,8 +325,10 @@ updateMenuOptions() {
     if (isToday) return 'Hoje';
     if (isYesterday) return 'Ontem';
 
-    // Se for mais antigo, retorna dia/mês (ex: 15/12)
-    return date.toLocaleDateString('pt-BR', { day: '2-digit', month: '2-digit' });
+    return date.toLocaleDateString('pt-BR', {
+      day: '2-digit',
+      month: '2-digit',
+    });
   }
 
   // Helper para mostrar "Você" se for o usuário logado
@@ -309,73 +343,79 @@ updateMenuOptions() {
   }
 
   confirmPayment() {
-  if (!this.selectedExpense || !this.paymentAmount) return;
+    if (!this.selectedExpense || !this.paymentAmount) return;
 
-  this.loadingPayment = true;
+    this.loadingPayment = true;
 
-  // Chama o service passando apenas o ID da despesa e o Valor digitado
-  this.hangoutService.settleExpense(this.selectedExpense.id, this.paymentAmount)
-    .subscribe({
-      next: () => {
-        this.loadingPayment = false;
-        this.showPaymentDialog = false;
-        this.messageService.add({severity:'success', summary:'Pago!', detail:'Pagamento registrado.'});
+    // Chama o service passando apenas o ID da despesa e o Valor digitado
+    this.hangoutService
+      .settleExpense(this.selectedExpense.id, this.paymentAmount)
+      .subscribe({
+        next: () => {
+          this.loadingPayment = false;
+          this.showPaymentDialog = false;
+          this.messageService.add({
+            severity: 'success',
+            summary: 'Pago!',
+            detail: 'Pagamento registrado.',
+          });
 
-        // Atualiza a tela para mostrar o novo saldo
-        if (this.hangoutId) {
-           this.loadHangout(this.hangoutId);
-        }
-      },
-      error: (err) => {
-        console.error('Erro no pagamento', err);
-        this.loadingPayment = false;
-        // Dica: Trate o erro 400 ou 403 aqui para mostrar mensagem amigável
-      }
-    });
-}
+          if (this.hangoutId) {
+            this.loadHangout(this.hangoutId);
+          }
+        },
+        error: (err) => {
+          console.error('Erro no pagamento', err);
+          this.loadingPayment = false;
+        },
+      });
+  }
 
-// Adicione dentro da classe HangoutDetails
+  // Adicione dentro da classe HangoutDetails
 
-  isCreator(expense: any): boolean {
-    console.log('Comparando currentUserId:', this.currentUserId, 'com expense.creator.id:', expense.creator.id);
-    return this.currentUserId == expense.creator.id; // Use == (dois iguais)
+  isPayer(expense: any): boolean {
+    console.log(
+      'Comparando currentUserId:',
+      this.currentUserId,
+      'com expense.creator.id:',
+      expense.creator.id,
+    );
+    return this.currentUserId == expense.payer.id; // Use == (dois iguais)
   }
 
   // Retorna o valor exato da parte do usuário (consumo), independente se já pagou ou não
   getMyShareAmount(expense: any): number {
     if (!this.currentUserId || !expense.shares) return 0;
-    const myShare = expense.shares.find((s: any) => s.user.id === this.currentUserId);
+    const myShare = expense.shares.find(
+      (s: any) => s.user.id === this.currentUserId,
+    );
     return myShare ? myShare.amountOwed : 0;
     // Nota: Assumindo que amountOwed aqui representa o valor original da divisão
   }
 
-  // Calcula quanto o criador tem a receber (Total - O consumo dele próprio)
-  getReceivableAmount(expense: any): number {
-    if (!this.isCreator(expense)) return 0;
-    const myConsumption = this.getMyShareAmount(expense);
-    return expense.totalAmount - myConsumption;
-  }
-
-getReceivables(): { debtorName: string, expenseName: string, amount: number }[] {
+  getReceivables(): {
+    debtorName: string;
+    expenseName: string;
+    amount: number;
+  }[] {
     const receivables: any[] = [];
     if (!this.hangout || !this.currentUserId) return receivables;
 
-    this.hangout.expenses.forEach(expense => {
+    this.hangout.expenses.forEach((expense) => {
       // Verifica se EU sou o dono (agora com a correção do isCreator)
-      if (this.isCreator(expense)) {
-
+      if (this.isPayer(expense)) {
         // Verifica se a lista de shares existe antes de rodar
         if (expense.shares) {
-            expense.shares.forEach((share: any) => {
-              // Se não sou eu E o valor é maior que zero (usando '==' também por segurança)
-              if (share.user.id != this.currentUserId && share.amountOwed > 0) {
-                receivables.push({
-                  debtorName: share.user.name,
-                  expenseName: expense.description,
-                  amount: share.amountOwed
-                });
-              }
-            });
+          expense.shares.forEach((share: any) => {
+            // Se não sou eu E o valor é maior que zero (usando '==' também por segurança)
+            if (share.user.id != this.currentUserId && share.amountOwed > 0) {
+              receivables.push({
+                debtorName: share.user.name,
+                expenseName: expense.description,
+                amount: share.amountOwed,
+              });
+            }
+          });
         }
       }
     });
@@ -383,4 +423,18 @@ getReceivables(): { debtorName: string, expenseName: string, amount: number }[] 
     return receivables;
   }
 
+  getReceivableAmount(expense: any): number {
+    // Se não sou o dono ou não tem shares, não recebo nada
+    if (!this.isPayer(expense) || !expense.shares) return 0;
+
+    // Soma o 'amountOwed' de todos os participantes, exceto eu mesmo
+    const totalPending = expense.shares.reduce((acc: number, share: any) => {
+      if (share.user.id != this.currentUserId) {
+        return acc + share.amountOwed;
+      }
+      return acc;
+    }, 0);
+
+    return totalPending;
+  }
 }
