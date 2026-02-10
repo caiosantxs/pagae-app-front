@@ -51,7 +51,12 @@ export class Register {
   }
 
   submit(){
-    this.loginService.register(this.registerForm.value.name ,this.registerForm.value.username, this.registerForm.value.email , this.registerForm.value.password).subscribe({
+    this.loginService.register(
+      this.registerForm.value.name ,
+      this.registerForm.value.username,
+      this.registerForm.value.email ,
+      this.registerForm.value.password
+    ).subscribe({
       next: () => {
         this.toastService.success('Sign up successful!');
       },

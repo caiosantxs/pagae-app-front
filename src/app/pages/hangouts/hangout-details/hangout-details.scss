@@ -1,0 +1,29 @@
+// hangout-details.scss
+
+.hangout-wrapper {
+  // --- Configuração da Imagem de Fundo ---
+
+  min-height: 100vh;
+  width: 100%;
+  position: relative;
+
+  // 1. Caminho da imagem (a barra '/' no início indica a raiz do projeto, ou seja, src/)
+  background-image: url('../../../../assets/images/conceito-de-amizade-feliz-de-vetor-de-doodle-de-saude.png');
+
+  /// 3. Impede que a imagem se repita
+  background-repeat: no-repeat;
+
+  // --- O PULO DO GATO ---
+
+  // 4. Faz a imagem cobrir toda a área disponível, sem distorcer (corta excessos)
+  background-size: cover;
+
+  // 5. Centraliza a imagem tanto horizontal quanto verticalmente
+  background-position: center center;
+
+  // --- OPCIONAL: Efeito Parallax ---
+  // Se você quiser que a imagem fique fixa no fundo enquanto o conteúdo rola por cima,
+  // descomente a linha abaixo:
+  // background-attachment: fixed;
+}
+

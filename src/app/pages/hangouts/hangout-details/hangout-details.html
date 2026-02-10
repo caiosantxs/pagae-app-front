@@ -39,16 +39,19 @@
             label="Convidar"
             icon="pi pi-user-plus"
             class="p-button-outlined p-button-secondary !text-gray-700 !border-gray-300"
+            (click)="openInviteModal()"
           ></button>
 
-          <button
-            pButton
-            type="button"
-            label="Opções"
-            icon="pi pi-ellipsis-v"
-            class="!bg-slate-800 !border-slate-800 hover:!bg-slate-700"
-            (click)="menu.toggle($event)"
-          ></button>
+          @if (isCreator()) {
+            <button
+              pButton
+              type="button"
+              label="Opções"
+              icon="pi pi-ellipsis-v"
+              class="!bg-slate-800 !border-slate-800 hover:!bg-slate-700"
+              (click)="menu.toggle($event)"
+            ></button>
+          }
           <p-menu #menu [model]="menuItems" [popup]="true"></p-menu>
         </div>
       </div>
@@ -213,7 +216,6 @@
                           A receber:
                           {{ getReceivableAmount(expense) | currency: "BRL" }}
                         </span>
-
                       } @else {
                         <span
                           class="text-[10px] font-bold text-green-600 bg-green-50 px-2 py-0.5 rounded"
@@ -368,21 +370,21 @@
       ></p-inputNumber>
     </div>
     <div class="flex flex-col gap-2">
-    <label class="font-semibold text-gray-700">Quem pagou?</label>
+      <label class="font-semibold text-gray-700">Quem pagou?</label>
 
-    <p-select
+      <p-select
         [options]="hangout?.members || []"
         formControlName="payerId"
         optionLabel="name"
         optionValue="id"
         placeholder="Selecione quem pagou"
-        [style]="{'width':'100%'}"
+        [style]="{ width: '100%' }"
         appendTo="body"
         [filter]="true"
-        filterBy="name">
-    </p-select>
-
-</div>
+        filterBy="name"
+      >
+      </p-select>
+    </div>
     <div class="flex flex-col gap-2">
       <label class="font-semibold text-gray-700">Quem vai dividir?</label>
       <p-multiSelect
@@ -474,6 +476,45 @@
       (click)="confirmPayment()"
     ></button>
   </ng-template>
+</p-dialog>
+
+<p-dialog
+    header="Convidar amigos"
+    [(visible)]="showInviteDialog"
+    [modal]="true"
+    [style]="{ width: '90%', maxWidth: '400px' }"
+    [draggable]="false"
+    [resizable]="false"
+    [dismissableMask]="true">
+
+    <div class="flex flex-col gap-4 pt-2">
+        <p class="text-gray-600 text-sm">
+            Envie este link para seus amigos entrarem no rolê
+            <span class="font-bold text-gray-800">{{ hangout?.title }}</span>.
+        </p>
+
+        <div class="flex shadow-sm rounded-md">
+            <input
+                pInputText
+                type="text"
+                [value]="inviteLink"
+                readonly
+                class="flex-1 !rounded-r-none bg-gray-50 text-gray-600 border-r-0 focus:ring-0 focus:border-gray-300"
+            />
+            <button
+                pButton
+                icon="pi pi-copy"
+                label="Copiar"
+                class="p-button-primary !rounded-l-none"
+                (click)="copyInviteLink()">
+            </button>
+        </div>
+
+        <div class="text-xs text-center text-gray-400 mt-2">
+            <i class="pi pi-lock text-[10px] mr-1"></i>
+            Apenas pessoas com este link poderão entrar.
+        </div>
+    </div>
 </p-dialog>
 
 <p-toast></p-toast>

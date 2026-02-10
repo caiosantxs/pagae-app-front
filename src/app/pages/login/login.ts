@@ -1,6 +1,12 @@
 import { Component } from '@angular/core';
 import { Router, RouterLink } from '@angular/router';
-import { FormControl, FormGroup, FormsModule, ReactiveFormsModule, Validators } from '@angular/forms';
+import {
+  FormControl,
+  FormGroup,
+  FormsModule,
+  ReactiveFormsModule,
+  Validators,
+} from '@angular/forms';
 import { ButtonModule } from 'primeng/button';
 import { InputTextModule } from 'primeng/inputtext';
 import { PasswordModule } from 'primeng/password';
@@ -17,13 +23,12 @@ import { ToastrService } from 'ngx-toastr';
     InputTextModule,
     PasswordModule,
     DividerModule,
-    ReactiveFormsModule
+    ReactiveFormsModule,
   ],
   templateUrl: './login.html',
   styleUrl: './login.scss',
 })
 export class Login {
-
   loginForm!: FormGroup;
   password?: string;
 
@@ -32,11 +37,14 @@ export class Login {
   constructor(
     private loginService: LoginService,
     private toastService: ToastrService,
-    private router: Router
+    private router: Router,
   ) {
     this.loginForm = new FormGroup({
-      password: new FormControl('', [Validators.required, Validators.minLength(6)]),
-      username: new FormControl('', [Validators.required])
+      password: new FormControl('', [
+        Validators.required,
+        Validators.minLength(6),
+      ]),
+      username: new FormControl('', [Validators.required]),
     });
   }
 
@@ -45,17 +53,29 @@ export class Login {
   }
 
   submit() {
-    this.loginService.login(this.loginForm.value.username, this.loginForm.value.password).subscribe({
-      next: () => {
-        this.currentUserId = this.loginService.getUserId();
-        this.toastService.success('Login successful!');
-        this.router.navigate(['/app/dashboard']);
-        this.loginForm.reset();
-      },
-      error: () => {
-        this.toastService.error('Login failed. Please check your credentials.');
-      }
-    });
-  }
+    this.loginService
+      .login(this.loginForm.value.username, this.loginForm.value.password)
+      .subscribe({
+        next: () => {
+          this.currentUserId = this.loginService.getUserId();
+          this.toastService.success('Login realizado com sucesso!');
 
+          const redirectUrl = sessionStorage.getItem('redirectUrl');
+
+          if (redirectUrl) {
+            sessionStorage.removeItem('redirectUrl');
+            // CORREÇÃO AQUI: Use navigateByUrl para strings completas
+            this.router.navigateByUrl(redirectUrl);
+          } else {
+            this.router.navigate(['/app/dashboard']);
+          }
+          this.loginForm.reset();
+        },
+        error: () => {
+          this.toastService.error(
+            'Login falhou. Verifique suas credenciais e tente novamente.',
+          );
+        },
+      });
+  }
 }

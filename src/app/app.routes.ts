@@ -5,6 +5,7 @@ import { Dashboard } from './pages/dashboard/dashboard';
 import { authGuard } from './core/guards/auth-guard';
 import { HangoutDetails } from './pages/hangouts/hangout-details/hangout-details';
 import { HangoutCreator } from './pages/hangouts/hangout-creator/hangout-creator';
+import { JoinHangout } from './pages/join-hangout/join-hangout';
 
 export const routes: Routes = [
   { path: '', component: LandingComponent },
@@ -19,6 +20,7 @@ export const routes: Routes = [
       { path: 'hangouts', loadComponent: () => import('./pages/hangouts/hangouts-list/hangouts').then(m => m.Hangouts) },
       { path: 'hangouts/new', component: HangoutCreator },
       { path: 'hangouts/:id', component: HangoutDetails},
+      { path: 'join/:id', component: JoinHangout },
       { path: '', redirectTo: 'dashboard', pathMatch: 'full' }
     ]
   },

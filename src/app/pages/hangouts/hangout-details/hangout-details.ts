@@ -1,4 +1,4 @@
-import { Component, inject } from '@angular/core';
+import { Component } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { RouterLink, ActivatedRoute, Router } from '@angular/router';
 import {
@@ -8,9 +8,7 @@ import {
   ReactiveFormsModule,
   Validators,
 } from '@angular/forms';
-import { Observable } from 'rxjs';
 
-// PrimeNG Imports
 import { ButtonModule } from 'primeng/button';
 import { AvatarModule } from 'primeng/avatar';
 import { MenuModule } from 'primeng/menu';
@@ -74,7 +72,7 @@ export class HangoutDetails {
       description: ['', Validators.required],
       totalAmount: [null, [Validators.required, Validators.min(0.01)]],
       participantsIds: [[], Validators.required],
-      payerId: [this.currentUserId, Validators.required], // Padrão: Eu paguei
+      payerId: [this.currentUserId, Validators.required],
     });
   }
 
@@ -93,11 +91,14 @@ export class HangoutDetails {
   loadingExpense = false;
 
   showPaymentDialog = false;
-  selectedExpense: any = null; // Guarda a despesa clicada
+  selectedExpense: any = null;
   paymentAmount: number | null = null;
   loadingPayment = false;
 
   memberOptions: any[] = [];
+
+  showInviteDialog: boolean = false;
+  inviteLink: string = '';
 
   ngOnInit() {
     const id = this.route.snapshot.paramMap.get('id');
@@ -150,10 +151,8 @@ export class HangoutDetails {
   }
 
   getMyDebt(expense: any): number {
-    // Proteção contra nulos
     if (!this.currentUserId || !expense.shares) return 0;
 
-    // AJUSTE AQUI: s.user.id em vez de s.userId
     const myShare = expense.shares.find(
       (s: any) => s.user.id === this.currentUserId,
     );
@@ -201,6 +200,14 @@ export class HangoutDetails {
   }
 
   openNewExpense() {
+    if(this.hangout?.statusHangOut === 'FINALIZADO') {
+      this.messageService.add({
+        severity: 'warn',
+        summary: 'Rolê Finalizado',
+        detail: 'Não é possível adicionar despesas a um rolê finalizado.',
+      });
+      return;
+    }
     this.expenseForm.reset();
     this.showExpenseDialog = true;
   }
@@ -240,17 +247,24 @@ export class HangoutDetails {
           {
             label: 'Finalizar Rolê',
             icon: 'pi pi-check-circle',
-            visible: this.hangout?.statusHangOut === 'ATIVO', // Só mostra se estiver ativo
+            visible: this.hangout?.statusHangOut === 'ATIVO',
             command: () => {
               this.confirmFinalize();
             },
           },
           {
-            label: 'Reabrir Rolê', // Opcional: caso queira desfazer
+            label: 'Reabrir Rolê',
             icon: 'pi pi-refresh',
             visible: this.hangout?.statusHangOut === 'FINALIZADO',
             command: () => {
-              // Lógica similar ao finalizar, se quiser implementar
+              this.hangoutService.open(this.hangoutId).subscribe(() => {
+                this.messageService.add({
+                  severity: 'success',
+                  summary: 'Sucesso',
+                  detail: 'Rolê reaberto!',
+                });
+                this.loadHangout(this.hangoutId);
+              });
             },
           },
           {
@@ -259,7 +273,7 @@ export class HangoutDetails {
           {
             label: 'Excluir',
             icon: 'pi pi-trash',
-            styleClass: 'text-red-500', // Deixa o texto vermelho (opcional)
+            styleClass: 'text-red-500',
             command: () => {
               this.confirmDelete();
             },
@@ -286,7 +300,7 @@ export class HangoutDetails {
               summary: 'Sucesso',
               detail: 'Rolê finalizado!',
             });
-            this.loadHangout(this.hangoutId); // Recarrega para atualizar a tela
+            this.loadHangout(this.hangoutId);
           });
         }
       },
@@ -305,7 +319,6 @@ export class HangoutDetails {
       accept: () => {
         if (this.hangoutId) {
           this.hangoutService.delete(this.hangoutId).subscribe(() => {
-            // Redireciona para a lista de rolês
             this.router.navigate(['/app/hangouts']);
           });
         }
@@ -331,14 +344,13 @@ export class HangoutDetails {
     });
   }
 
-  // Helper para mostrar "Você" se for o usuário logado
   getDisplayName(payerId: number, payerName: string): string {
     return payerId === this.currentUserId ? 'Você' : payerName;
   }
 
   openPaymentModal(expense: any) {
     this.selectedExpense = expense;
-    this.paymentAmount = null; // Reseta o valor
+    this.paymentAmount = null;
     this.showPaymentDialog = true;
   }
 
@@ -347,7 +359,6 @@ export class HangoutDetails {
 
     this.loadingPayment = true;
 
-    // Chama o service passando apenas o ID da despesa e o Valor digitado
     this.hangoutService
       .settleExpense(this.selectedExpense.id, this.paymentAmount)
       .subscribe({
@@ -371,8 +382,6 @@ export class HangoutDetails {
       });
   }
 
-  // Adicione dentro da classe HangoutDetails
-
   isPayer(expense: any): boolean {
     console.log(
       'Comparando currentUserId:',
@@ -380,17 +389,15 @@ export class HangoutDetails {
       'com expense.creator.id:',
       expense.creator.id,
     );
-    return this.currentUserId == expense.payer.id; // Use == (dois iguais)
+    return this.currentUserId == expense.payer.id;
   }
 
-  // Retorna o valor exato da parte do usuário (consumo), independente se já pagou ou não
   getMyShareAmount(expense: any): number {
     if (!this.currentUserId || !expense.shares) return 0;
     const myShare = expense.shares.find(
       (s: any) => s.user.id === this.currentUserId,
     );
     return myShare ? myShare.amountOwed : 0;
-    // Nota: Assumindo que amountOwed aqui representa o valor original da divisão
   }
 
   getReceivables(): {
@@ -402,12 +409,9 @@ export class HangoutDetails {
     if (!this.hangout || !this.currentUserId) return receivables;
 
     this.hangout.expenses.forEach((expense) => {
-      // Verifica se EU sou o dono (agora com a correção do isCreator)
       if (this.isPayer(expense)) {
-        // Verifica se a lista de shares existe antes de rodar
         if (expense.shares) {
           expense.shares.forEach((share: any) => {
-            // Se não sou eu E o valor é maior que zero (usando '==' também por segurança)
             if (share.user.id != this.currentUserId && share.amountOwed > 0) {
               receivables.push({
                 debtorName: share.user.name,
@@ -424,10 +428,8 @@ export class HangoutDetails {
   }
 
   getReceivableAmount(expense: any): number {
-    // Se não sou o dono ou não tem shares, não recebo nada
     if (!this.isPayer(expense) || !expense.shares) return 0;
 
-    // Soma o 'amountOwed' de todos os participantes, exceto eu mesmo
     const totalPending = expense.shares.reduce((acc: number, share: any) => {
       if (share.user.id != this.currentUserId) {
         return acc + share.amountOwed;
@@ -436,5 +438,37 @@ export class HangoutDetails {
     }, 0);
 
     return totalPending;
+  }
+
+  isCreator(): boolean {
+    return this.hangout?.creatorId === this.currentUserId;
+  }
+
+  openInviteModal() {
+    if (!this.hangout) return;
+
+    // Gera um link apontando para uma rota de "join" (que criaremos futuramente)
+    // ou para a própria página de detalhes
+    const baseUrl = window.location.origin; // Ex: http://localhost:4200
+    this.inviteLink = `${baseUrl}/app/join/${this.hangout.id}`;
+
+    this.showInviteDialog = true;
+  }
+
+  copyInviteLink() {
+    navigator.clipboard.writeText(this.inviteLink).then(() => {
+      this.messageService.add({
+        severity: 'success',
+        summary: 'Sucesso',
+        detail: 'Link copiado para a área de transferência!'
+      });
+      this.showInviteDialog = false; // Fecha opcionalmente
+    }).catch(err => {
+      this.messageService.add({
+        severity: 'error',
+        summary: 'Erro',
+        detail: 'Falha ao copiar link'
+      });
+    });
   }
 }

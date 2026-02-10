@@ -59,6 +59,10 @@ export class HangoutsService {
     return this.http.patch<void>(`${this.apiUrl}/${id}/finalize`, {});
   }
 
+  open(id: number): Observable<void> {
+    return this.http.patch<void>(`${this.apiUrl}/${id}/open`, {});
+  }
+
   delete(id: number): Observable<void> {
     return this.http.delete<void>(`${this.apiUrl}/${id}`);
   }
@@ -72,5 +76,9 @@ export class HangoutsService {
       `${this.apiUrl}/expenses/${expenseId}/payments`, // <--- Ajuste a URL aqui
       payload
     );
+  }
+
+  joinHangout(id: number): Observable<void> {
+  return this.http.post<void>(`${this.apiUrl}/${id}/join`, {});
   }
 }
