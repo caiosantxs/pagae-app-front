@@ -26,7 +26,6 @@ import {
   ExpenseRequestDTO,
   ExpenseShare,
   HangOutResponseDTO,
-  PaymentResponseDTO,
   UserResponseDTO,
 } from '../hangout-models';
 import { ConfirmationService, MenuItem, MessageService } from 'primeng/api';

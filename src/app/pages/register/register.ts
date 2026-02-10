@@ -1,7 +1,7 @@
 import { CommonModule } from '@angular/common';
 import { Component } from '@angular/core';
 import { FormControl, FormGroup, FormsModule, ReactiveFormsModule, Validators } from '@angular/forms';
-import { RouterLink } from '@angular/router';
+import { Router, RouterLink } from '@angular/router';
 import { ButtonModule } from 'primeng/button';
 import { InputTextModule } from 'primeng/inputtext';
 import { PasswordModule } from 'primeng/password';
@@ -35,7 +35,8 @@ export class Register {
 
   constructor(
     private loginService: LoginService,
-    private toastService: ToastrService
+    private toastService: ToastrService,
+    private router: Router
   ) {
     this.registerForm = new FormGroup({
       name: new FormControl('', [Validators.required]),
@@ -59,6 +60,7 @@ export class Register {
     ).subscribe({
       next: () => {
         this.toastService.success('Sign up successful!');
+        this.router.navigate(['/login']);
       },
       error: () => {
         this.toastService.error('Sign up failed. Please check your credentials.')
