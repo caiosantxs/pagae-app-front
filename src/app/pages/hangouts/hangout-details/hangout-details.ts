@@ -75,6 +75,8 @@ export class HangoutDetails {
     });
   }
 
+  maxPaymentAmount: number = 0;
+
   hangoutId!: number;
   hangout: HangOutResponseDTO | null = null;
 
@@ -350,6 +352,7 @@ export class HangoutDetails {
   openPaymentModal(expense: any) {
     this.selectedExpense = expense;
     this.paymentAmount = null;
+    this.maxPaymentAmount = this.getMyDebt(expense);
     this.showPaymentDialog = true;
   }
 
@@ -382,12 +385,6 @@ export class HangoutDetails {
   }
 
   isPayer(expense: any): boolean {
-    console.log(
-      'Comparando currentUserId:',
-      this.currentUserId,
-      'com expense.creator.id:',
-      expense.creator.id,
-    );
     return this.currentUserId == expense.payer.id;
   }
 

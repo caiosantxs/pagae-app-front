@@ -14,6 +14,7 @@ export interface RecentHangoutDTO {
   date: string;
   status: string;
   total: number;
+  hasPendingDebt: boolean;
   participants: ParticipantBadgeDTO[];
 }
 

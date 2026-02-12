@@ -1,136 +1,204 @@
-<div class="max-w-7xl mx-auto pb-12">
-
-  <div class="flex flex-col md:flex-row md:items-center justify-between gap-4 mb-10">
+<div class="max-w-6xl mx-auto px-4 py-10">
+  <div
+    class="flex flex-col md:flex-row md:items-start justify-between gap-6 mb-16"
+  >
     <div>
-      <h1 class="text-4xl font-extrabold text-gray-900 mb-2 flex items-center gap-2">
-        Olá, {{ userName }}! <span class="text-3xl animate-pulse">👋</span>
+      <h1
+        class="text-4xl md:text-5xl font-extrabold text-slate-900 mb-3 tracking-tight"
+      >
+        Olá, {{ userName }}! <span class="animate-pulse inline-block">👋</span>
       </h1>
-      <p class="text-gray-500 text-lg">Aqui está o resumo da sua vida financeira nos rolês.</p>
+      <p class="text-slate-400 text-lg">
+        Aqui está o resumo da sua vida financeira nos rolês.
+      </p>
     </div>
   </div>
 
   @if (stats$ | async; as stats) {
-
-    <div class="grid grid-cols-1 md:grid-cols-3 gap-8 mb-12">
-
-      <div class="bg-white rounded-[2rem] p-8 shadow-sm border border-gray-100 hover:shadow-md transition-shadow flex flex-col justify-between h-48">
-        <div class="w-12 h-12 rounded-2xl bg-gray-50 flex items-center justify-center text-gray-600">
-          <i class="pi pi-calendar text-xl"></i>
-        </div>
-        <div>
-          <p class="text-gray-500 font-medium mb-1">Total de Rolês</p>
-          <h3 class="text-4xl font-extrabold text-gray-900">{{ stats.totalHangouts }}</h3>
-        </div>
-      </div>
-
-      <div class="bg-white rounded-[2rem] p-8 shadow-sm border border-gray-100 hover:shadow-md transition-shadow flex flex-col justify-between h-48 relative overflow-hidden">
-        <div class="absolute top-0 right-0 w-32 h-32 bg-red-50 rounded-bl-[4rem] -mr-8 -mt-8 z-0"></div>
-
-        <div class="relative z-10 w-12 h-12 rounded-2xl bg-red-50 flex items-center justify-center text-red-500 mb-4">
-          <i class="pi pi-arrow-up-right text-xl font-bold"></i>
-        </div>
-
-        <div class="relative z-10">
-          <p class="text-gray-500 font-medium mb-2">A Pagar</p>
-          <h3 class="text-4xl font-extrabold text-red-500 mb-2">
-            {{ stats.totalOwed | currency:'BRL' }}
-          </h3>
-          <span class="inline-block bg-red-50 text-red-500 text-xs font-bold px-3 py-1 rounded-full">
-            {{ stats.pendingDebtsCount }} pendências
-          </span>
-        </div>
-      </div>
-
-      <div class="bg-white rounded-[2rem] p-8 shadow-sm border border-gray-100 hover:shadow-md transition-shadow flex flex-col justify-between h-48 relative overflow-hidden">
-        <div class="absolute top-0 right-0 w-32 h-32 bg-green-50 rounded-bl-[4rem] -mr-8 -mt-8 z-0"></div>
-
-        <div class="relative z-10 w-12 h-12 rounded-2xl bg-green-50 flex items-center justify-center text-green-500 mb-4">
-          <i class="pi pi-arrow-down-left text-xl font-bold"></i>
-        </div>
-
-        <div class="relative z-10">
-          <p class="text-gray-500 font-medium mb-2">A Receber</p>
-          <h3 class="text-4xl font-extrabold text-green-500 mb-2">
-            {{ stats.totalReceivable | currency:'BRL' }}
-          </h3>
-          <span class="inline-block bg-green-50 text-green-600 text-xs font-bold px-3 py-1 rounded-full">
-            Disponível
-          </span>
-        </div>
-      </div>
-
-    </div>
-
-    <div class="mb-6 flex items-center gap-2">
-      <i class="pi pi-chart-line text-gray-400"></i>
-      <h3 class="text-sm font-bold text-gray-500 uppercase tracking-wider">Seus Eventos Recentes</h3>
-    </div>
-
-    <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
-
-      @for (hangout of stats.recentHangouts; track hangout.id) {
+    <div class="grid grid-cols-1 md:grid-cols-3 gap-8 mb-20">
+      <div class="flex flex-col justify-start">
         <div
-          class="bg-white rounded-[1.5rem] p-6 shadow-sm border border-gray-100 hover:shadow-md transition-shadow h-full flex flex-col cursor-pointer"
-          [routerLink]="['/app/hangouts', hangout.id]">
-
-          <div class="flex justify-between items-start mb-4">
-            <div class="w-12 h-12 rounded-2xl bg-green-50 text-green-600 flex items-center justify-center text-xl font-bold uppercase">
-              {{ hangout.initial }}
-            </div>
-            <span
-              class="text-[10px] font-bold px-3 py-1 rounded-full uppercase tracking-wider"
-              [ngClass]="hangout.status === 'ATIVO' ? 'bg-green-50 text-green-600' : 'bg-gray-100 text-gray-500'">
-              {{ hangout.status }}
-            </span>
-          </div>
-
-          <div class="mb-6">
-            <h3 class="text-lg font-bold text-gray-900 mb-1 truncate">{{ hangout.title }}</h3>
-            <div class="flex items-center text-gray-400 text-xs font-medium">
-              <i class="pi pi-calendar mr-2"></i>
-              {{ hangout.date }}
-            </div>
-          </div>
-
-          <div class="flex items-end justify-between mt-auto pt-4 border-t border-gray-50">
-            <p-avatarGroup>
-              @for (p of hangout.participants.slice(0,3); track $index) {
-                <p-avatar shape="circle" size="normal" [style]="{'background-color': '#f3f4f6', 'width': '28px', 'height': '28px', 'font-size': '10px'}" [label]="p.label"></p-avatar>
-              }
-            </p-avatarGroup>
-
-            <div class="text-right">
-              <p class="text-[10px] text-gray-400 uppercase font-bold">Total</p>
-              <p class="text-base font-bold text-gray-900">{{ hangout.total | currency:'BRL' }}</p>
-            </div>
-          </div>
-
+          class="flex items-center gap-2 text-slate-400 font-bold uppercase tracking-wider text-xs mb-4"
+        >
+          <i class="pi pi-calendar"></i> Total de Rolês
         </div>
-      }
+        <h3
+          class="text-6xl md:text-7xl font-extrabold text-slate-900 tracking-tighter"
+        >
+          {{ stats.totalHangouts }}
+        </h3>
+      </div>
 
-      @if (stats.recentHangouts.length === 0) {
-        <div class="col-span-full py-10 text-center text-gray-500 border-2 border-dashed border-gray-200 rounded-[1.5rem] flex flex-col items-center justify-center min-h-[220px]">
-          <i class="pi pi-inbox text-4xl mb-3 text-gray-300"></i>
-          <p class="font-medium text-gray-600">Você ainda não participa de nenhum rolê.</p>
-          <p class="text-sm mt-1">Clique em "Novo Rolê" para começar a dividir suas contas!</p>
+      <div class="flex flex-col justify-start overflow-hidden">
+        <div
+          class="flex items-center gap-2 text-slate-400 font-bold uppercase tracking-wider text-xs mb-4"
+        >
+          <i class="pi pi-arrow-up-right text-red-500 font-bold"></i> A Pagar
         </div>
-      }
+        <h3
+          class="text-5xl md:text-6xl font-extrabold text-red-500 mb-3 tracking-tighter truncate w-full"
+          [title]="stats.totalOwed | currency: 'BRL'"
+        >
+          {{ stats.totalOwed | currency: "BRL" }}
+        </h3>
+        <span
+          class="text-red-500 text-[11px] font-bold uppercase tracking-wider"
+        >
+          {{ stats.pendingDebtsCount }} pendências
+        </span>
+      </div>
+
+      <div class="flex flex-col justify-start overflow-hidden">
+        <div
+          class="flex items-center gap-2 text-slate-400 font-bold uppercase tracking-wider text-xs mb-4"
+        >
+          <i class="pi pi-arrow-down-left text-green-500 font-bold"></i> A
+          Receber
+        </div>
+        <h3
+          class="text-5xl md:text-6xl font-extrabold text-green-500 mb-3 tracking-tighter truncate w-full"
+          [title]="stats.totalReceivable | currency: 'BRL'"
+        >
+          {{ stats.totalReceivable | currency: "BRL" }}
+        </h3>
+        <span
+          class="text-green-600 text-[11px] font-bold uppercase tracking-wider"
+        >
+          Disponível
+        </span>
+      </div>
     </div>
 
+    <div class="mb-6">
+      <div
+        class="flex items-center gap-2 text-slate-400 font-bold uppercase tracking-wider text-xs mb-6 pl-2"
+      >
+        <i class="pi pi-chart-line"></i> Seus Eventos Recentes
+      </div>
+
+      <div class="flex flex-col">
+        @for (hangout of stats.recentHangouts; track hangout.id) {
+          <div
+            class="flex items-center justify-between py-5 border-b border-slate-100 hover:bg-slate-50 transition-colors cursor-pointer rounded-2xl px-4 -mx-4 group"
+            [routerLink]="['/app/hangouts', hangout.id]"
+          >
+            <div class="flex items-center gap-5">
+              <div
+                class="w-12 h-12 rounded-full bg-slate-100 text-slate-500 flex items-center justify-center text-lg font-bold uppercase group-hover:bg-white group-hover:shadow-sm transition-all"
+              >
+                {{ hangout.initial }}
+              </div>
+
+              <div class="flex flex-col">
+                <div class="flex items-center gap-3 mb-1">
+                  <h3 class="text-lg font-extrabold text-slate-900">
+                    {{ hangout.title }}
+                  </h3>
+                  <span
+                    class="text-[9px] font-bold px-2 py-0.5 rounded-full uppercase tracking-widest"
+                    [ngClass]="
+                      hangout.status === 'ATIVO'
+                        ? 'bg-green-100 text-green-700'
+                        : 'bg-slate-200 text-slate-600'
+                    "
+                  >
+                    {{ hangout.status }}
+                  </span>
+                  @if (hangout.hasPendingDebt) {
+                    <span
+                      class="flex items-center gap-1 bg-red-100 text-red-600 px-2 py-0.5 rounded-full text-[9px] font-bold uppercase tracking-wider animate-pulse"
+                      title="Você possui débitos neste rolê"
+                    >
+                      <i class="pi pi-exclamation-circle text-[9px]"></i>
+                      Possui dívida(s)
+                    </span>
+                  }
+                </div>
+                <div class="text-slate-400 text-sm font-medium">
+                  {{ hangout.date | date: "yyyy-MM-dd" }}
+                </div>
+              </div>
+            </div>
+
+            <div class="flex items-center gap-8">
+              <div class="hidden md:block">
+                <p-avatarGroup>
+                  @for (p of hangout.participants.slice(0, 3); track $index) {
+                    <p-avatar
+                      shape="circle"
+                      size="normal"
+                      [style]="{
+                        'background-color': '#f1f5f9',
+                        color: '#64748b',
+                        'font-weight': 'bold',
+                        'font-size': '12px',
+                      }"
+                      [label]="p.label"
+                    ></p-avatar>
+                  }
+                </p-avatarGroup>
+              </div>
+
+              <div class="text-right">
+                <p
+                  class="text-[10px] text-slate-400 uppercase font-bold mb-1 tracking-wider"
+                >
+                  Total
+                </p>
+                <p class="text-lg font-extrabold text-slate-900">
+                  {{ hangout.total | currency: "BRL" }}
+                </p>
+              </div>
+
+              <div
+                class="text-slate-300 group-hover:text-slate-600 transition-colors group-hover:translate-x-1 duration-200"
+              >
+                <i class="pi pi-chevron-right text-sm"></i>
+              </div>
+            </div>
+          </div>
+        }
+
+        @if (stats.recentHangouts.length === 0) {
+          <div
+            class="py-12 text-center text-slate-400 flex flex-col items-center justify-center"
+          >
+            <div
+              class="w-16 h-16 rounded-full bg-slate-50 flex items-center justify-center mb-4"
+            >
+              <i class="pi pi-inbox text-2xl text-slate-300"></i>
+            </div>
+            <p class="font-medium text-slate-600 mb-1">
+              Nenhum evento recente.
+            </p>
+            <p class="text-sm">Clique em "Novo Rolê" para começar.</p>
+          </div>
+        }
+      </div>
+    </div>
   } @else {
-    <div class="grid grid-cols-1 md:grid-cols-3 gap-8 mb-12 animate-pulse">
-      <div class="h-48 bg-gray-200 rounded-[2rem]"></div>
-      <div class="h-48 bg-gray-200 rounded-[2rem]"></div>
-      <div class="h-48 bg-gray-200 rounded-[2rem]"></div>
+    <div class="grid grid-cols-1 md:grid-cols-3 gap-8 mb-20 animate-pulse">
+      <div class="flex flex-col gap-4">
+        <div class="h-4 w-32 bg-slate-200 rounded"></div>
+        <div class="h-16 w-16 bg-slate-200 rounded"></div>
+      </div>
+      <div class="flex flex-col gap-4">
+        <div class="h-4 w-32 bg-slate-200 rounded"></div>
+        <div class="h-16 w-48 bg-slate-200 rounded"></div>
+        <div class="h-3 w-24 bg-slate-200 rounded"></div>
+      </div>
+      <div class="flex flex-col gap-4">
+        <div class="h-4 w-32 bg-slate-200 rounded"></div>
+        <div class="h-16 w-48 bg-slate-200 rounded"></div>
+        <div class="h-3 w-24 bg-slate-200 rounded"></div>
+      </div>
     </div>
 
-    <div class="mb-6 h-6 w-48 bg-gray-200 rounded animate-pulse"></div>
-
-    <div class="grid grid-cols-1 md:grid-cols-3 gap-6 animate-pulse">
-       <div class="h-56 bg-gray-200 rounded-[1.5rem]"></div>
-       <div class="h-56 bg-gray-200 rounded-[1.5rem]"></div>
-       <div class="h-56 bg-gray-200 rounded-[1.5rem]"></div>
+    <div class="mb-6 h-4 w-48 bg-slate-200 rounded animate-pulse"></div>
+    <div class="flex flex-col gap-4 animate-pulse">
+      <div class="h-20 bg-slate-100 rounded-2xl w-full"></div>
+      <div class="h-20 bg-slate-100 rounded-2xl w-full"></div>
+      <div class="h-20 bg-slate-100 rounded-2xl w-full"></div>
     </div>
   }
-
 </div>

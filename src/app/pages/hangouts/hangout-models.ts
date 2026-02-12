@@ -5,6 +5,7 @@ export interface HangOutResponseDTO {
   creatorId: number;
   creationDate: string;
   statusHangOut: 'ATIVO' | 'FINALIZADO';
+  hasPendingDebts: boolean;
   expenses: ExpenseResponseDTO[];
   members: MemberDTO[];
 

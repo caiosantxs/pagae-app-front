@@ -40,7 +40,6 @@ export class Hangouts {
     this.hangOutService.getUserHangouts(this.currentPage, this.pageSize)
       .subscribe({
         next: (pageData) => {
-          // Concatena os novos itens aos existentes
           this.hangouts = [...this.hangouts, ...pageData.content];
 
           this.hasMore = !pageData.last;
@@ -54,19 +53,13 @@ export class Hangouts {
       });
   }
 
-  /**
-   * Pega a primeira letra de uma string.
-   * Ex: "Churrasco" -> "C", "Gabriel" -> "G"
-   */
   getInitial(text: string): string {
     return text ? text.charAt(0).toUpperCase() : '?';
   }
 
-  /**
-   * Calcula o total somando a lista de expenses que veio do Java.
-   */
   calculateTotal(expenses: ExpenseResponseDTO[]): number {
     if (!expenses || expenses.length === 0) return 0;
     return expenses.reduce((acc, curr) => acc + (curr.totalAmount || 0), 0);
   }
+
 }

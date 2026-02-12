@@ -29,7 +29,7 @@ export class Dashboard implements OnInit {
     if (storedName) {
       this.userName = storedName.split(' ')[0];
     }
-    // Faz a chamada real para a API
+
     this.stats$ = this.dashboardService.getStats();
   }
 }
