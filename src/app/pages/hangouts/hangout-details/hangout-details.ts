@@ -201,7 +201,7 @@ export class HangoutDetails {
   }
 
   openNewExpense() {
-    if(this.hangout?.statusHangOut === 'FINALIZADO') {
+    if (this.hangout?.statusHangOut === 'FINALIZADO') {
       this.messageService.add({
         severity: 'warn',
         summary: 'Rolê Finalizado',
@@ -443,28 +443,41 @@ export class HangoutDetails {
   openInviteModal() {
     if (!this.hangout) return;
 
-    // Gera um link apontando para uma rota de "join" (que criaremos futuramente)
-    // ou para a própria página de detalhes
-    const baseUrl = window.location.origin; // Ex: http://localhost:4200
+    const baseUrl = window.location.origin;
     this.inviteLink = `${baseUrl}/app/join/${this.hangout.id}`;
 
     this.showInviteDialog = true;
   }
 
   copyInviteLink() {
-    navigator.clipboard.writeText(this.inviteLink).then(() => {
-      this.messageService.add({
-        severity: 'success',
-        summary: 'Sucesso',
-        detail: 'Link copiado para a área de transferência!'
+    navigator.clipboard
+      .writeText(this.inviteLink)
+      .then(() => {
+        this.messageService.add({
+          severity: 'success',
+          summary: 'Sucesso',
+          detail: 'Link copiado para a área de transferência!',
+        });
+        this.showInviteDialog = false; // Fecha opcionalmente
+      })
+      .catch((err) => {
+        this.messageService.add({
+          severity: 'error',
+          summary: 'Erro',
+          detail: 'Falha ao copiar link',
+        });
       });
-      this.showInviteDialog = false; // Fecha opcionalmente
-    }).catch(err => {
-      this.messageService.add({
-        severity: 'error',
-        summary: 'Erro',
-        detail: 'Falha ao copiar link'
-      });
-    });
+  }
+
+  getCreatorName(): string {
+    const currentHangout = this.hangout;
+
+    if (!currentHangout) return 'Carregando...';
+
+    const creator = currentHangout.members.find(
+      (m) => m.id === currentHangout.creatorId,
+    );
+
+    return creator ? creator.name : 'Desconhecido';
   }
 }

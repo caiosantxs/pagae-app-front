@@ -30,6 +30,13 @@
               ><i class="pi pi-users mr-1"></i>
               {{ hangout.members.length }} participantes</span
             >
+            <span class="flex items-center" title="Organizador do Rolê">
+        <i class="pi pi-star-fill mr-1 text-yellow-500 text-xs"></i>
+        <span class="text-xs mr-1">Por:</span>
+        <span class="font-medium text-gray-700">
+            {{ getCreatorName() }}
+        </span>
+      </span>
           </div>
         </div>
 
@@ -156,13 +163,6 @@
       <div class="lg:col-span-2">
         <div class="flex items-center justify-between mb-4">
           <h2 class="text-xl font-bold text-gray-900">Despesas</h2>
-          @if (hangout.expenses.length > 5) {
-            <a
-              href="#"
-              class="text-sm font-semibold text-green-600 hover:text-green-700"
-              >Ver todas</a
-            >
-          }
         </div>
 
         <button
