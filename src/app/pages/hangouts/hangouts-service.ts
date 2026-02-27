@@ -81,4 +81,8 @@ export class HangoutsService {
   joinHangout(id: number): Observable<void> {
   return this.http.post<void>(`${this.apiUrl}/${id}/join`, {});
   }
+
+  deleteExpense(expenseId: number): Observable<void> {
+    return this.http.delete<void>(`${this.apiUrl}/expense/${expenseId}`);
+  }
 }

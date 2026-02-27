@@ -440,6 +440,65 @@ export class HangoutDetails {
     return this.hangout?.creatorId === this.currentUserId;
   }
 
+  isExpenseCreator(expense: any): boolean {
+  // 1. Proteção: Se a despesa for indefinida, retorna falso na hora
+  if (!expense) {
+    return false;
+  }
+
+  // 2. Usando o operador ?. para evitar o erro de undefined
+  // Confirme se o seu DTO traz 'creator.id' ou se é direto 'creatorId'
+  return expense.creator?.id === this.currentUserId;
+}
+
+  deleteExpense(expenseId: number, event?: Event) {
+  // Impede o clique de abrir os detalhes da despesa (caso a linha seja clicável)
+  if (event) {
+    event.stopPropagation();
+  }
+
+  if (!this.isExpenseCreator(this.hangout?.expenses.find((e) => e.id === expenseId))) {
+    this.messageService.add({
+      severity: 'warn',
+      summary: 'Atenção',
+      detail: 'Somente o criador da despesa pode excluí-la.',
+    });
+    return;
+  }
+
+  this.confirmationService.confirm({
+    message: 'Tem certeza que deseja excluir esta despesa?',
+    header: 'Excluir Despesa',
+    icon: 'pi pi-info-circle',
+    acceptLabel: 'Sim, excluir',
+    rejectLabel: 'Cancelar',
+    acceptButtonStyleClass: 'p-button-danger',
+    accept: () => {
+      this.hangoutService.deleteExpense(expenseId).subscribe({
+        next: () => {
+          this.messageService.add({
+            severity: 'success',
+            summary: 'Excluído',
+            detail: 'Despesa excluída com sucesso.',
+          });
+          if (this.hangoutId) {
+            this.loadHangout(this.hangoutId);
+            this.calculateMyShare(this.hangoutId);
+          }
+        },
+        error: (err) => {
+          console.error('Erro ao excluir despesa', err);
+          this.messageService.add({
+            severity: 'error',
+            summary: 'Erro',
+            detail: 'Falha ao excluir despesa.',
+          });
+        },
+      });
+    },
+  });
+}
+
   openInviteModal() {
     if (!this.hangout) return;
 

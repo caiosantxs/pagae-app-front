@@ -31,12 +31,12 @@
               {{ hangout.members.length }} participantes</span
             >
             <span class="flex items-center" title="Organizador do Rolê">
-        <i class="pi pi-star-fill mr-1 text-yellow-500 text-xs"></i>
-        <span class="text-xs mr-1">Por:</span>
-        <span class="font-medium text-gray-700">
-            {{ getCreatorName() }}
-        </span>
-      </span>
+              <i class="pi pi-star-fill mr-1 text-yellow-500 text-xs"></i>
+              <span class="text-xs mr-1">Por:</span>
+              <span class="font-medium text-gray-700">
+                {{ getCreatorName() }}
+              </span>
+            </span>
           </div>
         </div>
 
@@ -250,6 +250,16 @@
                   </p>
                   <p class="text-[10px] text-gray-400">valor total</p>
                 </div>
+
+                @if (isExpenseCreator(expense)) {
+                  <button
+                    (click)="deleteExpense(expense.id, $event)"
+                    class="w-8 h-8 flex items-center justify-center rounded-full text-gray-400 hover:text-red-500 hover:bg-red-50 transition-colors duration-200"
+                    title="Excluir despesa"
+                  >
+                    <i class="pi pi-trash text-sm"></i>
+                  </button>
+                }
 
                 @if (!isPayer(expense) && getMyDebt(expense) > 0) {
                   <button
