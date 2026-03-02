@@ -5,12 +5,13 @@ import { DashboardService, DashboardStatsDTO } from './dashboard-service';
 import { LoginService } from '../login/login-service';
 import { AvatarGroup } from 'primeng/avatargroup';
 import { Avatar } from 'primeng/avatar';
-import { RouterModule } from '@angular/router'; // Necessário para o routerLink
+import { RouterModule } from '@angular/router';
+import { ButtonDirective } from "primeng/button"; // Necessário para o routerLink
 
 @Component({
   selector: 'app-dashboard',
   standalone: true,
-  imports: [CommonModule, AvatarGroup, Avatar, RouterModule],
+  imports: [CommonModule, AvatarGroup, Avatar, RouterModule, ButtonDirective],
   templateUrl: './dashboard.html',
   styleUrl: './dashboard.scss',
 })

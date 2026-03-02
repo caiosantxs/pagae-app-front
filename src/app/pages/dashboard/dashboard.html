@@ -1,17 +1,25 @@
 <div class="max-w-6xl mx-auto px-4 py-10">
   <div
-    class="flex flex-col md:flex-row md:items-start justify-between gap-6 mb-16"
+    class="flex flex-row md:flex-row md:items-start justify-between gap-6 mb-16"
   >
-    <div>
+    <div class="flex flex-col">
       <h1
         class="text-4xl md:text-5xl font-extrabold text-slate-900 mb-3 tracking-tight"
       >
-        Olá, {{ userName }}! <span class="animate-pulse inline-block">👋</span>
+        Olá, {{ userName }}!
       </h1>
       <p class="text-slate-400 text-lg">
         Aqui está o resumo da sua vida financeira nos rolês.
       </p>
     </div>
+    <a
+      pButton
+      label="Gerenciar Rolês"
+      routerLink="/app/hangouts"
+      icon="pi pi-plus"
+      class="!bg-green-500 !border-green-500 hover:!bg-green-600"
+    >
+    </a>
   </div>
 
   @if (stats$ | async; as stats) {
@@ -171,7 +179,7 @@
             <p class="font-medium text-slate-600 mb-1">
               Nenhum evento recente.
             </p>
-            <p class="text-sm">Clique em "Novo Rolê" para começar.</p>
+            <p class="text-sm">Clique em "Gerenciar Rolês" para começar.</p>
           </div>
         }
       </div>
