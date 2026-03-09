@@ -84,6 +84,14 @@ export interface MemberDTO {
   name: string;
 }
 
+export interface Devendo2DTO {
+  userId: number;
+  name: string;
+  quantoDevo: number;
+  quantoMeDeve: number;
+  saldoLiquido: number;
+}
+
 enum StatusHangout{
   INATIVO =  'INATIVO',
   ATIVO = 'ATIVO'

@@ -1,44 +1,54 @@
-<div class="bg-white min-h-screen">
-  <app-navbar></app-navbar>
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;700;900&display=swap" rel="stylesheet">
+    <style>
+        body { font-family: 'Outfit', sans-serif; }
+        .bg-custom { background-color: #00D177; }
+        .btn-shadow { box-shadow: 4px 4px 0px 0px rgba(0,0,0,1); }
+        .btn-shadow:hover { transform: translate(-2px, -2px); box-shadow: 6px 6px 0px 0px rgba(0,0,0,1); }
+    </style>
+</head>
+<body class="bg-custom text-black min-h-screen flex flex-col overflow-x-hidden">
 
-  <main class="container mx-auto px-6 py-16 md:py-24">
-    <div class="flex flex-col md:flex-row items-center gap-12 md:gap-24">
+    <nav class="flex justify-between items-center p-6 max-w-7xl mx-auto w-full">
+        <div class="text-3xl font-black tracking-tighter">PagaAê</div>
+        <div class="space-x-4 flex items-center">
+            <a routerLink="/login" class="font-bold hover:underline">Entrar</a>
+            <a routerLink="/register" class="bg-black text-white px-6 py-2 rounded-full font-bold btn-shadow transition-all">Registre-se grátis</a>
+        </div>
+    </nav>
 
-      <div class="w-full md:w-1/2">
-        <h1 class="text-5xl md:text-7xl font-bold mb-4 text-gray-900">
-          Organize os gastos do seu <span class="text-green-600">rolê</span> com
-          facilidade.
-        </h1>
+    <main class="flex-grow flex flex-col items-center justify-center text-center px-4 relative pb-32 pt-16">
 
-        <p class="text-lg md:text-xl text-gray-600 mb-8">
-          Crie e gerencie os gastos de um rolê, gerencie a lista de
-          participantes e receba pagamentos via Pix. O sistema perfeito para
-          alinhar os gastos de uma festa surpresa, uma ida a um restaurante e
-          até mesmo aquela resenha com os amigos no final de semana.
-        </p>
+        <div class="max-w-3xl z-10">
+            <h1 class="text-5xl md:text-7xl font-black leading-none mb-6 tracking-tight text-white drop-shadow-sm">
+                Organize os gastos <br> do seu <span class="text-black">rolê</span> com facilidade.
+            </h1>
+            <p class="text-lg md:text-xl font-medium mb-10 text-white/90 max-w-xl mx-auto">
+                Crie e gerencie os gastos de um rolê, receba pagamentos via Pix e alinhe as contas com a galera em segundos.
+            </p>
+            <button routerLink="/register" class="bg-[#F3FF90] text-black px-10 py-5 rounded-full text-xl font-black btn-shadow transition-all uppercase tracking-wider">
+                Criar meu primeiro rolê →
+            </button>
+        </div>
 
-        <button
-          routerLink="/register"
-          class="flex cursor-pointer items-center gap-2 bg-green-600 text-white font-bold px-6 py-3 rounded-full shadow-md hover:bg-green-700 transition-colors duration-200"
-        >
-          Criar meu primeiro rolê
-          <i class="pi pi-arrow-right text-white text-lg"></i>
-        </button>
-      </div>
+        <div class="absolute bottom-0 left-0 hidden lg:block w-1/4">
+             <img src="assets/images/conceito-de-amizade-feliz-de-vetor-de-doodle-de-saude.png" alt="Personagem 1" class="w-full h-auto">
+        </div>
+        <div class="absolute bottom-0 right-0 hidden lg:block w-1/4">
+             <img src="https://openpeeps.com/static/a29e612f0c7e8e78f9f0d1a49826f68c/4856f/peep-2.png" alt="Personagem 2" class="w-full h-auto transform -scale-x-100">
+        </div>
+    </main>
 
-      <div class="w-full md:w-1/2 flex justify-center items-center">
-        <img src="assets/images/3358001.jpg" alt="Imagem ilustrativa" />
-      </div>
-    </div>
-  </main>
+    <div class="w-full h-12 bg-black mt-auto"></div>
 
-  <section class="container mx-auto px-6 py-20 text-center">
-    <h3 class="text-3xl md:text-4xl font-semibold text-gray-800 mb-6">
-      Aqui você consegue organizar seus gastos com tranquilidade
-    </h3>
-    <p class="text-lg text-gray-600 max-w-2xl mx-auto">
-      Tenha controle total sobre os custos de cada evento, acompanhe os
-      pagamentos e garanta que todo mundo contribua de forma justa.
-    </p>
-  </section>
-</div>
+    <footer class="bg-black py-4 text-white text-center font-bold tracking-widest text-sm uppercase">
+        Feito para quem não quer perder tempo fazendo conta no bar
+    </footer>
+
+</body>
+</html>

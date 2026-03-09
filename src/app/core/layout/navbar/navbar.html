@@ -1,35 +1,48 @@
-<header class="bg-white border-b border-gray-200 sticky top-0 z-50 w-full">
-  <div class="container mx-auto px-4 h-16 flex items-center justify-between">
+<header class="bg-white border-b-4 border-black sticky top-0 z-50 w-full px-4">
+  <div class="container mx-auto h-20 flex items-center justify-between">
 
-    <div class="flex items-center gap-2">
-      <a routerLink="/app/hangouts" class="text-2xl font-bold text-green-600 tracking-tight cursor-pointer no-underline">PagAê</a>
+    <div class="flex items-center">
+      <a routerLink="/app/dashboard"
+         class="text-3xl font-black text-black tracking-tighter cursor-pointer no-underline hover:text-[#00D177] transition-colors">
+        PagaAê<span class="text-[#00D177]">.</span>
+      </a>
     </div>
 
-    <div class="flex items-center gap-6">
+    <nav class="flex items-center gap-2 md:gap-4">
 
       <a
-      routerLink="/app/dashboard"
-      routerLinkActive="text-green-700"
-      class="text-sm font-medium text-green-600 hover:text-green-700 cursor-pointer no-underline transition-colors"
+        routerLink="/app/dashboard"
+        routerLinkActive="!bg-[#00D177] !text-black shadow-[2px_2px_0px_0px_rgba(0,0,0,1)]"
+        class="px-4 py-2 rounded-xl text-sm font-black text-gray-700 border-2 border-transparent hover:border-black hover:bg-gray-50 cursor-pointer no-underline transition-all duration-150"
       >
-      Início
+        Início
       </a>
 
       <a
-      routerLink="/app/hangouts"
-      routerLinkActive="text-green-700"
-      class="text-sm font-medium text-green-600 hover:text-green-700 cursor-pointer no-underline transition-colors"
+        routerLink="/app/hangouts"
+        routerLinkActive="!bg-[#00D177] !text-black shadow-[2px_2px_0px_0px_rgba(0,0,0,1)]"
+        class="px-4 py-2 rounded-xl text-sm font-black text-gray-700 border-2 border-transparent hover:border-black hover:bg-gray-50 cursor-pointer no-underline transition-all duration-150"
       >
-      Meus Rolês
+        Meus Rolês
       </a>
 
       <a
+        routerLink="/app/acertos"
+        routerLinkActive="!bg-[#00D177] !text-black shadow-[2px_2px_0px_0px_rgba(0,0,0,1)]"
+        class="px-4 py-2 rounded-xl text-sm font-black text-gray-700 border-2 border-transparent hover:border-black hover:bg-gray-50 cursor-pointer no-underline transition-all duration-150"
+      >
+        Acertos
+      </a>
+
+      <div class="w-[2px] h-6 bg-black/10 mx-2 hidden md:block"></div>
+
+      <button
         (click)="logout()"
-        class="text-sm font-medium text-gray-500 hover:text-red-600 cursor-pointer no-underline transition-colors">
+        class="ml-2 px-4 py-2 rounded-xl text-sm font-black text-red-500 hover:bg-red-50 hover:text-red-600 border-2 border-transparent hover:border-red-600 transition-all cursor-pointer"
+      >
         Sair
-      </a>
-    </div>
+      </button>
+    </nav>
 
   </div>
-
 </header>

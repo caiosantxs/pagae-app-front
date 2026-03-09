@@ -452,7 +452,7 @@ export class HangoutDetails {
 }
 
   deleteExpense(expenseId: number, event?: Event) {
-  // Impede o clique de abrir os detalhes da despesa (caso a linha seja clicável)
+  // Impede o clique de abrir os detalhes da despesa
   if (event) {
     event.stopPropagation();
   }
@@ -460,25 +460,27 @@ export class HangoutDetails {
   if (!this.isExpenseCreator(this.hangout?.expenses.find((e) => e.id === expenseId))) {
     this.messageService.add({
       severity: 'warn',
-      summary: 'Atenção',
+      summary: 'Atenção 🛑',
       detail: 'Somente o criador da despesa pode excluí-la.',
     });
     return;
   }
 
   this.confirmationService.confirm({
-    message: 'Tem certeza que deseja excluir esta despesa?',
+    message: 'Essa ação não tem volta. Quer mesmo apagar?',
     header: 'Excluir Despesa',
-    icon: 'pi pi-info-circle',
+    icon: 'pi pi-exclamation-triangle',
     acceptLabel: 'Sim, excluir',
     rejectLabel: 'Cancelar',
-    acceptButtonStyleClass: 'p-button-danger',
+
+    acceptButtonStyleClass: '!bg-red-500 !border-2 !border-black !text-white !font-black !rounded-xl !p-3 !shadow-[4px_4px_0px_0px_rgba(0,0,0,1)] hover:!translate-y-[-2px] hover:!shadow-[6px_6px_0px_0px_rgba(0,0,0,1)] active:!translate-y-[2px] active:!shadow-none transition-all',
+    rejectButtonStyleClass: '!bg-white !border-2 !border-black !text-black !font-black !rounded-xl !p-3 hover:!bg-gray-100 transition-all mr-3',
     accept: () => {
       this.hangoutService.deleteExpense(expenseId).subscribe({
         next: () => {
           this.messageService.add({
             severity: 'success',
-            summary: 'Excluído',
+            summary: 'Foi pro espaço! 🚀',
             detail: 'Despesa excluída com sucesso.',
           });
           if (this.hangoutId) {
@@ -490,7 +492,7 @@ export class HangoutDetails {
           console.error('Erro ao excluir despesa', err);
           this.messageService.add({
             severity: 'error',
-            summary: 'Erro',
+            summary: 'Ocorreu um erro',
             detail: 'Falha ao excluir despesa.',
           });
         },

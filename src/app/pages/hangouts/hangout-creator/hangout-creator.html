@@ -1,120 +1,100 @@
-<div
-  class="min-h-screen bg-gray-50 flex flex-col justify-center py-12 sm:px-6 lg:px-8"
->
-  <div class="sm:mx-auto sm:w-full sm:max-w-md">
-    <div
-      class="mx-auto h-12 w-12 bg-green-100 rounded-xl flex items-center justify-center text-green-600 mb-4"
-    >
-      <i class="pi pi-plus text-xl font-bold"></i>
-    </div>
+<div class="bg-[#00D177] min-h-[calc(100vh-80px)] w-screen relative left-1/2 -translate-x-1/2 flex flex-col items-center py-12 px-4">
 
-    <h2 class="text-center text-3xl font-extrabold text-gray-900">
-      Criar novo rolê
-    </h2>
-    <p class="mt-2 text-center text-sm text-gray-600">
-      Dê um nome e descreva o evento para começar a dividir contas.
-    </p>
+  <div class="text-center mb-10 mt-8">
+    <h1 class="text-5xl md:text-6xl font-black text-gray-950 tracking-tighter uppercase italic leading-none">
+      NOVO <br> <span class="text-white drop-shadow-[4px_4px_0px_rgba(0,0,0,1)]">ROLÊ</span>
+    </h1>
   </div>
 
-  <div class="mt-8 sm:mx-auto sm:w-full sm:max-w-md">
-    <div
-      class="bg-white py-8 px-4 shadow sm:rounded-xl sm:px-10 border border-gray-100"
-    >
-      <form [formGroup]="form" (ngSubmit)="onSubmit()" class="space-y-6">
-        <div>
-          <label
-            for="title"
-            class="block text-sm font-medium text-gray-700 mb-1"
-          >
-            Nome do Rolê <span class="text-red-500">*</span>
-          </label>
-          <div class="mt-1">
-            <input
-              pInputText
-              id="title"
-              formControlName="title"
-              class="w-full !p-3"
-              placeholder="Ex: Viagem Cabo Frio"
-              [class.ng-dirty]="form.get('title')?.touched"
-            />
-          </div>
+  <form [formGroup]="form" (ngSubmit)="onSubmit()" class="w-full max-w-2xl space-y-6">
+
+    <div class="bg-white border-4 border-black rounded-[32px] p-8 shadow-[8px_8px_0px_0px_rgba(0,0,0,1)] relative overflow-hidden">
+      <div class="absolute top-0 right-0 bg-[#F3FF90] border-l-4 border-b-4 border-black px-4 py-1 font-black text-xs uppercase">
+        01. Identidade
+      </div>
+
+      <div class="flex flex-col md:flex-row gap-6 items-start">
+        <div class="w-24 h-24 bg-gray-100 border-4 border-black rounded-3xl flex items-center justify-center text-4xl shadow-[4px_4px_0px_0px_rgba(0,0,0,1)] shrink-0">
+          🥳
+        </div>
+
+        <div class="flex-grow w-full">
+          <label for="title" class="block text-xs font-black text-gray-400 uppercase tracking-widest mb-2">Como vai se chamar?</label>
+          <input
+            pInputText
+            id="title"
+            formControlName="title"
+            placeholder="Ex: Resenha de Sexta"
+            class="w-full !text-2xl !font-black !p-0 !border-none !bg-transparent focus:!ring-0 placeholder:text-gray-200"
+          />
+          <div class="h-1 w-full bg-black mt-1"></div>
+
           @if (form.get('title')?.invalid && form.get('title')?.touched) {
-          <small class="block text-red-500 mt-1">
-            O nome é obrigatório (mínimo 3 caracteres).
-          </small>
+            <small class="text-red-500 font-black text-[10px] uppercase mt-2 block">Dê um nome com pelo menos 3 letras!</small>
           }
         </div>
-
-        <div class="mt-4">
-          <label class="block text-sm font-medium text-gray-700 mb-1">
-            Convidar Membros
-            <span class="text-gray-400 font-normal"
-              >(Busque por nome ou login)</span
-            >
-          </label>
-
-          <p-autoComplete
-            formControlName="memberIds"
-            [suggestions]="filteredUsers"
-            (completeMethod)="filterUsers($event)"
-            field="name"
-            dataKey="id"
-            [multiple]="true"
-            [forceSelection]="true"
-            [dropdown]="false"
-            placeholder="Digite para buscar..."
-            class="w-full"
-            [style]="{ width: '100%' }"
-            [inputStyle]="{ width: '100%' }"
-          >
-            <ng-template let-user pTemplate="item"> </ng-template>
-
-            <ng-template let-value pTemplate="selectedItem">
-              <div class="flex items-center gap-2">
-                <span class="text-sm">{{ value.name }}</span>
-              </div>
-            </ng-template>
-
-            <ng-template let-user pTemplate="item">
-              <div class="flex items-center gap-2">
-                <div
-                  class="w-8 h-8 rounded-full bg-green-100 flex items-center justify-center text-green-700 font-bold text-xs"
-                >
-                  {{ user.name ? user.name.charAt(0).toUpperCase() : "?" }}
-                </div>
-
-                <div class="flex flex-col">
-                  <span class="font-medium text-gray-900 leading-none">{{
-                    user.name
-                  }}</span>
-                  <span class="text-xs text-gray-500 mt-1"
-                    >@{{ user.login }}</span
-                  >
-                </div>
-              </div>
-            </ng-template>
-          </p-autoComplete>
-        </div>
-
-        <div class="flex items-center gap-4 pt-2">
-          <button
-            type="button"
-            pButton
-            label="Cancelar"
-            routerLink="/app/hangouts"
-            class="p-button-outlined p-button-secondary w-full justify-center !font-bold"
-          ></button>
-
-          <button
-            type="submit"
-            pButton
-            [label]="loading ? 'Criando...' : 'Criar Rolê'"
-            [icon]="loading ? 'pi pi-spin pi-spinner' : 'pi pi-check'"
-            [disabled]="form.invalid || loading"
-            class="!bg-green-600 !border-green-600 w-full justify-center !font-bold hover:!bg-green-700"
-          ></button>
-        </div>
-      </form>
+      </div>
     </div>
-  </div>
+
+    <div class="bg-white border-4 border-black rounded-[32px] p-8 shadow-[8px_8px_0px_0px_rgba(0,0,0,1)] relative overflow-hidden">
+      <div class="absolute top-0 right-0 bg-[#00D177] border-l-4 border-b-4 border-black px-4 py-1 font-black text-xs uppercase">
+        02. A Galera
+      </div>
+
+      <div class="mb-6">
+        <h3 class="text-xl font-black text-gray-950 uppercase tracking-tight">Quem vai rachar?</h3>
+        <p class="text-gray-400 font-bold text-sm">Busque seus amigos pelo nome ou @username</p>
+      </div>
+
+      <div class="neobrutalist-autocomplete">
+        <p-autoComplete
+  formControlName="memberIds"
+  [suggestions]="filteredUsers"
+  (completeMethod)="filterUsers($event)"
+  field="name"
+  dataKey="id"
+  [multiple]="true"
+  [forceSelection]="true"
+  placeholder="Comece a digitar..."
+  styleClass="w-full"
+  inputStyleClass="w-full !p-4 !border-4 !border-black !rounded-2xl !font-black !text-lg !bg-gray-50 focus:!bg-white transition-all shadow-[4px_4px_0px_0px_rgba(0,0,0,1)]"
+  appendTo="body"
+>
+          <ng-template let-user pTemplate="selectedItem">
+             <div class="flex items-center gap-2 font-black text-sm uppercase">
+               <span>{{ user.name }}</span>
+             </div>
+          </ng-template>
+
+          <ng-template let-user pTemplate="item">
+            <div class="flex items-center gap-3 py-1">
+               <div class="w-8 h-8 rounded-lg bg-[#F3FF90] border-2 border-black flex items-center justify-center font-black text-xs">
+                 {{ user.name.charAt(0) }}
+               </div>
+               <span class="font-bold text-gray-950">{{ user.name }}</span>
+            </div>
+          </ng-template>
+        </p-autoComplete>
+      </div>
+    </div>
+
+    <div class="flex flex-col md:flex-row gap-4 pt-4">
+      <button
+        type="button"
+        routerLink="/app/hangouts"
+        class="flex-1 bg-white border-4 border-black p-5 rounded-2xl font-black uppercase tracking-widest hover:bg-gray-100 transition-all active:translate-y-1"
+      >
+        Desistir
+      </button>
+
+      <button
+        type="submit"
+        [disabled]="form.invalid || loading"
+        class="flex-[2] bg-[#F3FF90] border-4 border-black p-5 rounded-2xl font-black uppercase tracking-widest shadow-[8px_8px_0px_0px_rgba(0,0,0,1)] hover:translate-y-[-4px] hover:shadow-[12px_12px_0px_0px_rgba(0,0,0,1)] transition-all active:translate-y-[2px] active:shadow-none disabled:opacity-50"
+      >
+        {{ loading ? 'Criando...' : 'Bora Pro Rolê! 🚀' }}
+      </button>
+    </div>
+
+  </form>
 </div>
