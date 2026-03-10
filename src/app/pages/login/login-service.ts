@@ -3,6 +3,7 @@ import { Injectable } from '@angular/core';
 import { LoginResponse } from '../../types/login-response.type';
 import { tap } from 'rxjs/operators';
 import { Router } from '@angular/router';
+import { environment } from '../../../environments/environment';
 
 @Injectable({
   providedIn: 'root',
@@ -13,10 +14,20 @@ export class LoginService {
     private router: Router
   ) {}
 
-  apiUrl: string = "http://localhost:8080/auth";
+  apiUrl: string = environment.apiUrl + '/auth';
 
   login(login: string, password: string) {
     return this.httpClient.post<LoginResponse>( this.apiUrl + "/login", { login, password }).pipe(
+      tap((value) => {
+        sessionStorage.setItem('authToken', value.token);
+        sessionStorage.setItem('authUsername', value.name);
+        sessionStorage.setItem('authUserId', String(value.id));
+      })
+    );
+  }
+
+  loginWithGoogle(idToken: string) {
+    return this.httpClient.post<LoginResponse>(this.apiUrl + '/google', { idToken }).pipe(
       tap((value) => {
         sessionStorage.setItem('authToken', value.token);
         sessionStorage.setItem('authUsername', value.name);

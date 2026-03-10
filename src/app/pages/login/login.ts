@@ -1,4 +1,4 @@
-import { Component } from '@angular/core';
+import { Component, OnInit, OnDestroy } from '@angular/core';
 import { Router, RouterLink } from '@angular/router';
 import {
   FormControl,
@@ -13,6 +13,8 @@ import { PasswordModule } from 'primeng/password';
 import { DividerModule } from 'primeng/divider';
 import { LoginService } from './login-service';
 import { ToastrService } from 'ngx-toastr';
+import { SocialAuthService, GoogleSigninButtonModule } from '@abacritt/angularx-social-login';
+import { Subscription } from 'rxjs';
 
 @Component({
   selector: 'app-login',
@@ -24,20 +26,23 @@ import { ToastrService } from 'ngx-toastr';
     PasswordModule,
     DividerModule,
     ReactiveFormsModule,
+    GoogleSigninButtonModule
   ],
   templateUrl: './login.html',
   styleUrl: './login.scss',
 })
-export class Login {
+export class Login implements OnInit, OnDestroy {
   loginForm!: FormGroup;
   password?: string;
 
   currentUserId: number | null = null;
+  private authSubscription?: Subscription;
 
   constructor(
     private loginService: LoginService,
     private toastService: ToastrService,
     private router: Router,
+    private socialAuthService: SocialAuthService,
   ) {
     this.loginForm = new FormGroup({
       password: new FormControl('', [
@@ -48,8 +53,28 @@ export class Login {
     });
   }
 
-  onDestroy() {
+  ngOnInit() {
+    this.authSubscription = this.socialAuthService.authState.subscribe((user) => {
+      if (user && user.idToken) {
+        this.loginService.loginWithGoogle(user.idToken).subscribe({
+          next: () => {
+            this.currentUserId = this.loginService.getUserId();
+            this.toastService.success('Login com Google realizado com sucesso!');
+            this.navigateAfterLogin();
+          },
+          error: () => {
+            this.toastService.error(
+              'Login com Google falhou. Tente novamente.',
+            );
+          },
+        });
+      }
+    });
+  }
+
+  ngOnDestroy() {
     this.loginForm.reset();
+    this.authSubscription?.unsubscribe();
   }
 
   submit() {
@@ -59,16 +84,7 @@ export class Login {
         next: () => {
           this.currentUserId = this.loginService.getUserId();
           this.toastService.success('Login realizado com sucesso!');
-
-          const redirectUrl = sessionStorage.getItem('redirectUrl');
-
-          if (redirectUrl) {
-            sessionStorage.removeItem('redirectUrl');
-            // CORREÇÃO AQUI: Use navigateByUrl para strings completas
-            this.router.navigateByUrl(redirectUrl);
-          } else {
-            this.router.navigate(['/app/dashboard']);
-          }
+          this.navigateAfterLogin();
           this.loginForm.reset();
         },
         error: () => {
@@ -78,4 +94,15 @@ export class Login {
         },
       });
   }
+
+  private navigateAfterLogin() {
+    const redirectUrl = sessionStorage.getItem('redirectUrl');
+    if (redirectUrl) {
+      sessionStorage.removeItem('redirectUrl');
+      this.router.navigateByUrl(redirectUrl);
+    } else {
+      this.router.navigate(['/app/dashboard']);
+    }
+  }
 }
+
