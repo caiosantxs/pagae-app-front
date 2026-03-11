@@ -4,6 +4,7 @@ import { LoginResponse } from '../../types/login-response.type';
 import { tap } from 'rxjs/operators';
 import { Router } from '@angular/router';
 import { environment } from '../../../environments/environment';
+import { SocialAuthService } from '@abacritt/angularx-social-login';
 
 @Injectable({
   providedIn: 'root',
@@ -11,7 +12,8 @@ import { environment } from '../../../environments/environment';
 export class LoginService {
   constructor(
     private httpClient: HttpClient,
-    private router: Router
+    private router: Router,
+    private socialAuthService: SocialAuthService
   ) {}
 
   apiUrl: string = environment.apiUrl + '/auth';
@@ -27,11 +29,15 @@ export class LoginService {
   }
 
   loginWithGoogle(idToken: string) {
-    return this.httpClient.post<LoginResponse>(this.apiUrl + '/google', { idToken }).pipe(
-      tap((value) => {
-        sessionStorage.setItem('authToken', value.token);
-        sessionStorage.setItem('authUsername', value.name);
-        sessionStorage.setItem('authUserId', String(value.id));
+    return this.httpClient.post<any>(this.apiUrl + '/google', { idToken }).pipe(
+      tap((value: any) => {
+        console.log('🕵️ O QUE O JAVA DEVOLVEU:', value);
+
+        if (value && value.idToken) {
+          sessionStorage.setItem('authToken', value.idToken);
+          sessionStorage.setItem('authUsername', value.name || 'Usuário Google');
+          sessionStorage.setItem('authUserId', String(value.id || '0'));
+        }
       })
     );
   }
@@ -65,7 +71,13 @@ export class LoginService {
     sessionStorage.removeItem('authToken');
     sessionStorage.removeItem('authUsername');
     sessionStorage.removeItem('authUserId');
-    this.router.navigate(['/login']);
+
+    this.socialAuthService.signOut()
+      .catch(() => {
+      })
+      .finally(() => {
+        this.router.navigate(['/login']);
+      });
   }
 
 }

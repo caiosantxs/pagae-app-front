@@ -1,7 +1,9 @@
-<div class="min-h-screen w-screen relative left-1/2 -translate-x-1/2 bg-[#00D177] flex items-center justify-center p-4">
-
-  <div class="bg-white rounded-3xl border-4 border-black shadow-[8px_8px_0px_0px_rgba(0,0,0,1)] flex w-full max-w-4xl overflow-hidden">
-
+<div
+  class="min-h-screen w-screen relative left-1/2 -translate-x-1/2 bg-[#00D177] flex items-center justify-center p-4"
+>
+  <div
+    class="bg-white rounded-3xl border-4 border-black shadow-[8px_8px_0px_0px_rgba(0,0,0,1)] flex w-full max-w-4xl overflow-hidden"
+  >
     <div class="hidden md:block md:w-5/12 relative border-r-4 border-black">
       <img
         src="assets/images/registerimg.jpg"
@@ -11,24 +13,20 @@
     </div>
 
     <div class="w-full md:w-7/12 p-8 md:p-12">
-      <h2 class="text-4xl font-black text-gray-950 mb-3 tracking-tighter">Registre-se</h2>
+      <h2 class="text-4xl font-black text-gray-950 mb-3 tracking-tighter">
+        Registre-se
+      </h2>
       <p class="text-gray-700 font-medium mb-10 leading-snug">
-        Crie sua conta para começar a organizar seus rolês. 🚀
+        Crie sua conta para começar a organizar seus rolês.
       </p>
 
       <form class="space-y-5" [formGroup]="registerForm">
-
         <div>
           <input
             pInputText
             placeholder="Nome completo"
             formControlName="name"
-            class="w-full p-4 rounded-xl border-2 border-black
-                   bg-white text-gray-900 font-medium
-                   focus:outline-none focus:border-[#00D177] focus:ring-0
-                   focus:shadow-[4px_4px_0px_0px_rgba(0,0,0,1)]
-                   placeholder:text-gray-400 placeholder:font-normal
-                   transition-shadow duration-150"
+            class="w-full p-4 rounded-xl border-2 border-black bg-white text-gray-900 font-medium focus:outline-none focus:border-[#00D177] focus:ring-0 focus:shadow-[4px_4px_0px_0px_rgba(0,0,0,1)] placeholder:text-gray-400 placeholder:font-normal transition-shadow duration-150"
           />
         </div>
 
@@ -37,12 +35,7 @@
             pInputText
             placeholder="Username"
             formControlName="username"
-            class="w-full p-4 rounded-xl border-2 border-black
-                   bg-white text-gray-900 font-medium
-                   focus:outline-none focus:border-[#00D177] focus:ring-0
-                   focus:shadow-[4px_4px_0px_0px_rgba(0,0,0,1)]
-                   placeholder:text-gray-400 placeholder:font-normal
-                   transition-shadow duration-150"
+            class="w-full p-4 rounded-xl border-2 border-black bg-white text-gray-900 font-medium focus:outline-none focus:border-[#00D177] focus:ring-0 focus:shadow-[4px_4px_0px_0px_rgba(0,0,0,1)] placeholder:text-gray-400 placeholder:font-normal transition-shadow duration-150"
           />
         </div>
 
@@ -52,12 +45,7 @@
             placeholder="Endereço de e-mail"
             formControlName="email"
             type="email"
-            class="w-full p-4 rounded-xl border-2 border-black
-                   bg-white text-gray-900 font-medium
-                   focus:outline-none focus:border-[#00D177] focus:ring-0
-                   focus:shadow-[4px_4px_0px_0px_rgba(0,0,0,1)]
-                   placeholder:text-gray-400 placeholder:font-normal
-                   transition-shadow duration-150"
+            class="w-full p-4 rounded-xl border-2 border-black bg-white text-gray-900 font-medium focus:outline-none focus:border-[#00D177] focus:ring-0 focus:shadow-[4px_4px_0px_0px_rgba(0,0,0,1)] placeholder:text-gray-400 placeholder:font-normal transition-shadow duration-150"
           />
         </div>
 
@@ -77,9 +65,15 @@
                              transition-shadow duration-150"
           ></p-password>
 
-          @if (registerForm.controls['password'].invalid && registerForm.controls['password'].touched) {
-            <small class="text-red-500 font-black uppercase text-[10px] mt-2 italic block">
-              <i class="pi pi-exclamation-circle mr-1"></i> A senha deve ter min. 6 caracteres.
+          @if (
+            registerForm.controls["password"].invalid &&
+            registerForm.controls["password"].touched
+          ) {
+            <small
+              class="text-red-500 font-black uppercase text-[10px] mt-2 italic block"
+            >
+              <i class="pi pi-exclamation-circle mr-1"></i> A senha deve ter
+              min. 6 caracteres.
             </small>
           }
         </div>
@@ -100,19 +94,25 @@
                              transition-shadow duration-150"
           ></p-password>
 
-          @if (registerForm.errors?.['passwordMismatch'] && registerForm.controls['confirmPassword'].touched) {
-            <small class="text-red-500 font-black uppercase text-[10px] mt-2 italic block">
-              <i class="pi pi-exclamation-circle mr-1"></i> As senhas não conferem.
+          @if (
+            registerForm.errors?.["passwordMismatch"] &&
+            registerForm.controls["confirmPassword"].touched
+          ) {
+            <small
+              class="text-red-500 font-black uppercase text-[10px] mt-2 italic block"
+            >
+              <i class="pi pi-exclamation-circle mr-1"></i> As senhas não
+              conferem.
             </small>
           }
         </div>
 
         <style>
           p-password .p-inputtext:focus {
-              box-shadow: 4px 4px 0px 0px rgba(0,0,0,1) !important;
+            box-shadow: 4px 4px 0px 0px rgba(0, 0, 0, 1) !important;
           }
           p-password .p-password-toggle {
-              color: black !important;
+            color: black !important;
           }
         </style>
 
@@ -121,35 +121,42 @@
           type="submit"
           (click)="submit()"
           [disabled]="registerForm.invalid"
-          styleClass="w-full p-button-lg !p-4 !rounded-xl !border-2 !border-black !bg-[#F3FF90] !text-black !font-black !text-lg !tracking-wider !shadow-[6px_6px_0px_0px_rgba(0,0,0,1)] !transition-all !duration-150 hover:!translate-y-[-2px] hover:!shadow-[8px_8px_0px_0px_rgba(0,0,0,1)] active:!translate-y-[2px] active:!shadow-[2px_2px_0px_0px_rgba(0,0,0,1)] disabled:!opacity-60 disabled:!shadow-none disabled:!cursor-not-allowed">
+          styleClass="w-full p-button-lg !p-4 !rounded-xl !border-2 !border-black !bg-[#F3FF90] !text-black !font-black !text-lg !tracking-wider !shadow-[6px_6px_0px_0px_rgba(0,0,0,1)] !transition-all !duration-150 hover:!translate-y-[-2px] hover:!shadow-[8px_8px_0px_0px_rgba(0,0,0,1)] active:!translate-y-[2px] active:!shadow-[2px_2px_0px_0px_rgba(0,0,0,1)] disabled:!opacity-60 disabled:!shadow-none disabled:!cursor-not-allowed"
+        >
         </p-button>
 
         <div class="text-center text-sm text-gray-700 pt-3">
           Já tem uma conta?
-          <a routerLink="/login" class="font-bold text-gray-950 hover:underline hover:text-[#00D177] transition-colors">
+          <a
+            routerLink="/login"
+            class="font-bold text-gray-950 hover:underline hover:text-[#00D177] transition-colors"
+          >
             Entrar
           </a>
         </div>
 
         <div class="relative py-4">
-            <div class="absolute inset-0 flex items-center">
-                <div class="w-full border-t-2 border-gray-200"></div>
-            </div>
-            <div class="relative flex justify-center">
-                <span class="bg-white px-3 text-sm text-gray-500 font-bold uppercase tracking-widest">OU</span>
-            </div>
+          <div class="absolute inset-0 flex items-center">
+            <div class="w-full border-t-2 border-gray-200"></div>
+          </div>
+          <div class="relative flex justify-center">
+            <span
+              class="bg-white px-3 text-sm text-gray-500 font-bold uppercase tracking-widest"
+              >OU</span
+            >
+          </div>
         </div>
 
         <div class="flex justify-center w-full mt-4">
-          <asl-google-signin-button 
-            type="standard" 
-            size="large" 
-            text="signup_with" 
-            shape="rectangular" 
-            theme="outline">
+          <asl-google-signin-button
+            type="standard"
+            size="large"
+            text="continue_with"
+            shape="rectangular"
+            theme="outline"
+          >
           </asl-google-signin-button>
         </div>
-
       </form>
     </div>
   </div>

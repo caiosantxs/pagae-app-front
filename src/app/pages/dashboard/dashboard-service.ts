@@ -28,7 +28,7 @@ export interface DashboardStatsDTO {
 
 @Injectable({ providedIn: 'root' })
 export class DashboardService {
-  // Ajuste para a sua URL real
+
   private apiUrl = 'http://localhost:8080/api/dashboard';
 
   constructor(private http: HttpClient) {}
