@@ -13,7 +13,7 @@
       pButton
       label="Gerenciar Rolês"
       routerLink="/app/hangouts"
-      icon="pi pi-plus"
+      icon="pi pi-arrow-circle-right"
       class="!bg-[#00D177] !border-2 !border-black !text-black !font-black !rounded-xl !px-6 !py-3 !shadow-[4px_4px_0px_0px_rgba(0,0,0,1)] hover:!translate-y-[-2px] hover:!shadow-[6px_6px_0px_0px_rgba(0,0,0,1)] transition-all active:!translate-y-[2px] active:!shadow-none"
     >
     </a>
@@ -50,9 +50,6 @@
         <h3 class="text-5xl md:text-6xl font-black text-gray-950 mb-2 tracking-tighter truncate w-full" [title]="stats.totalReceivable | currency: 'BRL'">
           {{ stats.totalReceivable | currency: "BRL" }}
         </h3>
-        <span class="bg-black text-[#F3FF90] w-fit px-3 py-1 rounded-full text-[11px] font-black uppercase tracking-widest">
-          Disponível
-        </span>
       </div>
     </div>
 
