@@ -13,7 +13,8 @@ import { PasswordModule } from 'primeng/password';
 import { DividerModule } from 'primeng/divider';
 import { LoginService } from './login-service';
 import { ToastrService } from 'ngx-toastr';
-import { SocialAuthService, GoogleSigninButtonModule } from '@abacritt/angularx-social-login';
+import { GoogleSigninButtonModule } from '@abacritt/angularx-social-login';
+import { SocialAuthService } from '@abacritt/angularx-social-login';
 import { Subscription } from 'rxjs';
 
 @Component({

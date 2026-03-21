@@ -9,7 +9,7 @@ import { provideToastr } from 'ngx-toastr';
 import { provideAnimations } from '@angular/platform-browser/animations';
 import { authInterceptor } from './core/interceptors/auth-interceptor';
 import { LOCALE_ID } from '@angular/core';
-import { SocialAuthServiceConfig, GoogleLoginProvider, SOCIAL_AUTH_CONFIG } from '@abacritt/angularx-social-login';
+import { SocialAuthServiceConfig, GoogleLoginProvider } from '@abacritt/angularx-social-login';
 import { environment } from '../environments/environment';
 
 import { registerLocaleData } from '@angular/common';
@@ -36,16 +36,19 @@ export const appConfig: ApplicationConfig = {
     provideAnimations(),
     { provide: LOCALE_ID, useValue: 'pt-BR' },
     {
-      provide: SOCIAL_AUTH_CONFIG,
-      useValue: {
-        autoLogin: false,
-        providers: [
-          {
-            id: GoogleLoginProvider.PROVIDER_ID,
-            provider: new GoogleLoginProvider(environment.googleClientId),
-          },
-        ],
-      } as SocialAuthServiceConfig,
-    },
+  provide: 'SocialAuthServiceConfig', // 👈 A mágica está aqui, escrito como string!
+  useValue: {
+    autoLogin: false,
+    providers: [
+      {
+        id: GoogleLoginProvider.PROVIDER_ID,
+        provider: new GoogleLoginProvider(environment.googleClientId),
+      }
+    ],
+    onError: (err) => {
+      console.error(err);
+    }
+  } as SocialAuthServiceConfig,
+}
   ]
 };

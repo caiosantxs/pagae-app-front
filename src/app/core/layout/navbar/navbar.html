@@ -1,5 +1,5 @@
-<header class="bg-white border-b-4 border-black sticky top-0 z-50 w-full px-4">
-  <div class="container mx-auto h-20 flex items-center justify-between">
+<header class="bg-white border-b-4 border-black sticky top-0 z-50 w-full">
+  <div class="container mx-auto h-20 px-4 flex items-center justify-between">
 
     <div class="flex items-center">
       <a routerLink="/app/dashboard"
@@ -8,41 +8,45 @@
       </a>
     </div>
 
-    <nav class="flex items-center gap-2 md:gap-4">
-
-      <a
-        routerLink="/app/dashboard"
-        routerLinkActive="!bg-[#00D177] !text-black shadow-[2px_2px_0px_0px_rgba(0,0,0,1)]"
-        class="px-4 py-2 rounded-xl text-sm font-black text-gray-700 border-2 border-transparent hover:border-black hover:bg-gray-50 cursor-pointer no-underline transition-all duration-150"
-      >
+    <nav class="hidden md:flex items-center gap-4">
+      <a routerLink="/app/dashboard" routerLinkActive="!bg-[#00D177] !text-black shadow-[2px_2px_0px_0px_rgba(0,0,0,1)]" class="px-4 py-2 rounded-xl text-sm font-black text-gray-700 border-2 border-transparent hover:border-black hover:bg-gray-50 cursor-pointer no-underline transition-all duration-150">
         Início
       </a>
-
-      <a
-        routerLink="/app/hangouts"
-        routerLinkActive="!bg-[#00D177] !text-black shadow-[2px_2px_0px_0px_rgba(0,0,0,1)]"
-        class="px-4 py-2 rounded-xl text-sm font-black text-gray-700 border-2 border-transparent hover:border-black hover:bg-gray-50 cursor-pointer no-underline transition-all duration-150"
-      >
+      <a routerLink="/app/hangouts" routerLinkActive="!bg-[#00D177] !text-black shadow-[2px_2px_0px_0px_rgba(0,0,0,1)]" class="px-4 py-2 rounded-xl text-sm font-black text-gray-700 border-2 border-transparent hover:border-black hover:bg-gray-50 cursor-pointer no-underline transition-all duration-150">
         Meus Rolês
       </a>
-
-      <a
-        routerLink="/app/acertos"
-        routerLinkActive="!bg-[#00D177] !text-black shadow-[2px_2px_0px_0px_rgba(0,0,0,1)]"
-        class="px-4 py-2 rounded-xl text-sm font-black text-gray-700 border-2 border-transparent hover:border-black hover:bg-gray-50 cursor-pointer no-underline transition-all duration-150"
-      >
+      <a routerLink="/app/acertos" routerLinkActive="!bg-[#00D177] !text-black shadow-[2px_2px_0px_0px_rgba(0,0,0,1)]" class="px-4 py-2 rounded-xl text-sm font-black text-gray-700 border-2 border-transparent hover:border-black hover:bg-gray-50 cursor-pointer no-underline transition-all duration-150">
         Acertos
       </a>
-
-      <div class="w-[2px] h-6 bg-black/10 mx-2 hidden md:block"></div>
-
-      <button
-        (click)="logout()"
-        class="ml-2 px-4 py-2 rounded-xl text-sm font-black text-red-500 hover:bg-red-50 hover:text-red-600 border-2 border-transparent hover:border-red-600 transition-all cursor-pointer"
-      >
+      <div class="w-[2px] h-6 bg-black/10 mx-2"></div>
+      <button (click)="logout()" class="px-4 py-2 rounded-xl text-sm font-black text-red-500 hover:bg-red-50 hover:text-red-600 border-2 border-transparent hover:border-red-600 transition-all cursor-pointer">
         Sair
       </button>
     </nav>
 
+    <button (click)="toggleMenu()" class="md:hidden p-2 rounded-lg hover:bg-gray-100 transition-colors">
+      <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2.5" stroke="currentColor" class="w-8 h-8">
+        <path stroke-linecap="round" stroke-linejoin="round" d="M3.75 6.75h16.5M3.75 12h16.5m-16.5 5.25h16.5" />
+      </svg>
+    </button>
+
   </div>
+
+  @if (isMenuOpen) {
+    <div class="md:hidden absolute top-20 left-0 w-full bg-white border-b-4 border-black p-4 flex flex-col gap-3 shadow-xl">
+      <a routerLink="/app/dashboard" (click)="toggleMenu()" routerLinkActive="bg-[#00D177] text-black border-black" class="px-4 py-3 rounded-xl text-base font-black text-gray-700 border-2 border-transparent text-center">
+        Início
+      </a>
+      <a routerLink="/app/hangouts" (click)="toggleMenu()" routerLinkActive="bg-[#00D177] text-black border-black" class="px-4 py-3 rounded-xl text-base font-black text-gray-700 border-2 border-transparent text-center">
+        Meus Rolês
+      </a>
+      <a routerLink="/app/acertos" (click)="toggleMenu()" routerLinkActive="bg-[#00D177] text-black border-black" class="px-4 py-3 rounded-xl text-base font-black text-gray-700 border-2 border-transparent text-center">
+        Acertos
+      </a>
+      <hr class="border-black/10 my-1">
+      <button (click)="logout()" class="px-4 py-3 rounded-xl text-base font-black text-red-500 border-2 border-red-500 bg-red-50 text-center">
+        Sair
+      </button>
+    </div>
+  }
 </header>

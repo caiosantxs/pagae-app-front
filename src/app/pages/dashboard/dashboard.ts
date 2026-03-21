@@ -6,8 +6,7 @@ import { LoginService } from '../login/login-service';
 import { AvatarGroup } from 'primeng/avatargroup';
 import { Avatar } from 'primeng/avatar';
 import { RouterModule } from '@angular/router';
-import { ButtonDirective } from "primeng/button"; // Necessário para o routerLink
-
+import { ButtonDirective } from "primeng/button";
 @Component({
   selector: 'app-dashboard',
   standalone: true,

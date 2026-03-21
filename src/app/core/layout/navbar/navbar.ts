@@ -16,4 +16,10 @@ export class Navbar {
   logout(){
     this.loginService.logout();
   }
+
+  isMenuOpen = false;
+
+  toggleMenu() {
+    this.isMenuOpen = !this.isMenuOpen;
+  }
 }

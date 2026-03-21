@@ -14,10 +14,6 @@
       </div>
 
       <div class="flex flex-col md:flex-row gap-6 items-start">
-        <div class="w-24 h-24 bg-gray-100 border-4 border-black rounded-3xl flex items-center justify-center text-4xl shadow-[4px_4px_0px_0px_rgba(0,0,0,1)] shrink-0">
-          🥳
-        </div>
-
         <div class="flex-grow w-full">
           <label for="title" class="block text-xs font-black text-gray-400 uppercase tracking-widest mb-2">Como vai se chamar?</label>
           <input
@@ -42,40 +38,44 @@
       </div>
 
       <div class="mb-6">
-        <h3 class="text-xl font-black text-gray-950 uppercase tracking-tight">Quem vai rachar?</h3>
-        <p class="text-gray-400 font-bold text-sm">Busque seus amigos pelo nome ou username</p>
-      </div>
+  <h3 class="text-xl font-black text-gray-950 uppercase tracking-tight">Quem vai rachar?</h3>
+  <p class="text-gray-400 font-bold text-sm">Busque seus amigos pelo nome ou username</p>
+</div>
 
-      <div class="neobrutalist-autocomplete">
-        <p-autoComplete
-  formControlName="memberIds"
-  [suggestions]="filteredUsers"
-  (completeMethod)="filterUsers($event)"
-  field="name"
-  dataKey="id"
-  [multiple]="true"
-  [forceSelection]="true"
-  placeholder="Comece a digitar..."
-  styleClass="w-full"
-  inputStyleClass="w-full !p-4 !border-4 !border-black !rounded-2xl !font-black !text-lg !bg-gray-50 focus:!bg-white transition-all shadow-[4px_4px_0px_0px_rgba(0,0,0,1)]"
-  appendTo="body"
->
-          <ng-template let-user pTemplate="selectedItem">
-             <div class="flex items-center gap-2 font-black text-sm uppercase">
-               <span>{{ user.name }}</span>
-             </div>
-          </ng-template>
-
-          <ng-template let-user pTemplate="item">
-            <div class="flex items-center gap-3 py-1">
-               <div class="w-8 h-8 rounded-lg bg-[#F3FF90] border-2 border-black flex items-center justify-center font-black text-xs">
-                 {{ user.name.charAt(0) }}
-               </div>
-               <span class="font-bold text-gray-950">{{ user.name }}</span>
-            </div>
-          </ng-template>
-        </p-autoComplete>
+<div class="neobrutalist-autocomplete">
+  <p-autoComplete
+    formControlName="memberIds"
+    [suggestions]="filteredUsers"
+    (completeMethod)="filterUsers($event)"
+    field="name"
+    dataKey="id"
+    [multiple]="true"
+    [forceSelection]="true"
+    placeholder="Comece a digitar..."
+    styleClass="w-full"
+    inputStyleClass="w-full !p-4 !border-4 !border-black !rounded-2xl !font-black !text-lg !bg-gray-50 focus:!bg-white transition-all shadow-[4px_4px_0px_0px_rgba(0,0,0,1)]"
+    appendTo="body"
+  >
+    <ng-template let-user pTemplate="selectedItem">
+      <div class="flex items-center gap-2 font-black text-sm uppercase">
+        <span>{{ user.name }}</span>
       </div>
+    </ng-template>
+
+    <ng-template let-user pTemplate="item">
+      <div class="flex items-center gap-3 py-2">
+        <div class="w-10 h-10 rounded-full bg-[#00D177] border-2 border-black flex items-center justify-center font-black text-sm text-black shadow-[2px_2px_0px_0px_rgba(0,0,0,1)] shrink-0">
+          {{ user.name.charAt(0) | uppercase }}
+        </div>
+        
+        <div class="flex flex-col">
+          <span class="font-black text-gray-950 leading-none mb-1">{{ user.name }}</span>
+          <span class="font-bold text-xs text-gray-500">@{{ user.login }}</span>
+        </div>
+      </div>
+    </ng-template>
+  </p-autoComplete>
+</div>
     </div>
 
     <div class="flex flex-col md:flex-row gap-4 pt-4">
@@ -92,7 +92,7 @@
         [disabled]="form.invalid || loading"
         class="flex-[2] bg-[#F3FF90] border-4 border-black p-5 rounded-2xl font-black uppercase tracking-widest shadow-[8px_8px_0px_0px_rgba(0,0,0,1)] hover:translate-y-[-4px] hover:shadow-[12px_12px_0px_0px_rgba(0,0,0,1)] transition-all active:translate-y-[2px] active:shadow-none disabled:opacity-50"
       >
-        {{ loading ? 'Criando...' : 'Bora Pro Rolê! 🚀' }}
+        {{ loading ? 'Criando...' : 'Bora Pro Rolê!' }}
       </button>
     </div>
 

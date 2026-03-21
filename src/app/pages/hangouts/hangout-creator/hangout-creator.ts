@@ -51,8 +51,6 @@ export class HangoutCreator {
 
     const formValue = this.form.value;
 
-    // O AutoComplete retorna o Objeto inteiro ({id, name, login}).
-    // Se seu Backend no 'create' espera apenas List<Long> ids:
     const selectedMembers = formValue.memberIds as UserResponseDTO[];
     const idsOnly = selectedMembers.map(u => u.id);
 
