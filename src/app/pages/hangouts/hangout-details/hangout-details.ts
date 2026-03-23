@@ -75,6 +75,7 @@ export class HangoutDetails {
     });
   }
 
+  showMembers: boolean = false;
   maxPaymentAmount: number = 0;
 
   hangoutId!: number;

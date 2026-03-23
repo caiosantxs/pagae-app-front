@@ -1,7 +1,9 @@
 @if (isLoading) {
   <div class="flex flex-col items-center justify-center min-h-[60vh]">
     <i class="pi pi-spin pi-spinner text-6xl text-[#00D177]"></i>
-    <p class="mt-4 font-black uppercase tracking-widest text-sm text-gray-950">Carregando rolê...</p>
+    <p class="mt-4 font-black uppercase tracking-widest text-sm text-gray-950">
+      Carregando rolê...
+    </p>
   </div>
 } @else if (hangout) {
   <div class="max-w-7xl mx-auto px-4 py-8">
@@ -10,24 +12,74 @@
         routerLink="/app/hangouts"
         class="inline-flex items-center text-black font-black uppercase text-xs tracking-widest hover:text-[#00D177] transition-colors group mb-6"
       >
-        <i class="pi pi-arrow-left mr-2 group-hover:-translate-x-1 transition-transform"></i>
+        <i
+          class="pi pi-arrow-left mr-2 group-hover:-translate-x-1 transition-transform"
+        ></i>
         Voltar para Meus Rolês
       </a>
 
       <div class="flex flex-col lg:flex-row lg:items-end justify-between gap-6">
         <div>
-          <h1 class="text-5xl md:text-7xl font-black text-gray-950 tracking-tighter mb-4 uppercase">
+          <h1
+            class="text-5xl md:text-7xl font-black text-gray-950 tracking-tighter mb-4 uppercase"
+          >
             {{ hangout.title }}
           </h1>
           <div class="flex flex-wrap items-center gap-4">
-            <span class="bg-white border-2 border-black px-4 py-1 rounded-full font-black text-xs uppercase shadow-[2px_2px_0px_0px_rgba(0,0,0,1)] flex items-center">
-              <i class="pi pi-calendar mr-2"></i> {{ hangout.creationDate | date: "dd/MM/yyyy" }}
+            <span
+              class="bg-white border-2 border-black px-4 py-1 rounded-full font-black text-xs uppercase shadow-[2px_2px_0px_0px_rgba(0,0,0,1)] flex items-center"
+            >
+              <i class="pi pi-calendar mr-2"></i>
+              {{ hangout.creationDate | date: "dd/MM/yyyy" }}
             </span>
-            <span class="bg-white border-2 border-black px-4 py-1 rounded-full font-black text-xs uppercase shadow-[2px_2px_0px_0px_rgba(0,0,0,1)] flex items-center">
-              <i class="pi pi-users mr-2"></i> {{ hangout.members.length }} participantes
-            </span>
-            <span class="text-sm font-bold text-gray-500 flex items-center" title="Organizador do Rolê">
-              Por: <span class="text-black ml-1 underline decoration-[#00D177] decoration-2">{{ getCreatorName() }}</span>
+            <div class="relative inline-block">
+              <button
+                (click)="showMembers = !showMembers"
+                class="bg-white border-2 border-black px-4 py-1 rounded-full font-black text-xs uppercase shadow-[2px_2px_0px_0px_rgba(0,0,0,1)] flex items-center hover:bg-gray-100 transition-all cursor-pointer active:translate-x-[2px] active:translate-y-[2px] active:shadow-none focus:outline-none"
+              >
+                <i class="pi pi-users mr-2"></i>
+                {{ hangout.members.length }} participantes
+                <i
+                  class="pi pi-chevron-down ml-2 transition-transform duration-200"
+                  [class.rotate-180]="showMembers"
+                ></i>
+              </button>
+
+              @if (showMembers) {
+                <div
+                  class="absolute top-full mt-2 left-0 w-56 bg-white border-2 border-black rounded-xl shadow-[4px_4px_0px_0px_rgba(0,0,0,1)] z-10 overflow-hidden"
+                >
+                  <ul class="max-h-48 overflow-y-auto">
+                    @for (
+                      member of hangout.members;
+                      track member.id || $index
+                    ) {
+                      <li
+                        class="px-4 py-2 border-b-2 border-black last:border-b-0 text-sm font-bold flex items-center gap-2 hover:bg-gray-50 transition-colors"
+                      >
+                        <i class="pi pi-user text-xs"></i>
+                        {{ member.name }}
+                      </li>
+                    } @empty {
+                      <li
+                        class="px-4 py-3 text-sm font-bold text-gray-500 text-center"
+                      >
+                        Ninguém entrou no rolê ainda.
+                      </li>
+                    }
+                  </ul>
+                </div>
+              }
+            </div>
+            <span
+              class="text-sm font-bold text-gray-500 flex items-center"
+              title="Organizador do Rolê"
+            >
+              Por:
+              <span
+                class="text-black ml-1 underline decoration-[#00D177] decoration-2"
+                >{{ getCreatorName() }}</span
+              >
             </span>
           </div>
         </div>
@@ -56,57 +108,98 @@
     </div>
 
     <div class="grid grid-cols-1 md:grid-cols-3 gap-8 mb-12">
-      <div class="bg-[#00D177] border-4 border-black rounded-[32px] p-8 shadow-[8px_8px_0px_0px_rgba(0,0,0,1)] relative overflow-hidden">
+      <div
+        class="bg-[#00D177] border-4 border-black rounded-[32px] p-8 shadow-[8px_8px_0px_0px_rgba(0,0,0,1)] relative overflow-hidden"
+      >
         <div class="relative z-10">
           <div class="flex justify-between items-start mb-4">
-            <span class="text-[10px] font-black uppercase tracking-widest bg-black text-white px-3 py-1 rounded-full">Geral</span>
+            <span
+              class="text-[10px] font-black uppercase tracking-widest bg-black text-white px-3 py-1 rounded-full"
+              >Geral</span
+            >
           </div>
-          <p class="text-black font-black uppercase text-xs tracking-widest mb-1">Custo Total</p>
-          <h3 class="text-5xl font-black text-black tracking-tighter truncate w-full">
+          <p
+            class="text-black font-black uppercase text-xs tracking-widest mb-1"
+          >
+            Custo Total
+          </p>
+          <h3
+            class="text-5xl font-black text-black tracking-tighter truncate w-full"
+          >
             {{ getTotalCost() | currency: "BRL" }}
           </h3>
         </div>
       </div>
 
-      <div class="bg-white border-4 border-black rounded-[32px] p-8 shadow-[8px_8px_0px_0px_rgba(0,0,0,1)]">
+      <div
+        class="bg-white border-4 border-black rounded-[32px] p-8 shadow-[8px_8px_0px_0px_rgba(0,0,0,1)]"
+      >
         <div class="flex justify-between items-start mb-4">
-          <span class="text-[10px] font-black uppercase tracking-widest bg-gray-100 border-2 border-black text-gray-500 px-3 py-1 rounded-full">Por pessoa</span>
+          <span
+            class="text-[10px] font-black uppercase tracking-widest bg-gray-100 border-2 border-black text-gray-500 px-3 py-1 rounded-full"
+            >Por pessoa</span
+          >
         </div>
-        <p class="text-gray-400 font-black uppercase text-xs tracking-widest mb-1">
+        <p
+          class="text-gray-400 font-black uppercase text-xs tracking-widest mb-1"
+        >
           Sua parte (estimada)
         </p>
-        <h3 class="text-5xl font-black text-gray-950 tracking-tighter truncate w-full">
+        <h3
+          class="text-5xl font-black text-gray-950 tracking-tighter truncate w-full"
+        >
           {{ myShareTotal | currency: "BRL" }}
         </h3>
       </div>
 
-      <div class="bg-[#F3FF90] border-4 border-black rounded-[32px] p-8 shadow-[8px_8px_0px_0px_rgba(0,0,0,1)] flex flex-col h-full">
+      <div
+        class="bg-[#F3FF90] border-4 border-black rounded-[32px] p-8 shadow-[8px_8px_0px_0px_rgba(0,0,0,1)] flex flex-col h-full"
+      >
         <div class="flex items-center gap-3 mb-4">
           <div>
-            <p class="text-[9px] font-black uppercase tracking-widest text-gray-500">Para você</p>
+            <p
+              class="text-[9px] font-black uppercase tracking-widest text-gray-500"
+            >
+              Para você
+            </p>
             <h3 class="text-lg font-black uppercase text-black">A receber</h3>
           </div>
         </div>
 
-        <div class="flex flex-col gap-3 flex-1 overflow-y-auto max-h-40 pr-2 custom-scrollbar">
+        <div
+          class="flex flex-col gap-3 flex-1 overflow-y-auto max-h-40 pr-2 custom-scrollbar"
+        >
           @for (item of getReceivables(); track $index) {
-            <div class="flex justify-between items-center border-b-2 border-black/10 pb-2">
+            <div
+              class="flex justify-between items-center border-b-2 border-black/10 pb-2"
+            >
               <div class="flex flex-col">
-                <span class="text-sm font-black text-gray-950">{{ item.debtorName }}</span>
-                <span class="text-[10px] font-bold text-gray-500 truncate max-w-[120px]" [title]="item.expenseName">
+                <span class="text-sm font-black text-gray-950">{{
+                  item.debtorName
+                }}</span>
+                <span
+                  class="text-[10px] font-bold text-gray-500 truncate max-w-[120px]"
+                  [title]="item.expenseName"
+                >
                   ref: {{ item.expenseName }}
                 </span>
               </div>
-              <span class="text-sm font-black bg-white px-2 py-0.5 border-2 border-black rounded-lg text-black">
+              <span
+                class="text-sm font-black bg-white px-2 py-0.5 border-2 border-black rounded-lg text-black"
+              >
                 + {{ item.amount | currency: "BRL" }}
               </span>
             </div>
           }
 
           @if (getReceivables().length === 0) {
-            <div class="flex flex-col items-center justify-center h-full opacity-40">
+            <div
+              class="flex flex-col items-center justify-center h-full opacity-40"
+            >
               <i class="pi pi-check-circle text-2xl mb-1 text-black"></i>
-              <p class="text-xs font-black uppercase italic text-black">Tudo recebido!</p>
+              <p class="text-xs font-black uppercase italic text-black">
+                Tudo recebido!
+              </p>
             </div>
           }
         </div>
@@ -116,40 +209,61 @@
     <div class="grid grid-cols-1 lg:grid-cols-3 gap-12">
       <div class="lg:col-span-2">
         <div class="flex items-center justify-between mb-6">
-          <h2 class="text-3xl font-black text-gray-950 uppercase italic tracking-tighter">Despesas</h2>
+          <h2
+            class="text-3xl font-black text-gray-950 uppercase italic tracking-tighter"
+          >
+            Despesas
+          </h2>
         </div>
 
         <button
           (click)="openNewExpense()"
           class="w-full py-6 border-4 border-dashed border-black rounded-[24px] text-black font-black text-lg hover:bg-[#00D177]/10 hover:border-solid transition-all mb-8 flex items-center justify-center gap-3 group"
         >
-          <i class="pi pi-plus-circle text-2xl group-hover:rotate-90 transition-transform"></i>
+          <i
+            class="pi pi-plus-circle text-2xl group-hover:rotate-90 transition-transform"
+          ></i>
           Adicionar nova despesa
         </button>
 
         <div class="space-y-6">
           @for (expense of hangout.expenses; track expense.id) {
-            <div class="bg-white border-4 border-black p-6 rounded-[24px] shadow-[4px_4px_0px_0px_rgba(0,0,0,1)] hover:translate-y-[-2px] hover:shadow-[8px_8px_0px_0px_rgba(0,0,0,1)] transition-all">
-              <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
-
+            <div
+              class="bg-white border-4 border-black p-6 rounded-[24px] shadow-[4px_4px_0px_0px_rgba(0,0,0,1)] hover:translate-y-[-2px] hover:shadow-[8px_8px_0px_0px_rgba(0,0,0,1)] transition-all"
+            >
+              <div
+                class="flex flex-col sm:flex-row sm:items-center justify-between gap-4"
+              >
                 <div class="flex items-center gap-5">
-                  <div class="w-14 h-14 rounded-2xl bg-gray-100 border-2 border-black flex items-center justify-center text-2xl shadow-[3px_3px_0px_0px_rgba(0,0,0,1)] text-gray-900">
+                  <div
+                    class="w-14 h-14 rounded-2xl bg-gray-100 border-2 border-black flex items-center justify-center text-2xl shadow-[3px_3px_0px_0px_rgba(0,0,0,1)] text-gray-900"
+                  >
                     <i [class]="getIcon(expense.description)"></i>
                   </div>
 
                   <div>
-                    <h4 class="text-xl font-black text-gray-950 uppercase leading-tight">
+                    <h4
+                      class="text-xl font-black text-gray-950 uppercase leading-tight"
+                    >
                       {{ expense.description }}
                     </h4>
 
                     <div class="text-xs mt-2">
                       @if (isPayer(expense)) {
-                        <span class="bg-[#00D177] border-2 border-black px-2 py-0.5 rounded-lg text-black font-black uppercase text-[10px] shadow-[2px_2px_0px_0px_rgba(0,0,0,1)]">
-                          <i class="pi pi-check-circle text-[9px] mr-1"></i> Você pagou
+                        <span
+                          class="bg-[#00D177] border-2 border-black px-2 py-0.5 rounded-lg text-black font-black uppercase text-[10px] shadow-[2px_2px_0px_0px_rgba(0,0,0,1)]"
+                        >
+                          <i class="pi pi-check-circle text-[9px] mr-1"></i>
+                          Você pagou
                         </span>
                       } @else {
-                        <span class="bg-white border-2 border-black px-2 py-0.5 rounded-lg text-black font-black uppercase text-[10px] shadow-[2px_2px_0px_0px_rgba(0,0,0,1)]">
-                          Pagar para <span class="text-black">{{ expense.payer.name }}</span>
+                        <span
+                          class="bg-white border-2 border-black px-2 py-0.5 rounded-lg text-black font-black uppercase text-[10px] shadow-[2px_2px_0px_0px_rgba(0,0,0,1)]"
+                        >
+                          Pagar para
+                          <span class="text-black">{{
+                            expense.payer.name
+                          }}</span>
                         </span>
                       }
                     </div>
@@ -161,19 +275,27 @@
                             class="bg-blue-400 border-2 border-black px-2 py-0.5 rounded-lg text-[10px] font-black uppercase text-white shadow-[2px_2px_0px_0px_rgba(0,0,0,1)]"
                             pTooltip="Valor pendente de recebimento"
                           >
-                            A receber: {{ getReceivableAmount(expense) | currency: "BRL" }}
+                            A receber:
+                            {{ getReceivableAmount(expense) | currency: "BRL" }}
                           </span>
                         } @else {
-                          <span class="bg-[#F3FF90] border-2 border-black px-2 py-0.5 rounded-lg text-[10px] font-black uppercase text-black shadow-[2px_2px_0px_0px_rgba(0,0,0,1)]">
-                            <i class="pi pi-check-circle text-[9px] mr-1"></i> Pago por todos
+                          <span
+                            class="bg-[#F3FF90] border-2 border-black px-2 py-0.5 rounded-lg text-[10px] font-black uppercase text-black shadow-[2px_2px_0px_0px_rgba(0,0,0,1)]"
+                          >
+                            <i class="pi pi-check-circle text-[9px] mr-1"></i>
+                            Pago por todos
                           </span>
                         }
                       } @else if (getMyDebt(expense) > 0) {
-                        <span class="bg-red-500 border-2 border-black px-2 py-0.5 rounded-lg text-[10px] font-black uppercase text-white shadow-[2px_2px_0px_0px_rgba(0,0,0,1)]">
+                        <span
+                          class="bg-red-500 border-2 border-black px-2 py-0.5 rounded-lg text-[10px] font-black uppercase text-white shadow-[2px_2px_0px_0px_rgba(0,0,0,1)]"
+                        >
                           Sua parte: {{ getMyDebt(expense) | currency: "BRL" }}
                         </span>
                       } @else {
-                        <span class="bg-gray-200 border-2 border-black px-2 py-0.5 rounded-lg text-[10px] font-black uppercase text-gray-600 shadow-[2px_2px_0px_0px_rgba(0,0,0,1)]">
+                        <span
+                          class="bg-gray-200 border-2 border-black px-2 py-0.5 rounded-lg text-[10px] font-black uppercase text-gray-600 shadow-[2px_2px_0px_0px_rgba(0,0,0,1)]"
+                        >
                           Você está quite
                         </span>
                       }
@@ -183,8 +305,16 @@
 
                 <div class="flex items-center gap-4 self-end sm:self-center">
                   <div class="text-right">
-                    <p class="text-2xl font-black text-gray-950 tracking-tighter">{{ expense.totalAmount | currency: "BRL" }}</p>
-                    <p class="text-[9px] font-black text-gray-400 uppercase tracking-widest">valor total</p>
+                    <p
+                      class="text-2xl font-black text-gray-950 tracking-tighter"
+                    >
+                      {{ expense.totalAmount | currency: "BRL" }}
+                    </p>
+                    <p
+                      class="text-[9px] font-black text-gray-400 uppercase tracking-widest"
+                    >
+                      valor total
+                    </p>
                   </div>
 
                   @if (isExpenseCreator(expense)) {
@@ -214,24 +344,38 @@
         </div>
       </div>
 
-      <div class="bg-white border-4 border-black rounded-[32px] p-8 shadow-[8px_8px_0px_0px_rgba(0,0,0,1)] h-fit flex flex-col">
+      <div
+        class="bg-white border-4 border-black rounded-[32px] p-8 shadow-[8px_8px_0px_0px_rgba(0,0,0,1)] h-fit flex flex-col"
+      >
         <div class="flex items-center gap-3 mb-8">
           <i class="pi pi-history font-black text-xl text-black"></i>
-          <h3 class="text-xl font-black uppercase tracking-tighter text-black">Pagamentos Recentes</h3>
+          <h3 class="text-xl font-black uppercase tracking-tighter text-black">
+            Pagamentos Recentes
+          </h3>
         </div>
 
         <div class="flex flex-col gap-6 flex-1">
           @for (activity of hangout.recentActivities; track activity.id) {
-            <div class="flex items-start gap-3 relative pb-6 border-l-2 border-black/10 ml-2 pl-6 last:border-0 last:pb-0 group">
-              <div class="absolute left-[-9px] top-0 w-4 h-4 rounded-full bg-black border-4 border-[#00D177]"></div>
+            <div
+              class="flex items-start gap-3 relative pb-6 border-l-2 border-black/10 ml-2 pl-6 last:border-0 last:pb-0 group"
+            >
+              <div
+                class="absolute left-[-9px] top-0 w-4 h-4 rounded-full bg-black border-4 border-[#00D177]"
+              ></div>
 
               <div class="flex flex-col flex-1">
                 <span class="text-sm text-black font-bold leading-tight">
-                  <span class="font-black">{{ getDisplayName(activity.payerId, activity.payerName) }}</span>
+                  <span class="font-black">{{
+                    getDisplayName(activity.payerId, activity.payerName)
+                  }}</span>
                   pagou
-                  <span class="bg-[#F3FF90] px-1 font-black">{{ activity.description }}</span>
+                  <span class="bg-[#F3FF90] px-1 font-black">{{
+                    activity.description
+                  }}</span>
                 </span>
-                <span class="text-[9px] uppercase font-black tracking-widest text-gray-400 mt-1">
+                <span
+                  class="text-[9px] uppercase font-black tracking-widest text-gray-400 mt-1"
+                >
                   {{ formatDateFriendly(activity.date) }}
                 </span>
               </div>
@@ -241,16 +385,22 @@
             </div>
           }
           @if (!hangout.recentActivities.length) {
-            <div class="flex flex-col items-center justify-center h-32 opacity-40">
+            <div
+              class="flex flex-col items-center justify-center h-32 opacity-40"
+            >
               <i class="pi pi-clock text-2xl mb-2 text-black"></i>
-              <p class="text-xs font-black uppercase italic text-black">Nenhum pagamento recente.</p>
+              <p class="text-xs font-black uppercase italic text-black">
+                Nenhum pagamento recente.
+              </p>
             </div>
           }
         </div>
 
         @if (hangout && hangout.recentActivities.length > 10) {
           <div class="mt-6 pt-4 border-t-2 border-black">
-            <button class="w-full py-2 text-xs font-black uppercase tracking-widest text-black hover:text-[#00D177] transition-colors flex items-center justify-center gap-2">
+            <button
+              class="w-full py-2 text-xs font-black uppercase tracking-widest text-black hover:text-[#00D177] transition-colors flex items-center justify-center gap-2"
+            >
               Ver histórico completo <i class="pi pi-arrow-right text-xs"></i>
             </button>
           </div>
@@ -271,7 +421,11 @@
 >
   <form [formGroup]="expenseForm" class="flex flex-col gap-6 pt-2">
     <div class="flex flex-col gap-2">
-      <label for="desc" class="font-black text-xs uppercase tracking-widest text-gray-700">O que foi comprado?</label>
+      <label
+        for="desc"
+        class="font-black text-xs uppercase tracking-widest text-gray-700"
+        >O que foi comprado?</label
+      >
       <input
         pInputText
         id="desc"
@@ -283,7 +437,11 @@
     </div>
 
     <div class="flex flex-col gap-2">
-      <label for="amount" class="font-black text-xs uppercase tracking-widest text-gray-700">Valor Total</label>
+      <label
+        for="amount"
+        class="font-black text-xs uppercase tracking-widest text-gray-700"
+        >Valor Total</label
+      >
       <p-inputNumber
         id="amount"
         formControlName="totalAmount"
@@ -297,7 +455,9 @@
     </div>
 
     <div class="flex flex-col gap-2">
-      <label class="font-black text-xs uppercase tracking-widest text-gray-700">Quem pagou?</label>
+      <label class="font-black text-xs uppercase tracking-widest text-gray-700"
+        >Quem pagou?</label
+      >
       <p-select
         [options]="hangout?.members || []"
         formControlName="payerId"
@@ -309,7 +469,9 @@
     </div>
 
     <div class="flex flex-col gap-2">
-      <label class="font-black text-xs uppercase tracking-widest text-gray-700">Quem vai dividir?</label>
+      <label class="font-black text-xs uppercase tracking-widest text-gray-700"
+        >Quem vai dividir?</label
+      >
       <p-multiSelect
         [options]="hangout?.members || []"
         formControlName="participantsIds"
@@ -321,25 +483,27 @@
         appendTo="body"
       >
       </p-multiSelect>
-      <small class="font-bold text-gray-400">Marque apenas quem consumiu!</small>
+      <small class="font-bold text-gray-400"
+        >Marque apenas quem consumiu!</small
+      >
     </div>
   </form>
 
   <ng-template pTemplate="footer">
     <div class="flex gap-3 w-full">
-        <button
-          pButton
-          label="Cancelar"
-          (click)="showExpenseDialog = false"
-          class="flex-1 !bg-white !border-2 !border-black !text-black !font-black !rounded-xl hover:!bg-gray-100"
-        ></button>
-        <button
-          pButton
-          label="Salvar"
-          (click)="saveExpense()"
-          [disabled]="expenseForm.invalid || loadingExpense"
-          class="flex-[2] !bg-[#00D177] !border-2 !border-black !text-black !font-black !rounded-xl !shadow-[4px_4px_0px_0px_rgba(0,0,0,1)] active:!shadow-none active:!translate-y-1 transition-all"
-        ></button>
+      <button
+        pButton
+        label="Cancelar"
+        (click)="showExpenseDialog = false"
+        class="flex-1 !bg-white !border-2 !border-black !text-black !font-black !rounded-xl hover:!bg-gray-100"
+      ></button>
+      <button
+        pButton
+        label="Salvar"
+        (click)="saveExpense()"
+        [disabled]="expenseForm.invalid || loadingExpense"
+        class="flex-[2] !bg-[#00D177] !border-2 !border-black !text-black !font-black !rounded-xl !shadow-[4px_4px_0px_0px_rgba(0,0,0,1)] active:!shadow-none active:!translate-y-1 transition-all"
+      ></button>
     </div>
   </ng-template>
 </p-dialog>
@@ -352,24 +516,40 @@
   header="Pagar Dívida"
 >
   <div class="flex flex-col gap-5 pt-2" *ngIf="selectedExpense">
-    <div class="bg-[#F3FF90] p-6 rounded-2xl border-2 border-black shadow-[4px_4px_0px_0px_rgba(0,0,0,1)] text-center">
-      <p class="text-[10px] font-black uppercase tracking-widest mb-1">Pagando para</p>
-      <p class="font-black text-2xl tracking-tighter">{{ selectedExpense.creator.name }}</p>
-      <div class="mt-3 inline-block bg-white border-2 border-black px-3 py-1 rounded-full text-xs font-bold">
+    <div
+      class="bg-[#F3FF90] p-6 rounded-2xl border-2 border-black shadow-[4px_4px_0px_0px_rgba(0,0,0,1)] text-center"
+    >
+      <p class="text-[10px] font-black uppercase tracking-widest mb-1">
+        Pagando para
+      </p>
+      <p class="font-black text-2xl tracking-tighter">
+        {{ selectedExpense.creator.name }}
+      </p>
+      <div
+        class="mt-3 inline-block bg-white border-2 border-black px-3 py-1 rounded-full text-xs font-bold"
+      >
         {{ selectedExpense.description }}
       </div>
     </div>
 
-    <div class="flex justify-between items-center bg-gray-50 p-4 rounded-xl border-2 border-black border-dashed">
+    <div
+      class="flex justify-between items-center bg-gray-50 p-4 rounded-xl border-2 border-black border-dashed"
+    >
       <div class="flex flex-col">
-        <span class="text-[10px] text-gray-400 uppercase font-black">Sua parte</span>
-        <span class="font-black text-xl text-orange-600">{{ maxPaymentAmount | currency: "BRL" }}</span>
+        <span class="text-[10px] text-gray-400 uppercase font-black"
+          >Sua parte</span
+        >
+        <span class="font-black text-xl text-orange-600">{{
+          maxPaymentAmount | currency: "BRL"
+        }}</span>
       </div>
       <i class="pi pi-arrow-right font-bold text-gray-300"></i>
     </div>
 
     <div class="flex flex-col gap-2">
-      <label class="font-black text-xs uppercase tracking-widest">Valor do pagamento</label>
+      <label class="font-black text-xs uppercase tracking-widest"
+        >Valor do pagamento</label
+      >
       <p-inputNumber
         [(ngModel)]="paymentAmount"
         mode="currency"
@@ -384,19 +564,24 @@
 
   <ng-template pTemplate="footer">
     <div class="flex flex-col gap-2 w-full">
-        <button
-          pButton
-          label="Confirmar Pagamento"
-          class="!bg-[#00D177] !border-2 !border-black !text-black !font-black !rounded-xl !p-4 !shadow-[4px_4px_0px_0px_rgba(0,0,0,1)] active:!shadow-none active:!translate-y-1"
-          [disabled]="!paymentAmount || paymentAmount <= 0 || paymentAmount > maxPaymentAmount || loadingPayment"
-          (click)="confirmPayment()"
-        ></button>
-        <button
-          pButton
-          label="Voltar"
-          class="p-button-text !text-gray-400 !font-black !text-xs !uppercase"
-          (click)="showPaymentDialog = false"
-        ></button>
+      <button
+        pButton
+        label="Confirmar Pagamento"
+        class="!bg-[#00D177] !border-2 !border-black !text-black !font-black !rounded-xl !p-4 !shadow-[4px_4px_0px_0px_rgba(0,0,0,1)] active:!shadow-none active:!translate-y-1"
+        [disabled]="
+          !paymentAmount ||
+          paymentAmount <= 0 ||
+          paymentAmount > maxPaymentAmount ||
+          loadingPayment
+        "
+        (click)="confirmPayment()"
+      ></button>
+      <button
+        pButton
+        label="Voltar"
+        class="p-button-text !text-gray-400 !font-black !text-xs !uppercase"
+        (click)="showPaymentDialog = false"
+      ></button>
     </div>
   </ng-template>
 </p-dialog>
@@ -411,28 +596,35 @@
   <div class="flex flex-col gap-6 pt-2">
     <p class="text-gray-700 font-bold leading-tight">
       Mande o link abaixo para quem vai rachar o
-      <span class="bg-[#F3FF90] border-2 border-black px-1">{{ hangout?.title }}</span> com você:
+      <span class="bg-[#F3FF90] border-2 border-black px-1">{{
+        hangout?.title
+      }}</span>
+      com você:
     </p>
 
     <div class="flex flex-col gap-2">
-        <div class="flex border-4 border-black rounded-xl overflow-hidden shadow-[4px_4px_0px_0px_rgba(0,0,0,1)]">
-          <input
-            pInputText
-            type="text"
-            [value]="inviteLink"
-            readonly
-            class="flex-1 !border-none !bg-white !p-4 font-bold text-gray-500 text-sm"
-          />
-          <button
-            pButton
-            icon="pi pi-copy"
-            class="!bg-black !text-white !border-none !rounded-none !px-6"
-            (click)="copyInviteLink()"
-          ></button>
-        </div>
-        <p class="text-[10px] font-black text-center text-gray-400 uppercase mt-2 italic">
-            Dica: Só quem tem o link entra no grupo!
-        </p>
+      <div
+        class="flex border-4 border-black rounded-xl overflow-hidden shadow-[4px_4px_0px_0px_rgba(0,0,0,1)]"
+      >
+        <input
+          pInputText
+          type="text"
+          [value]="inviteLink"
+          readonly
+          class="flex-1 !border-none !bg-white !p-4 font-bold text-gray-500 text-sm"
+        />
+        <button
+          pButton
+          icon="pi pi-copy"
+          class="!bg-black !text-white !border-none !rounded-none !px-6"
+          (click)="copyInviteLink()"
+        ></button>
+      </div>
+      <p
+        class="text-[10px] font-black text-center text-gray-400 uppercase mt-2 italic"
+      >
+        Dica: Só quem tem o link entra no grupo!
+      </p>
     </div>
   </div>
 </p-dialog>
