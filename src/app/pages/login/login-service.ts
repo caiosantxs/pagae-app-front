@@ -31,8 +31,6 @@ export class LoginService {
   loginWithGoogle(idToken: string) {
     return this.httpClient.post<any>(this.apiUrl + '/google', { idToken }).pipe(
       tap((value: any) => {
-        console.log('🕵️ O QUE O JAVA DEVOLVEU:', value);
-
         if (value && value.idToken) {
           sessionStorage.setItem('authToken', value.idToken);
           sessionStorage.setItem('authUsername', value.name || 'Usuário Google');
