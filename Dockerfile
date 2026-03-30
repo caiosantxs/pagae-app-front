@@ -1,5 +1,5 @@
 # === ESTÁGIO 1: Construção (Build) ===
-# Usamos o Node.js para instalar os pacotes e compilar o TypeScript
+# Usa o node.js para instalar os pacotes e compilar o TypeScript
 FROM node:20-alpine AS build
 WORKDIR /app
 
@@ -12,7 +12,7 @@ COPY . .
 RUN npm run build --configuration=production
 
 # === ESTÁGIO 2: Servidor Web (Nginx) ===
-# Usamos o Nginx, que é super leve, para servir os arquivos HTML/JS
+# Usa o Nginx para servir os arquivos HTML/JS
 FROM nginx:alpine
 
 # Remove a configuração padrão do Nginx
@@ -29,7 +29,6 @@ RUN echo 'server { \
 }' > /etc/nginx/conf.d/default.conf
 
 # Copia os arquivos gerados no Estágio 1 para a pasta pública do Nginx
-# ⚠️ ATENÇÃO: Verifique se o caminho "pagae-app-front/browser" bate com o que o seu Angular gera na pasta "dist"
 COPY --from=build /app/dist/pagae-app-front/browser /usr/share/nginx/html
 
 # Libera a porta 80 (padrão de internet)
