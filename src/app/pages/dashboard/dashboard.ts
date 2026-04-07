@@ -2,7 +2,7 @@ import { CommonModule } from '@angular/common';
 import { Component, OnInit } from '@angular/core';
 import { Observable } from 'rxjs';
 import { DashboardService, DashboardStatsDTO } from './dashboard-service';
-import { LoginService } from '../login/login-service';
+import { LoginService } from '../auth/login/login-service';
 import { AvatarGroup } from 'primeng/avatargroup';
 import { Avatar } from 'primeng/avatar';
 import { RouterModule } from '@angular/router';

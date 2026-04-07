@@ -7,11 +7,15 @@ import { HangoutDetails } from './pages/hangouts/hangout-details/hangout-details
 import { HangoutCreator } from './pages/hangouts/hangout-creator/hangout-creator';
 import { JoinHangout } from './pages/join-hangout/join-hangout';
 import { SimplificarDividas } from './pages/simplificar-dividas/simplificar-dividas';
+import { ResetPassword } from './pages/auth/reset-password/reset-password';
+import { ForgotPassword } from './pages/auth/forgot-password/forgot-password';
 
 export const routes: Routes = [
   { path: '', component: LandingComponent },
-  { path: 'register', loadComponent: () => import('./pages/register/register').then(m => m.Register) },
-  { path: 'login', loadComponent: () => import('./pages/login/login').then(m => m.Login) },
+  { path: 'register', loadComponent: () => import('./pages/auth/register/register').then(m => m.Register) },
+  { path: 'login', loadComponent: () => import('./pages/auth/login/login').then(m => m.Login) },
+  { path: 'forgot-password', component: ForgotPassword },
+  { path: 'reset-password', component: ResetPassword },
   {
     path: 'app',
     component: MainLayoutComponent,
@@ -23,7 +27,7 @@ export const routes: Routes = [
       { path: 'hangouts/:id', component: HangoutDetails},
       { path: 'acertos', component: SimplificarDividas },
       { path: 'join/:id', component: JoinHangout },
-      { path: '', redirectTo: 'dashboard', pathMatch: 'full' }
+      { path: '', redirectTo: 'dashboard', pathMatch: 'full' },
     ]
   },
   { path: '**', redirectTo: '', pathMatch: 'full' }
