@@ -30,7 +30,7 @@ import {
   UserResponseDTO,
 } from '../hangout-models';
 import { ConfirmationService, MenuItem, MessageService } from 'primeng/api';
-import { LoginService } from '../../login/login-service';
+import { LoginService } from '../../auth/login/login-service';
 
 @Component({
   selector: 'app-hangout-details',
