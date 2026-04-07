@@ -19,7 +19,6 @@ export interface HangOutRequestDTO {
 
 export interface ExpenseResponseDTO{
   id: number,
-  name: string;
   description: string,
   totalAmount: number,
   hangout: HangOutResponseDTO,
@@ -74,7 +73,6 @@ export interface Page<T> {
 }
 
 export interface ExpenseRequestDTO {
-  name: string;
   description: string;
   totalAmount: number;
   participantsIds: number[];

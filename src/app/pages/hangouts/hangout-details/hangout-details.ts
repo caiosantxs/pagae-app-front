@@ -17,7 +17,6 @@ import { InputNumberModule } from 'primeng/inputnumber';
 import { TooltipModule } from 'primeng/tooltip';
 import { MultiSelectModule } from 'primeng/multiselect';
 import { InputTextModule } from 'primeng/inputtext';
-import { TextareaModule } from 'primeng/textarea';
 import { ConfirmDialogModule } from 'primeng/confirmdialog';
 import { ToastModule } from 'primeng/toast';
 import { SelectModule } from 'primeng/select';
@@ -30,7 +29,7 @@ import {
   UserResponseDTO,
 } from '../hangout-models';
 import { ConfirmationService, MenuItem, MessageService } from 'primeng/api';
-import { LoginService } from '../../auth/login/login-service';
+import { LoginService } from '../../login/login-service';
 
 @Component({
   selector: 'app-hangout-details',
@@ -45,7 +44,6 @@ import { LoginService } from '../../auth/login/login-service';
     InputNumberModule,
     MultiSelectModule,
     InputTextModule,
-    TextareaModule, // <-- ADICIONADO AOS IMPORTS DO COMPONENTE
     MenuModule,
     ConfirmDialogModule,
     ToastModule,
@@ -69,18 +67,11 @@ export class HangoutDetails {
   ) {
     this.currentUserId = this.loginService.getUserId();
 
-    // FORMULÁRIO DE CRIAÇÃO ATUALIZADO
     this.expenseForm = this.fb.group({
-      name: ['', Validators.required], // Novo campo obrigatório
-      description: [''], // Agora opcional na criação
+      description: ['', Validators.required],
       totalAmount: [null, [Validators.required, Validators.min(0.01)]],
       participantsIds: [[], Validators.required],
       payerId: [this.currentUserId, Validators.required],
-    });
-
-    // NOVO FORMULÁRIO PARA O MODAL DE DESCRIÇÃO
-    this.editDescriptionForm = this.fb.group({
-      description: ['', Validators.required],
     });
   }
 
@@ -100,11 +91,6 @@ export class HangoutDetails {
   showExpenseDialog = false;
   expenseForm: FormGroup;
   loadingExpense = false;
-
-  // VARIÁVEIS DO NOVO MODAL DE DESCRIÇÃO
-  showEditDescriptionDialog = false;
-  selectedExpenseForEdit: any = null;
-  editDescriptionForm: FormGroup;
 
   showPaymentDialog = false;
   selectedExpense: any = null;
@@ -183,8 +169,7 @@ export class HangoutDetails {
   }
 
   getIcon(title: string): string {
-    // Agora o title que chega aqui será o 'name' da despesa
-    const t = (title || '').toLowerCase();
+    const t = title.toLowerCase();
     if (t.includes('mercado') || t.includes('carne'))
       return 'pi pi-shopping-cart';
     if (t.includes('bebida') || t.includes('cerveja')) return 'pi pi-ticket';
@@ -226,8 +211,6 @@ export class HangoutDetails {
       return;
     }
     this.expenseForm.reset();
-    // Reaplicar o payerId padrão após o reset
-    this.expenseForm.patchValue({ payerId: this.currentUserId, participantsIds: [] });
     this.showExpenseDialog = true;
   }
 
@@ -238,7 +221,6 @@ export class HangoutDetails {
     const formValue = this.expenseForm.value;
 
     const dto: ExpenseRequestDTO = {
-      name: formValue.name, // ENVIANDO O NOVO CAMPO
       description: formValue.description,
       totalAmount: formValue.totalAmount,
       participantsIds: formValue.participantsIds,
@@ -258,47 +240,6 @@ export class HangoutDetails {
       },
     });
   }
-
-  // === NOVOS MÉTODOS DE DESCRIÇÃO ===
-
-  openAddDescriptionDialog(expense: any) {
-    this.selectedExpenseForEdit = expense;
-    this.editDescriptionForm.patchValue({
-      description: expense.description || '',
-    });
-    this.showEditDescriptionDialog = true;
-  }
-
-  saveDescription() {
-    if (this.editDescriptionForm.invalid || !this.selectedExpenseForEdit) return;
-
-    const newDescription = this.editDescriptionForm.value.description;
-
-    // TODO: Integrar com a API do Back-end futuramente
-    /*
-    this.hangoutService.updateExpenseDescription(this.hangoutId, this.selectedExpenseForEdit.id, newDescription).subscribe({
-      next: () => {
-        this.showEditDescriptionDialog = false;
-        this.loadHangout(this.hangoutId);
-        this.messageService.add({ severity: 'success', summary: 'Sucesso', detail: 'Descrição atualizada!' });
-      },
-      error: (err) => {
-        console.error('Erro ao atualizar', err);
-      }
-    });
-    */
-
-    // Atualização visual provisória para testes no Front-end:
-    this.selectedExpenseForEdit.description = newDescription;
-    this.showEditDescriptionDialog = false;
-    this.messageService.add({ 
-      severity: 'success', 
-      summary: 'Atualizado', 
-      detail: 'Descrição salva visualmente (Aguardando API)' 
-    });
-  }
-
-  // ===================================
 
   updateMenuOptions() {
     this.menuItems = [
@@ -471,7 +412,7 @@ export class HangoutDetails {
             if (share.user.id != this.currentUserId && share.amountOwed > 0) {
               receivables.push({
                 debtorName: share.user.name,
-                expenseName: expense.description, // Você pode trocar para expense.name aqui depois se preferir
+                expenseName: expense.description,
                 amount: share.amountOwed,
               });
             }
@@ -501,61 +442,65 @@ export class HangoutDetails {
   }
 
   isExpenseCreator(expense: any): boolean {
-    if (!expense) {
-      return false;
-    }
-
-    return expense.creator?.id === this.currentUserId;
+  // 1. Proteção: Se a despesa for indefinida, retorna falso na hora
+  if (!expense) {
+    return false;
   }
+
+  // 2. Usando o operador ?. para evitar o erro de undefined
+  // Confirme se o seu DTO traz 'creator.id' ou se é direto 'creatorId'
+  return expense.creator?.id === this.currentUserId;
+}
 
   deleteExpense(expenseId: number, event?: Event) {
-    if (event) {
-      event.stopPropagation();
-    }
-
-    if (!this.isExpenseCreator(this.hangout?.expenses.find((e) => e.id === expenseId))) {
-      this.messageService.add({
-        severity: 'warn',
-        summary: 'Atenção 🛑',
-        detail: 'Somente o criador da despesa pode excluí-la.',
-      });
-      return;
-    }
-
-    this.confirmationService.confirm({
-      message: 'Essa ação não tem volta. Quer mesmo apagar?',
-      header: 'Excluir Despesa',
-      icon: 'pi pi-exclamation-triangle',
-      acceptLabel: 'Sim, excluir',
-      rejectLabel: 'Cancelar',
-
-      acceptButtonStyleClass: '!bg-red-500 !border-2 !border-black !text-white !font-black !rounded-xl !p-3 !shadow-[4px_4px_0px_0px_rgba(0,0,0,1)] hover:!translate-y-[-2px] hover:!shadow-[6px_6px_0px_0px_rgba(0,0,0,1)] active:!translate-y-[2px] active:!shadow-none transition-all',
-      rejectButtonStyleClass: '!bg-white !border-2 !border-black !text-black !font-black !rounded-xl !p-3 hover:!bg-gray-100 transition-all mr-3',
-      accept: () => {
-        this.hangoutService.deleteExpense(expenseId).subscribe({
-          next: () => {
-            this.messageService.add({
-              severity: 'success',
-              summary: 'Foi pro espaço! 🚀',
-              detail: 'Despesa excluída com sucesso.',
-            });
-            if (this.hangoutId) {
-              this.loadHangout(this.hangoutId);
-              this.calculateMyShare(this.hangoutId);
-            }
-          },
-          error: (err) => {
-            console.error('Erro ao excluir despesa', err);
-            this.messageService.add({
-              severity: 'error',
-              summary: 'Ocorreu um erro',
-              detail: 'Falha ao excluir despesa.',
-            });
-          },
-        });
-      },
-    });
+  // Impede o clique de abrir os detalhes da despesa
+  if (event) {
+    event.stopPropagation();
   }
+
+  if (!this.isExpenseCreator(this.hangout?.expenses.find((e) => e.id === expenseId))) {
+    this.messageService.add({
+      severity: 'warn',
+      summary: 'Atenção 🛑',
+      detail: 'Somente o criador da despesa pode excluí-la.',
+    });
+    return;
+  }
+
+  this.confirmationService.confirm({
+    message: 'Essa ação não tem volta. Quer mesmo apagar?',
+    header: 'Excluir Despesa',
+    icon: 'pi pi-exclamation-triangle',
+    acceptLabel: 'Sim, excluir',
+    rejectLabel: 'Cancelar',
+
+    acceptButtonStyleClass: '!bg-red-500 !border-2 !border-black !text-white !font-black !rounded-xl !p-3 !shadow-[4px_4px_0px_0px_rgba(0,0,0,1)] hover:!translate-y-[-2px] hover:!shadow-[6px_6px_0px_0px_rgba(0,0,0,1)] active:!translate-y-[2px] active:!shadow-none transition-all',
+    rejectButtonStyleClass: '!bg-white !border-2 !border-black !text-black !font-black !rounded-xl !p-3 hover:!bg-gray-100 transition-all mr-3',
+    accept: () => {
+      this.hangoutService.deleteExpense(expenseId).subscribe({
+        next: () => {
+          this.messageService.add({
+            severity: 'success',
+            summary: 'Foi pro espaço! 🚀',
+            detail: 'Despesa excluída com sucesso.',
+          });
+          if (this.hangoutId) {
+            this.loadHangout(this.hangoutId);
+            this.calculateMyShare(this.hangoutId);
+          }
+        },
+        error: (err) => {
+          console.error('Erro ao excluir despesa', err);
+          this.messageService.add({
+            severity: 'error',
+            summary: 'Ocorreu um erro',
+            detail: 'Falha ao excluir despesa.',
+          });
+        },
+      });
+    },
+  });
+}
 
   openInviteModal() {
     if (!this.hangout) return;
@@ -575,7 +520,7 @@ export class HangoutDetails {
           summary: 'Sucesso',
           detail: 'Link copiado para a área de transferência!',
         });
-        this.showInviteDialog = false;
+        this.showInviteDialog = false; // Fecha opcionalmente
       })
       .catch((err) => {
         this.messageService.add({

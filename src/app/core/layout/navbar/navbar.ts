@@ -1,6 +1,6 @@
 import { Component } from '@angular/core';
 import { RouterLink, RouterLinkActive } from '@angular/router';
-import { LoginService } from '../../../pages/auth/login/login-service';
+import { LoginService } from '../../../pages/login/login-service';
 
 @Component({
   selector: 'app-navbar',

@@ -3,12 +3,3 @@ export type LoginResponse = {
   name: string;
   id: number;
 };
-
-export type ResetPasswordDTO = {
-  token: string;
-  newPassword: string;
-}
-
-export type ForgotPasswordDTO = {
-  email: string;
-}

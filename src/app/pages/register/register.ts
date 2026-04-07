@@ -6,7 +6,7 @@ import { ButtonModule } from 'primeng/button';
 import { InputTextModule } from 'primeng/inputtext';
 import { PasswordModule } from 'primeng/password';
 import { DividerModule } from 'primeng/divider';
-import { passwordMatchValidator } from '../../../validators/password-match.validator';
+import { passwordMatchValidator } from '../../validators/password-match.validator';
 import { LoginService } from '../login/login-service';
 import { ToastrService } from 'ngx-toastr';
 import { SocialAuthService, GoogleSigninButtonModule } from '@abacritt/angularx-social-login';

@@ -1,7 +1,7 @@
 import { Component } from '@angular/core';
 import { RouterOutlet } from '@angular/router';
 import { Navbar } from "../navbar/navbar";
-import { LoginService } from '../../../pages/auth/login/login-service';
+import { LoginService } from '../../../pages/login/login-service';
 
 @Component({
   selector: 'app-main-layout',
