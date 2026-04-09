@@ -1,6 +1,6 @@
 import { HttpInterceptorFn } from '@angular/common/http';
 import { inject } from '@angular/core';
-import { LoginService } from '../../pages/login/login-service'; // Ajuste o caminho
+import { LoginService } from '../../pages/auth/login/login-service'; // Ajuste o caminho
 
 export const authInterceptor: HttpInterceptorFn = (req, next) => {
   const loginService = inject(LoginService);

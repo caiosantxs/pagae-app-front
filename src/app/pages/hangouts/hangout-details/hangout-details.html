@@ -21,7 +21,7 @@
       <div class="flex flex-col lg:flex-row lg:items-end justify-between gap-6">
         <div>
           <h1
-            class="text-5xl md:text-7xl font-black text-gray-950 tracking-tighter mb-4 uppercase"
+            class="text-5xl md:text-7xl font-black text-gray-950 tracking-tighter mb-4 uppercase break-words"
           >
             {{ hangout.title }}
           </h1>
@@ -173,8 +173,8 @@
             <div
               class="flex justify-between items-center border-b-2 border-black/10 pb-2"
             >
-              <div class="flex flex-col">
-                <span class="text-sm font-black text-gray-950">{{
+              <div class="flex flex-col min-w-0">
+                <span class="text-sm font-black text-gray-950 truncate">{{
                   item.debtorName
                 }}</span>
                 <span
@@ -185,7 +185,7 @@
                 </span>
               </div>
               <span
-                class="text-sm font-black bg-white px-2 py-0.5 border-2 border-black rounded-lg text-black"
+                class="text-sm font-black bg-white px-2 py-0.5 border-2 border-black rounded-lg text-black shrink-0"
               >
                 + {{ item.amount | currency: "BRL" }}
               </span>
@@ -229,73 +229,42 @@
         <div class="space-y-6">
           @for (expense of hangout.expenses; track expense.id) {
             <div
-              class="bg-white border-4 border-black p-6 rounded-[24px] shadow-[4px_4px_0px_0px_rgba(0,0,0,1)] hover:translate-y-[-2px] hover:shadow-[8px_8px_0px_0px_rgba(0,0,0,1)] transition-all"
+              class="bg-white border-4 border-black p-4 sm:p-6 rounded-[24px] shadow-[4px_4px_0px_0px_rgba(0,0,0,1)] hover:translate-y-[-2px] hover:shadow-[8px_8px_0px_0px_rgba(0,0,0,1)] transition-all"
             >
-              <div
-                class="flex flex-col sm:flex-row sm:items-center justify-between gap-4"
-              >
-                <div class="flex items-center gap-5">
-                  <div
-                    class="w-14 h-14 rounded-2xl bg-gray-100 border-2 border-black flex items-center justify-center text-2xl shadow-[3px_3px_0px_0px_rgba(0,0,0,1)] text-gray-900"
-                  >
-                    <i [class]="getIcon(expense.description)"></i>
+              <div class="flex flex-col md:flex-row md:items-start justify-between gap-4">
+                
+                <div class="flex items-start gap-4 min-w-0 flex-1">
+                  
+                  <div class="w-14 h-14 shrink-0 rounded-2xl bg-gray-100 border-2 border-black flex items-center justify-center text-2xl shadow-[3px_3px_0px_0px_rgba(0,0,0,1)] text-gray-900">
+                    <i [class]="getIcon(expense.name)"></i>
                   </div>
-
-                  <div>
-                    <h4
-                      class="text-xl font-black text-gray-950 uppercase leading-tight"
-                    >
-                      {{ expense.description }}
+                  
+                  <div class="min-w-0 flex-1 flex flex-col gap-2">
+                    <h4 class="text-xl font-black text-gray-950 uppercase leading-tight break-words" style="word-break: break-word;">
+                      {{ expense.name }}
                     </h4>
 
-                    <div class="text-xs mt-2">
+                    <div class="flex flex-wrap gap-2">
                       @if (isPayer(expense)) {
-                        <span
-                          class="bg-[#00D177] border-2 border-black px-2 py-0.5 rounded-lg text-black font-black uppercase text-[10px] shadow-[2px_2px_0px_0px_rgba(0,0,0,1)]"
-                        >
-                          <i class="pi pi-check-circle text-[9px] mr-1"></i>
-                          Você pagou
+                        <span class="bg-[#00D177] border-2 border-black px-2 py-0.5 rounded-lg text-black font-black uppercase text-[10px] shadow-[2px_2px_0px_0px_rgba(0,0,0,1)] whitespace-nowrap">
+                          <i class="pi pi-check-circle text-[9px] mr-1"></i> Você pagou
                         </span>
-                      } @else {
-                        <span
-                          class="bg-white border-2 border-black px-2 py-0.5 rounded-lg text-black font-black uppercase text-[10px] shadow-[2px_2px_0px_0px_rgba(0,0,0,1)]"
-                        >
-                          Pagar para
-                          <span class="text-black">{{
-                            expense.payer.name
-                          }}</span>
-                        </span>
-                      }
-                    </div>
 
-                    <div class="mt-2 flex gap-2">
-                      @if (isPayer(expense)) {
                         @if (getReceivableAmount(expense) > 0.01) {
-                          <span
-                            class="bg-blue-400 border-2 border-black px-2 py-0.5 rounded-lg text-[10px] font-black uppercase text-white shadow-[2px_2px_0px_0px_rgba(0,0,0,1)]"
-                            pTooltip="Valor pendente de recebimento"
-                          >
-                            A receber:
-                            {{ getReceivableAmount(expense) | currency: "BRL" }}
+                          <span class="bg-blue-400 border-2 border-black px-2 py-0.5 rounded-lg text-[10px] font-black uppercase text-white shadow-[2px_2px_0px_0px_rgba(0,0,0,1)] whitespace-nowrap" pTooltip="Valor pendente de recebimento">
+                            A receber: {{ getReceivableAmount(expense) | currency: "BRL" }}
                           </span>
                         } @else {
-                          <span
-                            class="bg-[#F3FF90] border-2 border-black px-2 py-0.5 rounded-lg text-[10px] font-black uppercase text-black shadow-[2px_2px_0px_0px_rgba(0,0,0,1)]"
-                          >
-                            <i class="pi pi-check-circle text-[9px] mr-1"></i>
-                            Pago por todos
+                          <span class="bg-[#F3FF90] border-2 border-black px-2 py-0.5 rounded-lg text-[10px] font-black uppercase text-black shadow-[2px_2px_0px_0px_rgba(0,0,0,1)] whitespace-nowrap">
+                            <i class="pi pi-check-circle text-[9px] mr-1"></i> Pago por todos
                           </span>
                         }
                       } @else if (getMyDebt(expense) > 0) {
-                        <span
-                          class="bg-red-500 border-2 border-black px-2 py-0.5 rounded-lg text-[10px] font-black uppercase text-white shadow-[2px_2px_0px_0px_rgba(0,0,0,1)]"
-                        >
+                        <span class="bg-red-500 border-2 border-black px-2 py-0.5 rounded-lg text-[10px] font-black uppercase text-white shadow-[2px_2px_0px_0px_rgba(0,0,0,1)] whitespace-nowrap">
                           Sua parte: {{ getMyDebt(expense) | currency: "BRL" }}
                         </span>
                       } @else {
-                        <span
-                          class="bg-gray-200 border-2 border-black px-2 py-0.5 rounded-lg text-[10px] font-black uppercase text-gray-600 shadow-[2px_2px_0px_0px_rgba(0,0,0,1)]"
-                        >
+                        <span class="bg-gray-200 border-2 border-black px-2 py-0.5 rounded-lg text-[10px] font-black uppercase text-gray-600 shadow-[2px_2px_0px_0px_rgba(0,0,0,1)] whitespace-nowrap">
                           Você está quite
                         </span>
                       }
@@ -303,44 +272,46 @@
                   </div>
                 </div>
 
-                <div class="flex items-center gap-4 self-end sm:self-center">
+                <div class="flex items-center gap-4 shrink-0 self-start md:self-auto">
                   <div class="text-right">
-                    <p
-                      class="text-2xl font-black text-gray-950 tracking-tighter"
-                    >
+                    <p class="text-2xl font-black text-gray-950 tracking-tighter whitespace-nowrap">
                       {{ expense.totalAmount | currency: "BRL" }}
                     </p>
-                    <p
-                      class="text-[9px] font-black text-gray-400 uppercase tracking-widest"
-                    >
+                    <p class="text-[9px] font-black text-gray-400 uppercase tracking-widest">
                       valor total
                     </p>
                   </div>
 
-                  @if (isExpenseCreator(expense)) {
-                    <button
-                      (click)="deleteExpense(expense.id, $event)"
-                      class="w-10 h-10 flex items-center justify-center border-2 border-black rounded-xl hover:bg-red-500 hover:text-white transition-colors"
-                      title="Excluir despesa"
-                    >
-                      <i class="pi pi-trash text-sm"></i>
-                    </button>
-                  }
+                  <div class="flex items-center gap-2">
+                    @if (isExpenseCreator(expense)) {
+                      <button (click)="deleteExpense(expense.id, $event)" class="w-10 h-10 flex items-center justify-center border-2 border-black rounded-xl hover:bg-red-500 hover:text-white transition-colors shrink-0" title="Excluir despesa">
+                        <i class="pi pi-trash text-sm"></i>
+                      </button>
+                    }
 
-                  @if (!isPayer(expense) && getMyDebt(expense) > 0) {
-                    <button
-                      pButton
-                      icon="pi pi-dollar"
-                      class="!bg-[#00D177] !border-2 !border-black !text-black !rounded-xl !w-12 !h-12 !shadow-[3px_3px_0px_0px_rgba(0,0,0,1)] hover:!translate-y-[-2px] active:!translate-y-[2px] active:!shadow-none transition-all"
-                      pTooltip="Pagar para {{ expense.creator.name }}"
-                      tooltipPosition="left"
-                      (click)="openPaymentModal(expense)"
-                    ></button>
-                  }
+                    @if (!isPayer(expense) && getMyDebt(expense) > 0) {
+                      <button pButton icon="pi pi-dollar" class="!bg-[#00D177] !border-2 !border-black !text-black !rounded-xl !w-10 !h-10 !shadow-[3px_3px_0px_0px_rgba(0,0,0,1)] hover:!translate-y-[-2px] active:!translate-y-[2px] active:!shadow-none transition-all shrink-0 !p-0" pTooltip="Pagar para {{ expense.creator.name }}" tooltipPosition="left" (click)="openPaymentModal(expense)"></button>
+                    }
+                  </div>
                 </div>
               </div>
+
+              <div class="mt-4 pt-4 border-t-2 border-dashed border-gray-300 w-full">
+                @if (expense.description) {
+                  <div class="bg-gray-100 border-2 border-black rounded-xl p-3 relative group">
+                    <p class="text-xs font-bold text-gray-700 italic break-words" style="word-break: break-word;">
+                      "{{ expense.description }}"
+                    </p>
+                    <i class="pi pi-pencil absolute top-2 right-2 text-[10px] opacity-0 group-hover:opacity-100 transition-opacity" (click)="openAddDescriptionDialog(expense)" title="Clique para editar a descrição"></i>
+                  </div>
+                } @else {
+                  <button (click)="openAddDescriptionDialog(expense)" class="w-full py-2 border-2 border-dashed border-gray-400 rounded-xl text-[10px] font-black uppercase tracking-widest text-gray-500 hover:border-black hover:text-black hover:bg-gray-50 transition-all flex items-center justify-center gap-2">
+                    <i class="pi pi-align-left"></i> Adicionar Descrição
+                  </button>
+                }
+              </div>
             </div>
-          }
+            }
         </div>
       </div>
 
@@ -363,8 +334,8 @@
                 class="absolute left-[-9px] top-0 w-4 h-4 rounded-full bg-black border-4 border-[#00D177]"
               ></div>
 
-              <div class="flex flex-col flex-1">
-                <span class="text-sm text-black font-bold leading-tight">
+              <div class="flex flex-col flex-1 min-w-0">
+                <span class="text-sm text-black font-bold leading-tight truncate">
                   <span class="font-black">{{
                     getDisplayName(activity.payerId, activity.payerName)
                   }}</span>
@@ -379,7 +350,7 @@
                   {{ formatDateFriendly(activity.date) }}
                 </span>
               </div>
-              <span class="font-black text-green-600">
+              <span class="font-black text-green-600 shrink-0">
                 +{{ activity.amount | currency: "BRL" }}
               </span>
             </div>
@@ -422,18 +393,34 @@
   <form [formGroup]="expenseForm" class="flex flex-col gap-6 pt-2">
     <div class="flex flex-col gap-2">
       <label
-        for="desc"
+        for="name"
         class="font-black text-xs uppercase tracking-widest text-gray-700"
         >O que foi comprado?</label
       >
       <input
         pInputText
-        id="desc"
-        formControlName="description"
-        placeholder="Ex: Pizza, Uber..."
+        id="name"
+        formControlName="name"
+        placeholder="Ex: Pizza, Uber, Cerveja..."
         class="w-full !p-4 !border-2 !border-black !rounded-xl focus:!shadow-[4px_4px_0px_0px_rgba(0,0,0,1)] transition-all"
         autofocus
       />
+    </div>
+
+    <div class="flex flex-col gap-2">
+      <label
+        for="desc"
+        class="font-black text-xs uppercase tracking-widest text-gray-700"
+        >Descrição (Opcional)</label
+      >
+      <textarea
+        pInputTextarea
+        id="desc"
+        formControlName="description"
+        rows="2"
+        placeholder="Adicione detalhes, como código de pagamento e etc."
+        class="w-full !p-4 !border-2 !border-black !rounded-xl focus:!shadow-[4px_4px_0px_0px_rgba(0,0,0,1)] transition-all resize-none"
+      ></textarea>
     </div>
 
     <div class="flex flex-col gap-2">
@@ -526,9 +513,9 @@
         {{ selectedExpense.creator.name }}
       </p>
       <div
-        class="mt-3 inline-block bg-white border-2 border-black px-3 py-1 rounded-full text-xs font-bold"
+        class="mt-3 inline-block bg-white border-2 border-black px-3 py-1 rounded-full text-xs font-bold break-words max-w-full"
       >
-        {{ selectedExpense.description }}
+        {{ selectedExpense.name || selectedExpense.description }}
       </div>
     </div>
 
@@ -596,7 +583,7 @@
   <div class="flex flex-col gap-6 pt-2">
     <p class="text-gray-700 font-bold leading-tight">
       Mande o link abaixo para quem vai rachar o
-      <span class="bg-[#F3FF90] border-2 border-black px-1">{{
+      <span class="bg-[#F3FF90] border-2 border-black px-1 break-words">{{
         hangout?.title
       }}</span>
       com você:
@@ -611,12 +598,12 @@
           type="text"
           [value]="inviteLink"
           readonly
-          class="flex-1 !border-none !bg-white !p-4 font-bold text-gray-500 text-sm"
+          class="flex-1 !border-none !bg-white !p-4 font-bold text-gray-500 text-sm min-w-0"
         />
         <button
           pButton
           icon="pi pi-copy"
-          class="!bg-black !text-white !border-none !rounded-none !px-6"
+          class="!bg-black !text-white !border-none !rounded-none !px-6 shrink-0"
           (click)="copyInviteLink()"
         ></button>
       </div>
@@ -627,6 +614,54 @@
       </p>
     </div>
   </div>
+</p-dialog>
+
+<p-dialog
+  header="Detalhes da Despesa"
+  [(visible)]="showEditDescriptionDialog"
+  [modal]="true"
+  [style]="{ width: '90vw', maxWidth: '400px' }"
+  styleClass="neobrutalist-dialog"
+  [draggable]="false"
+  [resizable]="false"
+>
+  <div class="pt-2 mb-4" *ngIf="selectedExpenseForEdit">
+    <p class="text-xs font-black uppercase text-gray-500">Despesa selecionada:</p>
+    <p class="text-xl font-black uppercase text-black break-words" style="word-break: break-word;">{{ selectedExpenseForEdit.name }}</p>
+  </div>
+
+  <form [formGroup]="editDescriptionForm" class="flex flex-col gap-4">
+    <div class="flex flex-col gap-2">
+      <label for="editDesc" class="font-black text-xs uppercase tracking-widest text-gray-700">Nova Descrição</label>
+      <textarea
+        pInputTextarea
+        id="editDesc"
+        formControlName="description"
+        rows="4"
+        placeholder="Digite os detalhes desta despesa..."
+        class="w-full !p-4 !border-2 !border-black !rounded-xl focus:!shadow-[4px_4px_0px_0px_rgba(0,0,0,1)] transition-all resize-none"
+        autofocus
+      ></textarea>
+    </div>
+  </form>
+
+  <ng-template pTemplate="footer">
+    <div class="flex gap-3 w-full">
+      <button
+        pButton
+        label="Cancelar"
+        (click)="showEditDescriptionDialog = false"
+        class="flex-1 !bg-white !border-2 !border-black !text-black !font-black !rounded-xl hover:!bg-gray-100"
+      ></button>
+      <button
+        pButton
+        label="Salvar"
+        (click)="saveDescription()"
+        [disabled]="editDescriptionForm.invalid"
+        class="flex-[2] !bg-[#00D177] !border-2 !border-black !text-black !font-black !rounded-xl !shadow-[4px_4px_0px_0px_rgba(0,0,0,1)] active:!shadow-none active:!translate-y-1 transition-all"
+      ></button>
+    </div>
+  </ng-template>
 </p-dialog>
 
 <p-toast></p-toast>
