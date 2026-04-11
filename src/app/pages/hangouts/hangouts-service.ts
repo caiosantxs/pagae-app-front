@@ -85,4 +85,8 @@ export class HangoutsService {
   deleteExpense(expenseId: number): Observable<void> {
     return this.http.delete<void>(`${this.apiUrl}/expense/${expenseId}`);
   }
+
+  leaveHangout(hangoutId: number): Observable<any> {
+  return this.http.delete(`${this.apiUrl}/${hangoutId}/leave`);
+  }
 }
