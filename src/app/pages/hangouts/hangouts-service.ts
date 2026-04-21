@@ -21,7 +21,7 @@ export class HangoutsService {
 
   getUserHangouts(
     page: number = 0,
-    size: number = 10
+    size: number = 10,
   ): Observable<Page<HangOutResponseDTO>> {
     let params = new HttpParams()
       .set('page', page.toString())
@@ -33,7 +33,7 @@ export class HangoutsService {
 
   getHangOutMembers(hangOutId: number): Observable<UserResponseDTO[]> {
     return this.http.get<UserResponseDTO[]>(
-      `${this.apiUrl}/${hangOutId}/members`
+      `${this.apiUrl}/${hangOutId}/members`,
     );
   }
 
@@ -42,7 +42,7 @@ export class HangoutsService {
   }
 
   getExpenseSharesByUserIdAndHangOutId(
-    hangoutId: number
+    hangoutId: number,
   ): Observable<ExpenseShare[]> {
     return this.http.get<any>(`${this.apiUrl}/${hangoutId}/expense-shares`);
   }
@@ -68,18 +68,16 @@ export class HangoutsService {
   }
 
   settleExpense(expenseId: number, amount: number): Observable<void> {
-    // O Backend espera: PaymentRequestDTO com apenas "amount"
     const payload = { amount: amount };
 
-    // A URL mudou no seu último código Java para: /{expenseId}/payments
     return this.http.post<void>(
-      `${this.apiUrl}/expenses/${expenseId}/payments`, // <--- Ajuste a URL aqui
-      payload
+      `${this.apiUrl}/expenses/${expenseId}/payments`,
+      payload,
     );
   }
 
   joinHangout(id: number): Observable<void> {
-  return this.http.post<void>(`${this.apiUrl}/${id}/join`, {});
+    return this.http.post<void>(`${this.apiUrl}/${id}/join`, {});
   }
 
   deleteExpense(expenseId: number): Observable<void> {
@@ -87,6 +85,17 @@ export class HangoutsService {
   }
 
   leaveHangout(hangoutId: number): Observable<any> {
-  return this.http.delete(`${this.apiUrl}/${hangoutId}/leave`);
+    return this.http.delete(`${this.apiUrl}/${hangoutId}/leave`);
+  }
+
+  updateExpenseDescription(
+    hangoutId: number,
+    expenseId: number,
+    description: string,
+  ): Observable<any> {
+    return this.http.patch(
+      `${this.apiUrl}/${hangoutId}/expenses/${expenseId}/description`,
+      { description },
+    );
   }
 }

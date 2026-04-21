@@ -45,7 +45,7 @@ import { LoginService } from '../../auth/login/login-service';
     InputNumberModule,
     MultiSelectModule,
     InputTextModule,
-    TextareaModule, 
+    TextareaModule,
     MenuModule,
     ConfirmDialogModule,
     ToastModule,
@@ -71,7 +71,7 @@ export class HangoutDetails {
 
     this.expenseForm = this.fb.group({
       name: ['', Validators.required],
-      description: [''], 
+      description: [''],
       totalAmount: [null, [Validators.required, Validators.min(0.01)]],
       participantsIds: [[], Validators.required],
       payerId: [this.currentUserId, Validators.required],
@@ -224,7 +224,10 @@ export class HangoutDetails {
       return;
     }
     this.expenseForm.reset();
-    this.expenseForm.patchValue({ payerId: this.currentUserId, participantsIds: [] });
+    this.expenseForm.patchValue({
+      payerId: this.currentUserId,
+      participantsIds: [],
+    });
     this.showExpenseDialog = true;
   }
 
@@ -235,7 +238,7 @@ export class HangoutDetails {
     const formValue = this.expenseForm.value;
 
     const dto: ExpenseRequestDTO = {
-      name: formValue.name, 
+      name: formValue.name,
       description: formValue.description,
       totalAmount: formValue.totalAmount,
       participantsIds: formValue.participantsIds,
@@ -257,15 +260,25 @@ export class HangoutDetails {
   }
 
   onLeaveHangout() {
+    if (this.hangout?.creatorId === this.currentUserId) {
+      this.messageService.add({
+        summary:
+          'Você é o criador do rolê, para sair do rolê você deve excluí-lo',
+      });
+    }
+
     this.confirmationService.confirm({
-      message: 'Você tem certeza que quer sair deste rolê? Se você tiver despesas pendentes, a saída será bloqueada.',
+      message:
+        'Você tem certeza que quer sair deste rolê? Se você tiver despesas pendentes, a saída será bloqueada.',
       header: 'Sair do Rolê',
       icon: 'pi pi-sign-out',
       acceptLabel: 'Sim, quero sair',
       rejectLabel: 'Cancelar',
-      acceptButtonStyleClass: '!bg-[#FF4545] !border-2 !border-black !text-white !font-black !rounded-xl !p-3 !shadow-[4px_4px_0px_0px_rgba(0,0,0,1)] hover:!translate-y-[-2px] hover:!shadow-[6px_6px_0px_0px_rgba(0,0,0,1)] active:!translate-y-[2px] active:!shadow-none transition-all',
-      rejectButtonStyleClass: '!bg-white !border-2 !border-black !text-black !font-black !rounded-xl !p-3 hover:!bg-gray-100 transition-all mr-3',
-      
+      acceptButtonStyleClass:
+        '!bg-[#FF4545] !border-2 !border-black !text-white !font-black !rounded-xl !p-3 !shadow-[4px_4px_0px_0px_rgba(0,0,0,1)] hover:!translate-y-[-2px] hover:!shadow-[6px_6px_0px_0px_rgba(0,0,0,1)] active:!translate-y-[2px] active:!shadow-none transition-all',
+      rejectButtonStyleClass:
+        '!bg-white !border-2 !border-black !text-black !font-black !rounded-xl !p-3 hover:!bg-gray-100 transition-all mr-3',
+
       accept: () => {
         this.isLeaving = true;
         this.hangoutService.leaveHangout(this.hangoutId).subscribe({
@@ -274,7 +287,7 @@ export class HangoutDetails {
             this.messageService.add({
               severity: 'success',
               summary: 'Tchau!',
-              detail: 'Você saiu do rolê com sucesso.'
+              detail: 'Você saiu do rolê com sucesso.',
             });
             this.router.navigate(['/app/hangouts']);
           },
@@ -291,14 +304,13 @@ export class HangoutDetails {
               severity: 'error',
               summary: 'Acesso Negado',
               detail: errorMsg,
-              life: 5000
+              life: 5000,
             });
-          }
+          },
         });
-      }
+      },
     });
   }
-
 
   openAddDescriptionDialog(expense: any) {
     this.selectedExpenseForEdit = expense;
@@ -309,32 +321,40 @@ export class HangoutDetails {
   }
 
   saveDescription() {
-    if (this.editDescriptionForm.invalid || !this.selectedExpenseForEdit) return;
+    if (this.editDescriptionForm.invalid || !this.selectedExpenseForEdit)
+      return;
 
     const newDescription = this.editDescriptionForm.value.description;
 
-    // TODO: Integrar com a API do Back-end futuramente
-    /*
-    this.hangoutService.updateExpenseDescription(this.hangoutId, this.selectedExpenseForEdit.id, newDescription).subscribe({
-      next: () => {
-        this.showEditDescriptionDialog = false;
-        this.loadHangout(this.hangoutId);
-        this.messageService.add({ severity: 'success', summary: 'Sucesso', detail: 'Descrição atualizada!' });
-      },
-      error: (err) => {
-        console.error('Erro ao atualizar', err);
-      }
-    });
-    */
-
-    // Atualização visual provisória para testes no Front-end:
-    this.selectedExpenseForEdit.description = newDescription;
-    this.showEditDescriptionDialog = false;
-    this.messageService.add({ 
-      severity: 'success', 
-      summary: 'Atualizado', 
-      detail: 'Descrição salva visualmente (Aguardando API)' 
-    });
+    this.hangoutService
+      .updateExpenseDescription(
+        this.hangoutId,
+        this.selectedExpenseForEdit.id,
+        newDescription,
+      )
+      .subscribe({
+        next: () => {
+          this.showEditDescriptionDialog = false;
+          this.loadHangout(this.hangoutId);
+          this.messageService.add({
+            severity: 'success',
+            summary: 'Sucesso',
+            detail: 'Descrição atualizada!',
+          });
+        },
+        error: (err) => {
+          console.error('Erro ao atualizar', err);
+          const msg =
+            err.error && typeof err.error === 'string'
+              ? err.error
+              : 'Não foi possível atualizar a descrição.';
+          this.messageService.add({
+            severity: 'error',
+            summary: 'Erro',
+            detail: msg,
+          });
+        },
+      });
   }
 
   updateMenuOptions() {
@@ -550,7 +570,11 @@ export class HangoutDetails {
       event.stopPropagation();
     }
 
-    if (!this.isExpenseCreator(this.hangout?.expenses.find((e) => e.id === expenseId))) {
+    if (
+      !this.isExpenseCreator(
+        this.hangout?.expenses.find((e) => e.id === expenseId),
+      )
+    ) {
       this.messageService.add({
         severity: 'warn',
         summary: 'Atenção',
@@ -566,8 +590,10 @@ export class HangoutDetails {
       acceptLabel: 'Sim, excluir',
       rejectLabel: 'Cancelar',
 
-      acceptButtonStyleClass: '!bg-red-500 !border-2 !border-black !text-white !font-black !rounded-xl !p-3 !shadow-[4px_4px_0px_0px_rgba(0,0,0,1)] hover:!translate-y-[-2px] hover:!shadow-[6px_6px_0px_0px_rgba(0,0,0,1)] active:!translate-y-[2px] active:!shadow-none transition-all',
-      rejectButtonStyleClass: '!bg-white !border-2 !border-black !text-black !font-black !rounded-xl !p-3 hover:!bg-gray-100 transition-all mr-3',
+      acceptButtonStyleClass:
+        '!bg-red-500 !border-2 !border-black !text-white !font-black !rounded-xl !p-3 !shadow-[4px_4px_0px_0px_rgba(0,0,0,1)] hover:!translate-y-[-2px] hover:!shadow-[6px_6px_0px_0px_rgba(0,0,0,1)] active:!translate-y-[2px] active:!shadow-none transition-all',
+      rejectButtonStyleClass:
+        '!bg-white !border-2 !border-black !text-black !font-black !rounded-xl !p-3 hover:!bg-gray-100 transition-all mr-3',
       accept: () => {
         this.hangoutService.deleteExpense(expenseId).subscribe({
           next: () => {

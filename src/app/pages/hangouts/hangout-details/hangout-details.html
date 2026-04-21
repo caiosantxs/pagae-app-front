@@ -241,7 +241,7 @@
         <div class="space-y-6">
           @for (expense of hangout.expenses; track expense.id) {
             <div
-              class="bg-white border-4 border-black p-4 sm:p-6 rounded-[24px] shadow-[4px_4px_0px_0px_rgba(0,0,0,1)] hover:translate-y-[-2px] hover:shadow-[8px_8px_0px_0px_rgba(0,0,0,1)] transition-all"
+              class="bg-white border-4 border-black p-4 sm:p-6 rounded-[24px] shadow-[4px_4px_0px_0px_rgba(0,0,0,1) transition-all"
             >
               <div
                 class="flex flex-col md:flex-row md:items-start justify-between gap-4"
@@ -357,11 +357,13 @@
                     >
                       "{{ expense.description }}"
                     </p>
-                    <i
+                    @if(isExpenseCreator(expense) || isPayer(expense)){
+                      <i
                       class="pi pi-pencil absolute top-2 right-2 text-[10px] opacity-0 group-hover:opacity-100 transition-opacity"
                       (click)="openAddDescriptionDialog(expense)"
                       title="Clique para editar a descrição"
                     ></i>
+                    }
                   </div>
                 } @else {
                   <button
