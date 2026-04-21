@@ -339,7 +339,7 @@ export class HangoutDetails {
           this.messageService.add({
             severity: 'success',
             summary: 'Sucesso',
-            detail: 'Descrição atualizada!',
+            detail: 'Descrição atualizada com sucesso!',
           });
         },
         error: (err) => {
