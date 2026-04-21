@@ -1,10 +1,8 @@
 import { CommonModule } from '@angular/common';
-import { Component, OnInit } from '@angular/core'; // Adicionei OnInit
+import { Component, OnInit } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { ProgressSpinnerModule } from 'primeng/progressspinner';
-import { HangoutsService } from '../hangouts/hangouts-service'; // Verifique o caminho
-// REMOVA: import { MessageService } from 'primeng/api';
-// ADICIONE:
+import { HangoutsService } from '../hangouts/hangouts-service';
 import { ToastrService } from 'ngx-toastr';
 
 @Component({
@@ -13,9 +11,7 @@ import { ToastrService } from 'ngx-toastr';
   imports: [
     CommonModule,
     ProgressSpinnerModule,
-    // Não precisa importar ToastModule aqui, o Toastr é global
   ],
-  // REMOVA: providers: [MessageService] se você tivesse colocado
   templateUrl: './join-hangout.html',
   styleUrl: './join-hangout.scss',
 })
@@ -24,7 +20,6 @@ export class JoinHangout implements OnInit {
     private route: ActivatedRoute,
     private router: Router,
     private hangOutService: HangoutsService,
-    // TROQUE MessageService POR ToastrService
     private toastService: ToastrService
   ) {}
 
