@@ -1,59 +1,38 @@
-# PagaeAppFront
+# PagaAê - Front-end
 
-This project was generated using [Angular CLI](https://github.com/angular/angular-cli) version 20.1.1.
+> Dividir a conta do rolê nunca foi tão fácil (e estiloso).
 
-## Development server
+O **PagaAê** é uma aplicação web desenvolvida para gerenciar despesas compartilhadas entre grupos de amigos. Focado na clareza financeira e em uma experiência de usuário ousada, o sistema elimina a dor de cabeça de calcular "quem deve quem" após um evento, churrasco ou viagem.
 
-To start a local development server, run:
+A interface foi construída seguindo a tendência do **Design Neobrutalista**, utilizando cores de alto contraste, tipografia forte, bordas marcadas e sombras sólidas para criar uma experiência de usuário única, responsiva e direta ao ponto.
 
-```bash
-ng serve
-```
+## 📸 Preview da Aplicação
 
-Once the server is running, open your browser and navigate to `http://localhost:4200/`. The application will automatically reload whenever you modify any of the source files.
+### Landing Page
 
-## Code scaffolding
+<img width="1912" height="907" alt="lp-pagae" src="https://github.com/user-attachments/assets/1b62cfb8-aa01-4af8-a32e-0880168d28a4" />
 
-Angular CLI includes powerful code scaffolding tools. To generate a new component, run:
+### Página de detalhes do rolê
 
-```bash
-ng generate component component-name
-```
+<img width="1902" height="906" alt="role-details" src="https://github.com/user-attachments/assets/e38e81d7-e87e-4e4b-82cb-42f3b2a9d244" />
 
-For a complete list of available schematics (such as `components`, `directives`, or `pipes`), run:
 
-```bash
-ng generate --help
-```
+## ✨ Principais Funcionalidades
 
-## Building
+* **Gerenciamento de Rolês:** Criação de grupos (hangouts) para concentrar as despesas de um evento específico.
+* **Divisão Inteligente:** Adição de despesas com identificação exata de quem pagou e quem consumiu, calculando automaticamente as fatias de cada um.
+* **Histórico de Pagamentos:** Registro de quem já quitou a dívida, atualizando o saldo geral do rolê em tempo real.
+* **Links de Convite:** Geração de links exclusivos para os amigos entrarem direto no grupo.
+* **Cláusulas de Segurança Financeira:** Usuários com pendências financeiras ativas são bloqueados pelo sistema e não podem sair do rolê até quitarem suas dívidas.
+* **Feedback Visual Instantâneo:** Toasts neobrutalistas, loaders e modais interativos para cada ação do usuário.
 
-To build the project run:
+## 🛠️ Tecnologias Utilizadas
 
-```bash
-ng build
-```
+O ecossistema do front-end foi arquitetado com as seguintes tecnologias:
 
-This will compile your project and store the build artifacts in the `dist/` directory. By default, the production build optimizes your application for performance and speed.
+* **[Angular](https://angular.dev/):** Framework principal (utilizando o novo Control Flow `@if`, `@for`).
+* **[Tailwind CSS](https://tailwindcss.com/):** Estilização utilitária, fundamental para a construção ágil do design neobrutalista.
+* **[PrimeNG](https://primeng.org/):** Biblioteca de componentes de interface (Modais, Toasts, Inputs complexos), customizados para abraçar a identidade visual do app.
+* **[TypeScript](https://www.typescriptlang.org/):** Tipagem estática para garantir a integridade dos DTOs e segurança na integração com a API.
 
-## Running unit tests
 
-To execute unit tests with the [Karma](https://karma-runner.github.io) test runner, use the following command:
-
-```bash
-ng test
-```
-
-## Running end-to-end tests
-
-For end-to-end (e2e) testing, run:
-
-```bash
-ng e2e
-```
-
-Angular CLI does not come with an end-to-end testing framework by default. You can choose one that suits your needs.
-
-## Additional Resources
-
-For more information on using the Angular CLI, including detailed command references, visit the [Angular CLI Overview and Command Reference](https://angular.dev/tools/cli) page.
