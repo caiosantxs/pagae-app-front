@@ -33,4 +33,5 @@ O ecossistema do front-end foi arquitetado com as seguintes tecnologias:
 * **[PrimeNG](https://primeng.org/):** Biblioteca de componentes de interface (Modais, Toasts, Inputs complexos), customizados para abraçar a identidade visual do app.
 * **[TypeScript](https://www.typescriptlang.org/):** Tipagem estática para garantir a integridade dos DTOs e segurança na integração com a API.
 
-
+## Deploy em Produção
+A aplicação está configurada para suportar deploy em instâncias em nuvem (como AWS EC2 via Nginx), com tratamentos adequados de CORS e rotas gerenciadas pelo Angular Router. As requisições HTTPS e a comunicação segura com o servidor Java garantem que recursos como o Login do Google funcionem perfeitamente.
