@@ -42,7 +42,6 @@ export class ResetPassword {
   }
 
   ngOnInit() {
-    // Captura o token da URL (ex: ?token=abc-123)
     this.token = this.route.snapshot.queryParamMap.get('token');
 
     if (!this.token) {
@@ -54,7 +53,6 @@ export class ResetPassword {
     }
   }
 
-  // Validador customizado: A senha e a confirmação devem ser idênticas
   passwordsMatchValidator(control: AbstractControl): ValidationErrors | null {
     const password = control.get('password')?.value;
     const confirmPassword = control.get('confirmPassword')?.value;
@@ -84,7 +82,6 @@ export class ResetPassword {
           detail: 'Sua nova senha foi salva. Redirecionando para o login...'
         });
         
-        // Joga o usuário para o login após 2 segundos
         setTimeout(() => this.router.navigate(['/login']), 2000);
       },
       error: (err) => {

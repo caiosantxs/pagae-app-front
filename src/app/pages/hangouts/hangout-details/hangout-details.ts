@@ -528,7 +528,7 @@ export class HangoutDetails {
             if (share.user.id != this.currentUserId && share.amountOwed > 0) {
               receivables.push({
                 debtorName: share.user.name,
-                expenseName: expense.description, // Você pode trocar para expense.name aqui depois se preferir
+                expenseName: expense.name,
                 amount: share.amountOwed,
               });
             }

@@ -96,7 +96,6 @@ export class LoginService {
   }
 
   resetPassword(data: ResetPasswordDTO): Observable<any> {
-    // Lembre-se de ajustar a URL base se necessário
     return this.httpClient.post(`${this.apiUrl}/reset-password`, data, {
       responseType: 'text',
     });

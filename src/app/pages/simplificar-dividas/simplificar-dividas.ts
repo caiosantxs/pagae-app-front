@@ -47,7 +47,6 @@ export class SimplificarDividas {
   }
 
   confirmarSimplificacao(desconto: Devendo2DTO): void {
-    // Acha o menor valor para mostrar na mensagem de confirmação
     const valorAbatido = Math.min(desconto.quantoDevo, desconto.quantoMeDeve);
 
     this.confirmationService.confirm({
@@ -67,7 +66,6 @@ export class SimplificarDividas {
     this.expenseService.aplicarDesconto(targetUserId).subscribe({
       next: () => {
         this.messageService.add({ severity: 'success', summary: 'Sucesso!', detail: 'Dívidas simplificadas.' });
-        // Recarrega a lista para mostrar os novos saldos atualizados
         this.carregarDescontos();
       },
       error: (err) => {
