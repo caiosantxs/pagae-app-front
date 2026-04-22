@@ -1,7 +1,5 @@
 # PagaAê - Front-end
 
-> Dividir a conta do rolê nunca foi tão fácil (e estiloso).
-
 O **PagaAê** é uma aplicação web desenvolvida para gerenciar despesas compartilhadas entre grupos de amigos. Focado na clareza financeira e em uma experiência de usuário ousada, o sistema elimina a dor de cabeça de calcular "quem deve quem" após um evento, churrasco ou viagem.
 
 A interface foi construída seguindo a tendência do **Design Neobrutalista**, utilizando cores de alto contraste, tipografia forte, bordas marcadas e sombras sólidas para criar uma experiência de usuário única, responsiva e direta ao ponto.
