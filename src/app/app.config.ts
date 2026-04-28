@@ -9,8 +9,7 @@ import { authInterceptor } from './core/interceptors/auth-interceptor';
 import { LOCALE_ID } from '@angular/core';
 import { SocialAuthServiceConfig, GoogleLoginProvider } from '@abacritt/angularx-social-login';
 import { environment } from '../environments/environment';
-import { MessageService } from 'primeng/api'; // <-- Import mantido
-
+import { MessageService } from 'primeng/api';
 import { registerLocaleData } from '@angular/common';
 import localePt from '@angular/common/locales/pt';
 
