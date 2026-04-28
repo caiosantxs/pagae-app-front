@@ -8,10 +8,9 @@ import { PasswordModule } from 'primeng/password';
 import { DividerModule } from 'primeng/divider';
 import { passwordMatchValidator } from '../../../validators/password-match.validator';
 import { LoginService } from '../login/login-service';
-import { ToastrService } from 'ngx-toastr';
 import { SocialAuthService, GoogleSigninButtonModule } from '@abacritt/angularx-social-login';
 import { Subscription } from 'rxjs';
-
+import { MessageService } from 'primeng/api';
 
 @Component({
   selector: 'app-register',
@@ -26,7 +25,7 @@ import { Subscription } from 'rxjs';
     ReactiveFormsModule,
     GoogleSigninButtonModule
   ],
-  providers: [LoginService, ToastrService],
+  providers: [LoginService],
   templateUrl: './register.html',
   styleUrl: './register.scss',
 })
@@ -39,7 +38,7 @@ export class Register implements OnInit, OnDestroy {
 
   constructor(
     private loginService: LoginService,
-    private toastService: ToastrService,
+    private messageService: MessageService, // <-- MessageService injetado
     private router: Router,
     private socialAuthService: SocialAuthService
   ) {
@@ -52,8 +51,7 @@ export class Register implements OnInit, OnDestroy {
     },
     {
       validators: passwordMatchValidator
-    }
-  );
+    });
   }
 
   ngOnInit() {
@@ -61,13 +59,19 @@ export class Register implements OnInit, OnDestroy {
       if (user && user.idToken) {
         this.loginService.loginWithGoogle(user.idToken).subscribe({
           next: () => {
-            this.toastService.success('Login com Google realizado com sucesso!');
+            this.messageService.add({
+              severity: 'success',
+              summary: 'Bem-vindo(a)!',
+              detail: 'Login com Google realizado com sucesso!'
+            });
             this.router.navigate(['/app/dashboard']);
           },
           error: () => {
-            this.toastService.error(
-              'Login com Google falhou. Tente novamente.',
-            );
+            this.messageService.add({
+              severity: 'error',
+              summary: 'Erro de Autenticação',
+              detail: 'Login com Google falhou. Tente novamente.'
+            });
           },
         });
       }
@@ -78,22 +82,28 @@ export class Register implements OnInit, OnDestroy {
     this.authSubscription?.unsubscribe();
   }
 
-  submit(){
+  submit() {
     this.loginService.register(
-      this.registerForm.value.name ,
+      this.registerForm.value.name,
       this.registerForm.value.username,
-      this.registerForm.value.email ,
+      this.registerForm.value.email,
       this.registerForm.value.password
     ).subscribe({
       next: () => {
-        this.toastService.success('Sign up successful!');
+        this.messageService.add({
+          severity: 'success',
+          summary: 'Conta criada!',
+          detail: 'Cadastro realizado com sucesso! Faça login para continuar.'
+        });
         this.router.navigate(['/login']);
       },
       error: () => {
-        this.toastService.error('Sign up failed. Please check your credentials.')
+        this.messageService.add({
+          severity: 'error',
+          summary: 'Falha no Cadastro',
+          detail: 'Verifique os dados informados e tente novamente.'
+        });
       }
     });
   }
-
 }
-
