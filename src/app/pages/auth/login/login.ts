@@ -12,10 +12,11 @@ import { InputTextModule } from 'primeng/inputtext';
 import { PasswordModule } from 'primeng/password';
 import { DividerModule } from 'primeng/divider';
 import { LoginService } from './login-service';
-import { ToastrService } from 'ngx-toastr';
 import { GoogleSigninButtonModule } from '@abacritt/angularx-social-login';
 import { SocialAuthService } from '@abacritt/angularx-social-login';
 import { Subscription } from 'rxjs';
+import { MessageService } from 'primeng/api';
+import { ToastModule } from 'primeng/toast';
 
 @Component({
   selector: 'app-login',
@@ -27,7 +28,8 @@ import { Subscription } from 'rxjs';
     PasswordModule,
     DividerModule,
     ReactiveFormsModule,
-    GoogleSigninButtonModule
+    GoogleSigninButtonModule,
+    ToastModule 
   ],
   templateUrl: './login.html',
   styleUrl: './login.scss',
@@ -41,7 +43,7 @@ export class Login implements OnInit, OnDestroy {
 
   constructor(
     private loginService: LoginService,
-    private toastService: ToastrService,
+    private messageService: MessageService,
     private router: Router,
     private socialAuthService: SocialAuthService,
   ) {
@@ -60,13 +62,19 @@ export class Login implements OnInit, OnDestroy {
         this.loginService.loginWithGoogle(user.idToken).subscribe({
           next: () => {
             this.currentUserId = this.loginService.getUserId();
-            this.toastService.success('Login com Google realizado com sucesso!');
+            this.messageService.add({
+              severity: 'success',
+              summary: 'Bem-vindo(a)!',
+              detail: 'Login realizado com sucesso.'
+            });
             this.navigateAfterLogin();
           },
           error: () => {
-            this.toastService.error(
-              'Login com Google falhou. Tente novamente.',
-            );
+            this.messageService.add({
+              severity: 'error',
+              summary: 'Erro de Autenticação',
+              detail: 'Login com Google falhou. Tente novamente.'
+            });
           },
         });
       }
@@ -84,14 +92,20 @@ export class Login implements OnInit, OnDestroy {
       .subscribe({
         next: () => {
           this.currentUserId = this.loginService.getUserId();
-          this.toastService.success('Login realizado com sucesso!');
+          this.messageService.add({
+            severity: 'success',
+            summary: 'Bem-vindo(a)!',
+            detail: 'Login realizado com sucesso!'
+          });
           this.navigateAfterLogin();
           this.loginForm.reset();
         },
         error: () => {
-          this.toastService.error(
-            'Login falhou. Verifique suas credenciais e tente novamente.',
-          );
+          this.messageService.add({
+            severity: 'error',
+            summary: 'Acesso Negado',
+            detail: 'Verifique suas credenciais e tente novamente.'
+          });
         },
       });
   }
@@ -106,4 +120,3 @@ export class Login implements OnInit, OnDestroy {
     }
   }
 }
-
